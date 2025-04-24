@@ -7,7 +7,7 @@ function App() {
       <div className="landing-container">
         <div className="logo-image-container">
           <img 
-            src="/images/softbrace-logos.png" 
+            src="/images/softbrace-logos.jpg.png" 
             alt="SoftBrace Logos in different colors" 
             className="logo-image"
           />
