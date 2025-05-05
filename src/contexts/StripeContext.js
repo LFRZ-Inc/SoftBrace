@@ -1,153 +1,102 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Create a context for Stripe functions
 const StripeContext = createContext(null);
 
-// Fallback to test key if env variable is not available
-const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51RKrnuFsjDil30gTmx1WEBqehbhO7vqaQMtRnZLaEJwI6jJBM6qtXfWpldALT50mxQqZkWmbNsUUdgOjVpnSsWTv00S33fMrpf';
+// Use the actual publishable key from .env
+const stripePromise = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
+);
 
-// Initialize Stripe with error handling
-const getStripePromise = () => {
-  try {
-    return loadStripe(STRIPE_PUBLISHABLE_KEY);
-  } catch (error) {
-    console.error('Failed to initialize Stripe:', error);
-    return null;
-  }
-};
-
-const stripePromise = getStripePromise();
+// API base URL - use environment variable or default to localhost in development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 export function StripeProvider({ children }) {
-  const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // Verify Stripe is loaded on mount
-  useEffect(() => {
-    const checkStripe = async () => {
-      try {
-        const stripe = await stripePromise;
-        if (stripe) {
-          setIsReady(true);
-        } else {
-          setError('Stripe failed to initialize');
-        }
-      } catch (e) {
-        console.error('Stripe init error:', e);
-        setError(e.message);
-      }
-    };
-
-    checkStripe();
-  }, []);
 
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items) => {
     try {
-      if (!isReady) {
-        console.warn('Stripe is not ready yet');
-      }
-      
+      setIsLoading(true);
+      setError(null);
       console.log('Redirecting to Stripe checkout for items:', items);
       
-      // Load Stripe
-      const stripe = await stripePromise;
-      if (!stripe) {
-        console.error('Stripe.js failed to load');
-        throw new Error('Failed to load Stripe.js');
+      // Format line items for Stripe API
+      const line_items = items.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            // Add images if available
+            images: item.image ? [window.location.origin + item.image] : [],
+          },
+          unit_amount: Math.round(item.price * 100), // Convert to cents
+        },
+        quantity: item.quantity,
+      }));
+      
+      console.log('Sending API request with line_items:', line_items);
+      
+      // Call our API endpoint to create a checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ line_items }),
+      });
+      
+      console.log('API response status:', response.status);
+      
+      if (!response.ok) {
+        let errorMessage = 'Failed to create checkout session';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          console.error('Could not parse error response:', e);
+        }
+        throw new Error(errorMessage);
       }
       
-      try {
-        // First attempt: create checkout session via API
-        console.log('Sending checkout request to API...');
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            items: items.map(item => ({
-              name: item.name,
-              description: `SoftBrace ${item.id}`,
-              amount: Math.round(item.price * 100), // Convert to cents
-              quantity: item.quantity
-            }))
-          }),
-        });
-        
-        console.log('API response status:', response.status);
-        
-        if (!response.ok) {
-          let errorMessage = 'Failed to create checkout session';
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-            console.error('API error response:', errorData);
-          } catch (e) {
-            console.error('Could not parse error response:', e);
-          }
-          throw new Error(errorMessage);
-        }
-        
-        const sessionData = await response.json();
-        console.log('Session created:', sessionData);
-        
-        if (!sessionData.sessionId) {
-          console.error('Missing sessionId in response:', sessionData);
-          throw new Error('Invalid response from payment server');
-        }
-        
-        // Redirect to Stripe checkout with the session ID
-        console.log('Redirecting to Stripe checkout...');
-        const { error } = await stripe.redirectToCheckout({
-          sessionId: sessionData.sessionId
-        });
-        
-        if (error) {
-          console.error('Stripe checkout error:', error);
-          throw new Error(error.message);
-        }
-      } catch (apiError) {
-        console.warn('API checkout failed, falling back to client-only checkout:', apiError);
-        
-        // Fallback: Use client-only checkout
-        const { error } = await stripe.redirectToCheckout({
-          mode: 'payment',
-          lineItems: items.map(item => ({
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: item.name,
-                images: item.image ? [window.location.origin + item.image] : [],
-              },
-              unit_amount: Math.round(item.price * 100), // Convert to cents
-            },
-            quantity: item.quantity,
-          })),
-          successUrl: `${window.location.origin}/checkout/success`,
-          cancelUrl: `${window.location.origin}/checkout/cancel`,
-        });
-        
-        if (error) {
-          console.error('Client-only checkout error:', error);
-          throw error;
-        }
+      const data = await response.json();
+      console.log('Checkout session created:', data);
+      
+      if (!data.id) {
+        throw new Error('Invalid response from server: missing session ID');
+      }
+      
+      // Redirect to Stripe checkout
+      const stripe = await stripePromise;
+      console.log('Redirecting to Stripe checkout with session ID:', data.id);
+      
+      const { error } = await stripe.redirectToCheckout({ 
+        sessionId: data.id 
+      });
+      
+      if (error) {
+        console.error('Stripe redirectToCheckout error:', error);
+        throw new Error(error.message);
       }
       
       return { success: true };
     } catch (error) {
       console.error('Error redirecting to checkout:', error);
+      setError(error.message || 'There was an error processing your checkout. Please try again.');
       return {
         success: false,
         message: error.message || 'There was an error processing your checkout. Please try again.'
       };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const value = {
     redirectToCheckout,
-    isReady,
+    isLoading,
     error
   };
 

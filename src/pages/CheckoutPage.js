@@ -8,7 +8,7 @@ function CheckoutPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { items, total, clearCart } = useCart();
-  const { redirectToCheckout, isReady, error: stripeError } = useStripe();
+  const { redirectToCheckout, isLoading, error: stripeError } = useStripe();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -19,36 +19,30 @@ function CheckoutPage() {
       navigate('/cart');
     }
   }, [items, navigate]);
-
-  // Show Stripe initialization error if any
+  
+  // Display Stripe errors if any
   useEffect(() => {
     if (stripeError) {
-      setError(t('checkout.errors.stripeInitFailed'));
-      console.error('Stripe initialization error:', stripeError);
+      setError(stripeError);
     }
-  }, [stripeError, t]);
+  }, [stripeError]);
   
   const handleCheckout = async () => {
     try {
       setIsProcessing(true);
       setError('');
       
-      if (!isReady) {
-        console.warn('Stripe is not ready yet');
-        setError(t('checkout.errors.stripeNotReady'));
-        setIsProcessing(false);
-        return;
-      }
+      console.log('Initiating checkout with items:', items);
       
       // Call the redirectToCheckout function from our Stripe context
-      console.log('Initiating checkout with items:', items);
       const result = await redirectToCheckout(items);
       
-      console.log('Checkout result:', result);
       if (!result.success) {
         console.error('Checkout error:', result);
         setError(result.message || t('checkout.errors.paymentFailed'));
       }
+      
+      // No need to handle success case as Stripe will redirect to success page
     } catch (err) {
       console.error('Checkout exception:', err);
       setError(err.message || t('checkout.errors.paymentFailed'));
@@ -120,27 +114,9 @@ function CheckoutPage() {
           </div>
           
           {error && (
-            <div className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded mb-6 shadow-sm">
+            <div className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded mb-6">
               <h3 className="font-bold mb-1">Error</h3>
               <p>{error}</p>
-              <div className="mt-2 flex justify-end">
-                <button 
-                  onClick={() => setError('')} 
-                  className="text-sm text-red-700 dark:text-red-300 hover:underline"
-                >
-                  Dismiss
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {!isReady && !error && (
-            <div className="bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-100 p-4 rounded mb-6 shadow-sm">
-              <h3 className="font-bold mb-1">Initializing Payment System</h3>
-              <p>Please wait while we connect to our payment processor...</p>
-              <div className="flex justify-center mt-3">
-                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-yellow-500"></div>
-              </div>
             </div>
           )}
           
@@ -154,12 +130,12 @@ function CheckoutPage() {
             
             <button 
               onClick={handleCheckout}
-              disabled={isProcessing || items.length === 0 || !isReady}
+              disabled={isProcessing || isLoading || items.length === 0}
               className={`flex-1 bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg font-bold ${
-                (isProcessing || items.length === 0 || !isReady) ? 'opacity-70 cursor-not-allowed' : ''
+                (isProcessing || isLoading || items.length === 0) ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {isProcessing ? (
+              {isProcessing || isLoading ? (
                 <span className="flex items-center justify-center">
                   <span className="mr-2 animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
                   {t('checkout.processing')}
