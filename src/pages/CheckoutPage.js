@@ -12,52 +12,23 @@ function CheckoutPage() {
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
   
   // Redirect to cart if there are no items
   useEffect(() => {
-    if (items.length === 0 && !paymentSuccess) {
+    if (items.length === 0) {
       navigate('/cart');
     }
-  }, [items, navigate, paymentSuccess]);
-  
-  const calculateTax = () => {
-    return total * 0.08; // 8% tax
-  };
-  
-  const calculateShipping = () => {
-    return 5.99; // Flat shipping rate
-  };
-  
-  const calculateTotal = () => {
-    return total + calculateTax() + calculateShipping();
-  };
+  }, [items, navigate]);
   
   const handleCheckout = async () => {
     try {
       setIsProcessing(true);
       setError('');
       
-      // Prepare items for checkout
-      const lineItems = items.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      }));
-      
       // Call the redirectToCheckout function from our Stripe context
-      const result = await redirectToCheckout(lineItems);
+      const result = await redirectToCheckout(items);
       
-      if (result.success) {
-        // In a real implementation, this would redirect to Stripe
-        // For demo purposes, we'll simulate a successful payment
-        setPaymentSuccess(true);
-        clearCart();
-        
-        // In a real app, we wouldn't immediately clear the cart
-        // That would happen after the user completes payment on Stripe and returns
-      } else {
+      if (!result.success) {
         setError(result.message || t('checkout.errors.paymentFailed'));
       }
     } catch (err) {
@@ -66,25 +37,6 @@ function CheckoutPage() {
       setIsProcessing(false);
     }
   };
-  
-  // If payment was successful, show success message
-  if (paymentSuccess) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-md mx-auto">
-          <div className="text-green-500 text-5xl mb-4">✓</div>
-          <h1 className="text-2xl font-bold mb-4">{t('checkout.paymentSuccess')}</h1>
-          <p className="mb-6">{t('checkout.paymentSuccessMessage')}</p>
-          <Link
-            to="/"
-            className="bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg inline-block"
-          >
-            {t('checkout.backToHome')}
-          </Link>
-        </div>
-      </div>
-    );
-  }
   
   // Show checkout summary with button to proceed to Stripe
   return (
@@ -127,21 +79,14 @@ function CheckoutPage() {
               <span>${total.toFixed(2)}</span>
             </div>
             
-            <div className="flex justify-between">
-              <span>{t('checkout.shipping')}</span>
-              <span>${calculateShipping().toFixed(2)}</span>
-            </div>
-            
-            <div className="flex justify-between">
-              <span>{t('checkout.tax')}</span>
-              <span>${calculateTax().toFixed(2)}</span>
-            </div>
-            
             <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
               <div className="flex justify-between font-bold text-lg">
-                <span>{t('checkout.total')}</span>
-                <span>${calculateTotal().toFixed(2)}</span>
+                <span>{t('checkout.subtotal')}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
+              <p className="text-sm text-gray-500 mt-2">
+                {t('checkout.shippingAndTaxCalculated')}
+              </p>
             </div>
           </div>
           
