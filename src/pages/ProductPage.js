@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
-// Import images directly
-import smallPackImage from '../assets/5-pack.png';
-import mediumPackImage from '../assets/15-pack.png';
-import largePackImage from '../assets/31-pack.png';
 
 function ProductPage() {
   const { id } = useParams();
@@ -27,7 +23,7 @@ function ProductPage() {
           id: 1,
           name: 'SoftBrace 5-Pair Pack',
           price: 9.99,
-          image: smallPackImage,
+          image: 'images/5 Pack.png',
           category: 'small',
           description: t('product.packOptions.small.description'),
           longDescription: t('product.packOptions.small.longDescription'),
@@ -36,14 +32,14 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '5 Pairs (10 strips)',
+          quantity: '5 Pairs',
           stock: 15
         },
         {
           id: 2,
           name: 'SoftBrace 15-Pair Pack',
           price: 24.99,
-          image: mediumPackImage,
+          image: 'images/15 Pack.png',
           category: 'medium',
           description: t('product.packOptions.medium.description'),
           longDescription: t('product.packOptions.medium.longDescription'),
@@ -52,14 +48,14 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '15 Pairs (30 strips)',
+          quantity: '15 Pairs',
           stock: 10
         },
         {
           id: 3,
           name: 'SoftBrace 31-Pair Pack',
           price: 44.99,
-          image: largePackImage,
+          image: 'images/31 Pack.png',
           category: 'large',
           description: t('product.packOptions.large.description'),
           longDescription: t('product.packOptions.large.longDescription'),
@@ -68,7 +64,7 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '31 Pairs (62 strips)',
+          quantity: '31 Pairs',
           stock: 5
         }
       ];
@@ -143,7 +139,7 @@ function ProductPage() {
           {/* Product Image */}
           <div className="md:w-1/2 p-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
             <img 
-              src={product.image} 
+              src={`/${product.image}`} 
               alt={product.name}
               className="max-w-full max-h-96 object-contain"
             />
@@ -160,7 +156,7 @@ function ProductPage() {
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">{product.quantity}</p>
             
-            <div className="text-3xl font-bold mb-6">${product.price.toFixed(2)}</div>
+            <div className="text-3xl font-bold mb-6">${product.price}</div>
             
             <p className="text-gray-700 dark:text-gray-300 mb-6">
               {product.description}
