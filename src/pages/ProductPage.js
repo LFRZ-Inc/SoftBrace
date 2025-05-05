@@ -26,7 +26,7 @@ function ProductPage() {
         {
           id: 1,
           name: 'SoftBrace 5-Pair Pack',
-          price: 9.99,
+          price: 3.99,
           image: smallPackImage,
           category: 'small',
           description: t('product.packOptions.small.description'),
@@ -36,13 +36,13 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '5 Pairs',
+          quantity: '5 Pairs (10 strips)',
           stock: 15
         },
         {
           id: 2,
           name: 'SoftBrace 15-Pair Pack',
-          price: 24.99,
+          price: 8.99,
           image: mediumPackImage,
           category: 'medium',
           description: t('product.packOptions.medium.description'),
@@ -52,13 +52,13 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '15 Pairs',
+          quantity: '15 Pairs (30 strips)',
           stock: 10
         },
         {
           id: 3,
           name: 'SoftBrace 31-Pair Pack',
-          price: 44.99,
+          price: 16.99,
           image: largePackImage,
           category: 'large',
           description: t('product.packOptions.large.description'),
@@ -68,7 +68,7 @@ function ProductPage() {
             t('product.features.feature2'),
             t('product.features.feature3')
           ],
-          quantity: '31 Pairs',
+          quantity: '31 Pairs (62 strips)',
           stock: 5
         }
       ];
