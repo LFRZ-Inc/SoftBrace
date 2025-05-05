@@ -24,7 +24,7 @@ function ProductPage() {
     setTimeout(() => {
       const productData = [
         {
-          id: 1,
+          id: '5-pack',
           name: 'SoftBrace 5-Pair Pack',
           price: 3.99,
           image: smallPackImage,
@@ -40,7 +40,7 @@ function ProductPage() {
           stock: 15
         },
         {
-          id: 2,
+          id: '15-pack',
           name: 'SoftBrace 15-Pair Pack',
           price: 8.99,
           image: mediumPackImage,
@@ -56,7 +56,7 @@ function ProductPage() {
           stock: 10
         },
         {
-          id: 3,
+          id: '31-pack',
           name: 'SoftBrace 31-Pair Pack',
           price: 16.99,
           image: largePackImage,
@@ -73,7 +73,7 @@ function ProductPage() {
         }
       ];
       
-      const foundProduct = productData.find(p => p.id === parseInt(id));
+      const foundProduct = productData.find(p => p.id === id);
       setProduct(foundProduct);
       setLoading(false);
     }, 500);

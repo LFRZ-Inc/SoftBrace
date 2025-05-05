@@ -9,6 +9,14 @@ const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
 
+// Mapping of our product IDs to Stripe Price IDs
+// You'll need to create these products in your Stripe dashboard
+const PRODUCT_PRICE_MAP = {
+  '5-pack': 'price_1RKrtTFsjDil30gTJ53hoxIs', // 5-pack price ID from Stripe
+  '15-pack': 'price_1RKrtTFsjDil30gTgCIJVVHP', // 15-pack price ID from Stripe
+  '31-pack': 'price_1RKrtTFsjDil30gTB9EgX0iD'  // 31-pack price ID from Stripe
+};
+
 export function StripeProvider({ children }) {
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items) => {
@@ -21,20 +29,26 @@ export function StripeProvider({ children }) {
         throw new Error('Failed to load Stripe.js');
       }
       
-      // Create a checkout session directly from the client
+      // Format line items for Stripe - using the predefined price IDs
+      const lineItems = items.map(item => {
+        // Get the stripe price ID based on product ID
+        const priceId = PRODUCT_PRICE_MAP[item.id];
+        
+        if (!priceId) {
+          console.error(`No Stripe price ID found for product ${item.id}`);
+          throw new Error(`Product ${item.name} is not available for purchase at this time.`);
+        }
+        
+        return {
+          price: priceId,
+          quantity: item.quantity
+        };
+      });
+      
+      // Create a checkout session
       const { error } = await stripe.redirectToCheckout({
         mode: 'payment',
-        lineItems: items.map(item => ({
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: item.name,
-              images: item.image ? [window.location.origin + item.image] : [],
-            },
-            unit_amount: Math.round(item.price * 100), // Convert to cents
-          },
-          quantity: item.quantity,
-        })),
+        lineItems: lineItems,
         successUrl: `${window.location.origin}/checkout/success`,
         cancelUrl: `${window.location.origin}/checkout/cancel`,
       });

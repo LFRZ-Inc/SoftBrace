@@ -29,9 +29,11 @@ function CheckoutPage() {
       const result = await redirectToCheckout(items);
       
       if (!result.success) {
+        console.error('Checkout error:', result);
         setError(result.message || t('checkout.errors.paymentFailed'));
       }
     } catch (err) {
+      console.error('Checkout exception:', err);
       setError(err.message || t('checkout.errors.paymentFailed'));
     } finally {
       setIsProcessing(false);

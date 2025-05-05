@@ -10,10 +10,10 @@ function ShopPage() {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Sample product data - will be replaced with actual data
+  // Product data with IDs matching Stripe product IDs
   const products = [
     {
-      id: 1,
+      id: '5-pack',
       name: 'SoftBrace 5-Pair Pack',
       price: 3.99,
       image: smallPackImage,
@@ -23,7 +23,7 @@ function ShopPage() {
       shortDesc: 'Perfect starter pack for first-time users'
     },
     {
-      id: 2,
+      id: '15-pack',
       name: 'SoftBrace 15-Pair Pack',
       price: 8.99,
       image: mediumPackImage,
@@ -33,7 +33,7 @@ function ShopPage() {
       shortDesc: 'Most popular choice for regular users'
     },
     {
-      id: 3,
+      id: '31-pack',
       name: 'SoftBrace 31-Pair Pack',
       price: 16.99,
       image: largePackImage,
