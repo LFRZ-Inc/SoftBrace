@@ -226,7 +226,10 @@ const translations = {
         invalidCardNumber: 'Please enter a valid 16-digit card number',
         invalidCvv: 'Please enter a valid CVV (3-4 digits)',
         emptyCart: 'Your cart is empty. Please add items before checkout.',
-        paymentFailed: 'Payment failed. Please try again or use a different payment method.'
+        paymentFailed: 'Payment failed. Please try again or use a different payment method.',
+        stripeInitFailed: 'Payment system failed to initialize. Please refresh the page and try again.',
+        stripeNotReady: 'Payment system is not ready yet. Please wait a moment and try again.',
+        apiUnavailable: 'Payment service is temporarily unavailable. Please try again later.'
       },
       shippingAndTaxCalculated: 'Shipping and taxes will be calculated at the next step'
     },
@@ -475,7 +478,10 @@ const translations = {
         invalidCardNumber: 'Por favor, introduce un número de tarjeta válido de 16 dígitos',
         invalidCvv: 'Por favor, introduce un CVV válido (3-4 dígitos)',
         emptyCart: 'Tu carrito está vacío. Por favor, añade artículos antes de proceder al pago.',
-        paymentFailed: 'El pago falló. Por favor, intenta de nuevo o utiliza otro método de pago.'
+        paymentFailed: 'El pago falló. Por favor, intenta de nuevo o utiliza otro método de pago.',
+        stripeInitFailed: 'El sistema de pago no se pudo inicializar. Por favor, actualiza la página e inténtalo de nuevo.',
+        stripeNotReady: 'El sistema de pago no está listo todavía. Por favor, espera un momento e inténtalo de nuevo.',
+        apiUnavailable: 'El servicio de pago está temporalmente no disponible. Por favor, inténtalo más tarde.'
       },
       shippingAndTaxCalculated: 'El envío e impuestos se calcularán en el siguiente paso'
     },
