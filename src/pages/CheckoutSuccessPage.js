@@ -1,64 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
+import { useCart } from '../contexts/CartContext';
 
 function CheckoutSuccessPage() {
   const { t } = useTranslation();
-  const location = useLocation();
-  const [sessionId, setSessionId] = useState(null);
-  const [orderNumber, setOrderNumber] = useState(null);
+  const { clearCart } = useCart();
   
+  // Clear the cart when payment is successful
   useEffect(() => {
-    // Get the session_id from the URL parameters
-    const params = new URLSearchParams(location.search);
-    const session = params.get('session_id');
-    
-    if (session) {
-      setSessionId(session);
-      // Generate a simple order number based on the session and current time
-      // In a real app, you would get this from your backend
-      setOrderNumber(`SBS-${Math.floor(Math.random() * 10000)}-${new Date().getFullYear()}`);
-    }
-  }, [location]);
-
+    clearCart();
+  }, [clearCart]);
+  
   return (
-    <div className="container mx-auto px-4 py-16 text-center">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-md mx-auto">
-        <div className="text-green-500 text-6xl mb-6">✓</div>
-        <h1 className="text-2xl font-bold mb-4">{t('checkout.paymentSuccess')}</h1>
-        
-        {sessionId && (
-          <>
-            <p className="mb-6">{t('checkout.paymentSuccessMessage')}</p>
-            
-            {orderNumber && (
-              <div className="bg-gray-50 dark:bg-gray-700 rounded p-4 mb-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('checkout.orderNumber')}</p>
-                <p className="font-bold text-lg">{orderNumber}</p>
-              </div>
-            )}
-            
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-              {t('checkout.emailConfirmation')}
-            </p>
-          </>
-        )}
-        
-        <div className="flex flex-col space-y-3">
-          <Link
-            to="/"
-            className="bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg inline-block"
-          >
-            {t('checkout.backToHome')}
-          </Link>
-          
-          <Link
-            to="/contact"
-            className="text-primary hover:text-primary-light underline"
-          >
-            {t('checkout.needHelp')}
-          </Link>
+    <div className="container mx-auto px-4 py-16">
+      <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
         </div>
+        
+        <h1 className="text-2xl font-bold mb-4">{t('checkout.paymentSuccess')}</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">
+          {t('checkout.paymentSuccessMessage')}
+        </p>
+        
+        <Link
+          to="/shop"
+          className="inline-block bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg font-medium"
+        >
+          {t('checkout.continueShopping')}
+        </Link>
       </div>
     </div>
   );
