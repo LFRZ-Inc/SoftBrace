@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
+// Import images directly
+import smallPackImage from '../assets/5-pack.png';
+import mediumPackImage from '../assets/15-pack.png';
+import largePackImage from '../assets/31-pack.png';
 
 function ShopPage() {
   const { t } = useTranslation();
@@ -12,7 +16,7 @@ function ShopPage() {
       id: 1,
       name: 'SoftBrace 5-Pair Pack',
       price: 3.99,
-      image: '/images/5-pack.png',
+      image: smallPackImage,
       category: 'small',
       description: t('product.packOptions.small.description'),
       quantity: '10 strips',
@@ -22,7 +26,7 @@ function ShopPage() {
       id: 2,
       name: 'SoftBrace 15-Pair Pack',
       price: 8.99,
-      image: '/images/15-pack.png',
+      image: mediumPackImage,
       category: 'medium',
       description: t('product.packOptions.medium.description'),
       quantity: '30 strips',
@@ -32,7 +36,7 @@ function ShopPage() {
       id: 3,
       name: 'SoftBrace 31-Pair Pack',
       price: 16.99,
-      image: '/images/31-pack.png',
+      image: largePackImage,
       category: 'large',
       description: t('product.packOptions.large.description'),
       quantity: '62 strips',

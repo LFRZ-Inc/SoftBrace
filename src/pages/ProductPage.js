@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
+// Import images directly
+import smallPackImage from '../assets/5-pack.png';
+import mediumPackImage from '../assets/15-pack.png';
+import largePackImage from '../assets/31-pack.png';
 
 function ProductPage() {
   const { id } = useParams();
@@ -23,7 +27,7 @@ function ProductPage() {
           id: 1,
           name: 'SoftBrace 5-Pair Pack',
           price: 9.99,
-          image: 'images/5 Pack.png',
+          image: smallPackImage,
           category: 'small',
           description: t('product.packOptions.small.description'),
           longDescription: t('product.packOptions.small.longDescription'),
@@ -39,7 +43,7 @@ function ProductPage() {
           id: 2,
           name: 'SoftBrace 15-Pair Pack',
           price: 24.99,
-          image: 'images/15 Pack.png',
+          image: mediumPackImage,
           category: 'medium',
           description: t('product.packOptions.medium.description'),
           longDescription: t('product.packOptions.medium.longDescription'),
@@ -55,7 +59,7 @@ function ProductPage() {
           id: 3,
           name: 'SoftBrace 31-Pair Pack',
           price: 44.99,
-          image: 'images/31 Pack.png',
+          image: largePackImage,
           category: 'large',
           description: t('product.packOptions.large.description'),
           longDescription: t('product.packOptions.large.longDescription'),
@@ -139,7 +143,7 @@ function ProductPage() {
           {/* Product Image */}
           <div className="md:w-1/2 p-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
             <img 
-              src={`/${product.image}`} 
+              src={product.image} 
               alt={product.name}
               className="max-w-full max-h-96 object-contain"
             />
