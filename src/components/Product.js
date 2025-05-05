@@ -15,7 +15,7 @@ function Product() {
 
         <div className="product-visual">
           <img 
-            src="images/single-strip.png" 
+            src="/images/single-strip.png" 
             alt="SoftBrace Strip" 
             className="strip-image"
           />
@@ -25,7 +25,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="images/5 Pack.png" 
+                src="/images/5-pack.png" 
                 alt="SoftBrace 5-Pair Pack" 
                 className="package-image"
               />
@@ -39,7 +39,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="images/15 Pack.png" 
+                src="/images/15-pack.png" 
                 alt="SoftBrace 15-Pair Pack" 
                 className="package-image"
               />
@@ -53,7 +53,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="images/31 Pack.png" 
+                src="/images/31-pack.png" 
                 alt="SoftBrace 31-Pair Pack" 
                 className="package-image"
               />
