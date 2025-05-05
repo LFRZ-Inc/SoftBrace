@@ -7,14 +7,6 @@ function CartPage() {
   const { t } = useTranslation();
   const { items, total, removeItem, updateQuantity } = useCart();
   
-  const calculateTax = () => {
-    return total * 0.08; // 8% tax
-  };
-  
-  const calculateTotal = () => {
-    return total + calculateTax();
-  };
-  
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{t('cart.title')}</h1>
@@ -120,22 +112,14 @@ function CartPage() {
               <h2 className="text-xl font-bold mb-4">{t('cart.orderSummary')}</h2>
               
               <div className="space-y-4">
-                <div className="flex justify-between">
+                <div className="flex justify-between font-bold text-lg">
                   <span>{t('cart.subtotal')}</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
                 
-                <div className="flex justify-between">
-                  <span>{t('cart.tax')}</span>
-                  <span>${calculateTax().toFixed(2)}</span>
-                </div>
-                
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>{t('cart.total')}</span>
-                    <span>${calculateTotal().toFixed(2)}</span>
-                  </div>
-                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  {t('checkout.shippingAndTaxCalculated')}
+                </p>
                 
                 <Link
                   to="/checkout"
