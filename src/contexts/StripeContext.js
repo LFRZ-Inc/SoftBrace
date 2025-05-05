@@ -9,11 +9,28 @@ const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
 
+// API base URL - use environment variable or default to localhost in development
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 export function StripeProvider({ children }) {
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items) => {
     try {
       console.log('Redirecting to Stripe checkout for items:', items);
+      
+      // Format line items for Stripe API
+      const line_items = items.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            // Add images if available
+            images: item.image ? [item.image] : [],
+          },
+          unit_amount: Math.round(item.price * 100), // Convert to cents
+        },
+        quantity: item.quantity,
+      }));
       
       // Call our API endpoint to create a checkout session
       const response = await fetch('/api/create-checkout-session', {
@@ -21,7 +38,7 @@ export function StripeProvider({ children }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ line_items }),
       });
       
       if (!response.ok) {
@@ -29,7 +46,7 @@ export function StripeProvider({ children }) {
         throw new Error(errorData.error || 'Error creating checkout session');
       }
       
-      const { sessionId } = await response.json();
+      const { id: sessionId } = await response.json();
       
       // Redirect to Stripe checkout
       const stripe = await stripePromise;
@@ -44,7 +61,7 @@ export function StripeProvider({ children }) {
       console.error('Error redirecting to checkout:', error);
       return {
         success: false,
-        message: 'There was an error processing your checkout. Please try again.'
+        message: error.message || 'There was an error processing your checkout. Please try again.'
       };
     }
   };
