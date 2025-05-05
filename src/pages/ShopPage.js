@@ -11,29 +11,32 @@ function ShopPage() {
     {
       id: 1,
       name: 'SoftBrace 5-Pair Pack',
-      price: 9.99,
-      image: 'images/5 Pack.png',
+      price: 3.99,
+      image: '/images/5 Pack.png',
       category: 'small',
       description: t('product.packOptions.small.description'),
-      quantity: '5 Pairs'
+      quantity: '10 strips',
+      shortDesc: 'Perfect starter pack for first-time users'
     },
     {
       id: 2,
       name: 'SoftBrace 15-Pair Pack',
-      price: 24.99,
-      image: 'images/15 Pack.png',
+      price: 8.99,
+      image: '/images/15 Pack.png',
       category: 'medium',
       description: t('product.packOptions.medium.description'),
-      quantity: '15 Pairs'
+      quantity: '30 strips',
+      shortDesc: 'Most popular choice for regular users'
     },
     {
       id: 3,
       name: 'SoftBrace 31-Pair Pack',
-      price: 44.99,
-      image: 'images/31 Pack.png',
+      price: 16.99,
+      image: '/images/31 Pack.png',
       category: 'large',
       description: t('product.packOptions.large.description'),
-      quantity: '31 Pairs'
+      quantity: '62 strips',
+      shortDesc: 'Best value for long-term comfort'
     }
   ];
 
@@ -77,9 +80,9 @@ function ShopPage() {
       {/* Products grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProducts.map(product => (
-          <div key={product.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
-            <Link to={`/product/${product.id}`}>
-              <div className="h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center p-4">
+          <div key={product.id} className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+            <Link to={`/product/${product.id}`} className="block h-full">
+              <div className="h-64 bg-gray-700 flex items-center justify-center p-4">
                 <img 
                   src={product.image} 
                   alt={product.name} 
@@ -87,11 +90,11 @@ function ShopPage() {
                 />
               </div>
               <div className="p-6">
-                <h2 className="text-xl font-bold mb-2">{product.name}</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">{product.quantity}</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">{product.description}</p>
+                <h2 className="text-xl font-bold mb-2 text-blue-400">{product.name}</h2>
+                <p className="text-gray-300 mb-2">{product.quantity}</p>
+                <p className="text-gray-400 mb-4">{product.shortDesc}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold">${product.price}</span>
+                  <span className="text-2xl font-bold text-blue-400">${product.price}</span>
                   <button className="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded">
                     {t('shop.viewDetails')}
                   </button>
