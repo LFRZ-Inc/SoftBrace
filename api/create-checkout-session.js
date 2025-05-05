@@ -23,39 +23,56 @@ module.exports = async (req, res) => {
     return;
   }
 
+  console.log('Received checkout request');
+  
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is not defined');
+      return res.status(500).json({
+        error: 'Stripe API key is missing'
+      });
+    }
+
     const { items } = req.body;
+    console.log('Request items:', JSON.stringify(items));
     
     if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error('Invalid request items:', items);
       return res.status(400).json({
         error: 'Invalid request: missing or empty items array'
       });
     }
 
+    // Create line items with proper schema
+    const lineItems = items.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.name,
+          description: item.description || '',
+        },
+        unit_amount: item.amount, // in cents
+      },
+      quantity: item.quantity,
+    }));
+
+    console.log('Creating Stripe checkout session with line items:', JSON.stringify(lineItems));
+    
     // Create a Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: items.map(item => ({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.name,
-            description: item.description || '',
-          },
-          unit_amount: item.amount, // in cents
-        },
-        quantity: item.quantity,
-      })),
+      line_items: lineItems,
       mode: 'payment',
       success_url: `${req.headers.origin}/checkout/success`,
       cancel_url: `${req.headers.origin}/checkout/cancel`,
     });
 
+    console.log('Checkout session created:', session.id);
     res.status(200).json({ sessionId: session.id });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('Error creating checkout session:', error.message, error.stack);
     res.status(500).json({
-      error: 'An error occurred while creating the checkout session'
+      error: `An error occurred: ${error.message}`
     });
   }
 }; 

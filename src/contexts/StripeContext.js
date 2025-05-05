@@ -18,10 +18,12 @@ export function StripeProvider({ children }) {
       // Load Stripe
       const stripe = await stripePromise;
       if (!stripe) {
+        console.error('Stripe.js failed to load');
         throw new Error('Failed to load Stripe.js');
       }
       
       // Create a Stripe checkout session via our server API
+      console.log('Sending checkout request to API...');
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -37,20 +39,36 @@ export function StripeProvider({ children }) {
         }),
       });
       
+      console.log('API response status:', response.status);
+      
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to create checkout session');
+        let errorMessage = 'Failed to create checkout session';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          console.error('API error response:', errorData);
+        } catch (e) {
+          console.error('Could not parse error response:', e);
+        }
+        throw new Error(errorMessage);
       }
       
-      const { sessionId } = await response.json();
+      const sessionData = await response.json();
+      console.log('Session created:', sessionData);
+      
+      if (!sessionData.sessionId) {
+        console.error('Missing sessionId in response:', sessionData);
+        throw new Error('Invalid response from payment server');
+      }
       
       // Redirect to Stripe checkout with the session ID
+      console.log('Redirecting to Stripe checkout...');
       const { error } = await stripe.redirectToCheckout({
-        sessionId
+        sessionId: sessionData.sessionId
       });
       
       if (error) {
-        console.error('Checkout error:', error);
+        console.error('Stripe checkout error:', error);
         throw new Error(error.message);
       }
       
