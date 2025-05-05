@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
+// Import images directly
+import smallPackImage from '../assets/5-pack.png';
+import mediumPackImage from '../assets/15-pack.png';
+import largePackImage from '../assets/31-pack.png';
 
 function ShopPage() {
   const { t } = useTranslation();
@@ -11,31 +15,31 @@ function ShopPage() {
     {
       id: 1,
       name: 'SoftBrace 5-Pair Pack',
-      price: 3.99,
-      image: '/images/5-pack.png',
+      price: 9.99,
+      image: smallPackImage,
       category: 'small',
       description: t('product.packOptions.small.description'),
-      quantity: '10 strips',
+      quantity: '5 Pairs (10 strips)',
       shortDesc: 'Perfect starter pack for first-time users'
     },
     {
       id: 2,
       name: 'SoftBrace 15-Pair Pack',
-      price: 8.99,
-      image: '/images/15-pack.png',
+      price: 24.99,
+      image: mediumPackImage,
       category: 'medium',
       description: t('product.packOptions.medium.description'),
-      quantity: '30 strips',
+      quantity: '15 Pairs (30 strips)',
       shortDesc: 'Most popular choice for regular users'
     },
     {
       id: 3,
       name: 'SoftBrace 31-Pair Pack',
-      price: 16.99,
-      image: '/images/31-pack.png',
+      price: 44.99,
+      image: largePackImage,
       category: 'large',
       description: t('product.packOptions.large.description'),
-      quantity: '62 strips',
+      quantity: '31 Pairs (62 strips)',
       shortDesc: 'Best value for long-term comfort'
     }
   ];
@@ -94,7 +98,7 @@ function ShopPage() {
                 <p className="text-gray-300 mb-2">{product.quantity}</p>
                 <p className="text-gray-400 mb-4">{product.shortDesc}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-blue-400">${product.price}</span>
+                  <span className="text-2xl font-bold text-blue-400">${product.price.toFixed(2)}</span>
                   <button className="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded">
                     {t('shop.viewDetails')}
                   </button>

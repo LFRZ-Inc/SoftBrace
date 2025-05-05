@@ -25,22 +25,22 @@ const translations = {
       packOptions: {
         small: {
           title: '5-Pair Pack',
-          quantity: '10 strips',
-          price: '$3.99',
+          quantity: '5 Pairs (10 strips)',
+          price: '$9.99',
           description: 'Perfect starter pack for first-time users',
           longDescription: 'Our 5-pair pack is the perfect introduction to SoftBrace comfort. Each strip is made with medical-grade silicone, designed to create a protective barrier between your braces and the inside of your mouth, reducing irritation and discomfort.'
         },
         medium: {
           title: '15-Pair Pack',
-          quantity: '30 strips',
-          price: '$8.99',
+          quantity: '15 Pairs (30 strips)',
+          price: '$24.99',
           description: 'Most popular choice for regular users',
           longDescription: 'Our most popular option! The 15-pair pack gives you enough strips for over 2 weeks of continuous use. Perfect for regular wearers who want lasting comfort throughout their orthodontic treatment.'
         },
         large: {
           title: '31-Pair Pack',
-          quantity: '62 strips',
-          price: '$16.99',
+          quantity: '31 Pairs (62 strips)',
+          price: '$44.99',
           description: 'Best value for long-term comfort',
           longDescription: 'Maximum comfort at the best value. Our 31-pair pack contains over a month\'s supply of SoftBrace strips, ensuring you never have to experience bracket irritation again. Save more with our largest pack!'
         }
@@ -260,27 +260,27 @@ const translations = {
     
     // Product
     product: {
-      title: 'Experimenta un Confort de Nivel Superior',
-      intro: 'Las tiras SoftBrace proporcionan una solución revolucionaria para quienes usan brackets, ofreciendo protección superior contra la irritación y molestias con nuestra innovadora tecnología de barrera de silicona.',
+      title: 'Experimenta un Nivel Superior de Comodidad',
+      intro: 'Las tiras SoftBrace ofrecen una solución revolucionaria para quienes usan brackets, brindando protección superior contra la irritación y molestias con nuestra innovadora tecnología de barrera de silicona.',
       packOptions: {
         small: {
           title: 'Paquete de 5 pares',
-          quantity: '10 tiras',
-          price: '$3.99',
+          quantity: '5 Pares (10 tiras)',
+          price: '$9.99',
           description: 'Paquete ideal para usuarios por primera vez',
           longDescription: 'Nuestro paquete de 5 pares es la introducción perfecta a la comodidad de SoftBrace. Cada tira está hecha con silicona de grado médico, diseñada para crear una barrera protectora entre tus brackets y el interior de tu boca, reduciendo la irritación y las molestias.'
         },
         medium: {
           title: 'Paquete de 15 pares',
-          quantity: '30 tiras',
-          price: '$8.99',
+          quantity: '15 Pares (30 tiras)',
+          price: '$24.99',
           description: 'Opción más popular para usuarios regulares',
           longDescription: '¡Nuestra opción más popular! El paquete de 15 pares te da suficientes tiras para más de 2 semanas de uso continuo. Perfecto para usuarios regulares que desean comodidad duradera durante su tratamiento de ortodoncia.'
         },
         large: {
           title: 'Paquete de 31 pares',
-          quantity: '62 tiras',
-          price: '$16.99',
+          quantity: '31 Pares (62 tiras)',
+          price: '$44.99',
           description: 'Mejor valor para comodidad a largo plazo',
           longDescription: 'Máxima comodidad al mejor valor. Nuestro paquete de 31 pares contiene más de un mes de suministro de tiras SoftBrace, asegurando que nunca tengas que experimentar irritación por brackets nuevamente. ¡Ahorra más con nuestro paquete más grande!'
         }
