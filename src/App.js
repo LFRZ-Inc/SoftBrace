@@ -12,7 +12,7 @@ import ShopPage from './pages/ShopPage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
-import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import SuccessPage from './pages/SuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
@@ -33,7 +33,7 @@ function App() {
                     <Route path="/product/:id" element={<ProductPage />} />
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
-                    <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+                    <Route path="/success" element={<SuccessPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>
                 </main>
