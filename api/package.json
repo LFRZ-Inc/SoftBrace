@@ -1,0 +1,9 @@
+{
+  "name": "softbracestrips-api",
+  "version": "1.0.0",
+  "description": "API functions for SoftBraceStrips.com",
+  "main": "create-checkout-session.js",
+  "dependencies": {
+    "stripe": "^13.10.0"
+  }
+} 

@@ -46,11 +46,17 @@ export function StripeProvider({ children }) {
         throw new Error(errorData.error || 'Error creating checkout session');
       }
       
-      const { id: sessionId } = await response.json();
+      const session = await response.json();
       
       // Redirect to Stripe checkout
       const stripe = await stripePromise;
-      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (!stripe) {
+        throw new Error('Failed to load Stripe.js');
+      }
+      
+      const { error } = await stripe.redirectToCheckout({ 
+        sessionId: session.id 
+      });
       
       if (error) {
         throw new Error(error.message);
