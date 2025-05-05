@@ -1,6 +1,11 @@
 import React from 'react';
 import './Product.css';
 import useTranslation from '../hooks/useTranslation';
+// Import images
+import singleStripImage from '../assets/single-strip.png';
+import smallPackImage from '../assets/5-pack.png';
+import mediumPackImage from '../assets/15-pack.png';
+import largePackImage from '../assets/31-pack.png';
 
 function Product() {
   const { t } = useTranslation();
@@ -15,7 +20,7 @@ function Product() {
 
         <div className="product-visual">
           <img 
-            src="/images/single-strip.png" 
+            src={singleStripImage} 
             alt="SoftBrace Strip" 
             className="strip-image"
           />
@@ -25,7 +30,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="/images/5-pack.png" 
+                src={smallPackImage} 
                 alt="SoftBrace 5-Pair Pack" 
                 className="package-image"
               />
@@ -39,7 +44,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="/images/15-pack.png" 
+                src={mediumPackImage} 
                 alt="SoftBrace 15-Pair Pack" 
                 className="package-image"
               />
@@ -53,7 +58,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image">
               <img 
-                src="/images/31-pack.png" 
+                src={largePackImage} 
                 alt="SoftBrace 31-Pair Pack" 
                 className="package-image"
               />
