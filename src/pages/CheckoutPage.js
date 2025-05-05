@@ -171,13 +171,19 @@ function CheckoutPage() {
           </div>
           
           <div className="text-center mt-6">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               {t('checkout.stripeMessage')}
             </p>
-            <div className="flex justify-center items-center mt-2 space-x-4">
-              <img src="/images/visa.svg" alt="Visa" className="h-8 w-auto" />
-              <img src="/images/mastercard.svg" alt="Mastercard" className="h-8 w-auto" />
-              <img src="/images/amex.svg" alt="American Express" className="h-8 w-auto" />
+            <div className="flex justify-center items-center space-x-4">
+              <div className="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-100 px-3 py-1 rounded font-bold">
+                Visa
+              </div>
+              <div className="bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-100 px-3 py-1 rounded font-bold">
+                Mastercard
+              </div>
+              <div className="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-100 px-3 py-1 rounded font-bold">
+                AmEx
+              </div>
             </div>
           </div>
         </div>
