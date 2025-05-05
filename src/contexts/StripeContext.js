@@ -9,14 +9,6 @@ const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
 
-// Mapping of our product IDs to Stripe Price IDs
-// You'll need to create these products in your Stripe dashboard
-const PRODUCT_PRICE_MAP = {
-  '5-pack': 'price_1RKrtTFsjDil30gTJ53hoxIs', // 5-pack price ID from Stripe
-  '15-pack': 'price_1RKrtTFsjDil30gTgCIJVVHP', // 15-pack price ID from Stripe
-  '31-pack': 'price_1RKrtTFsjDil30gTB9EgX0iD'  // 31-pack price ID from Stripe
-};
-
 export function StripeProvider({ children }) {
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items) => {
@@ -29,28 +21,32 @@ export function StripeProvider({ children }) {
         throw new Error('Failed to load Stripe.js');
       }
       
-      // Format line items for Stripe - using the predefined price IDs
-      const lineItems = items.map(item => {
-        // Get the stripe price ID based on product ID
-        const priceId = PRODUCT_PRICE_MAP[item.id];
-        
-        if (!priceId) {
-          console.error(`No Stripe price ID found for product ${item.id}`);
-          throw new Error(`Product ${item.name} is not available for purchase at this time.`);
-        }
-        
-        return {
-          price: priceId,
-          quantity: item.quantity
-        };
+      // Create a Stripe checkout session via our server API
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          items: items.map(item => ({
+            name: item.name,
+            description: `SoftBrace ${item.id}`,
+            amount: Math.round(item.price * 100), // Convert to cents
+            quantity: item.quantity
+          }))
+        }),
       });
       
-      // Create a checkout session
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to create checkout session');
+      }
+      
+      const { sessionId } = await response.json();
+      
+      // Redirect to Stripe checkout with the session ID
       const { error } = await stripe.redirectToCheckout({
-        mode: 'payment',
-        lineItems: lineItems,
-        successUrl: `${window.location.origin}/checkout/success`,
-        cancelUrl: `${window.location.origin}/checkout/cancel`,
+        sessionId
       });
       
       if (error) {

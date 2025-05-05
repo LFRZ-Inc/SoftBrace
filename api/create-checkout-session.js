@@ -1,4 +1,4 @@
-// Vercel Serverless Function for Stripe checkout
+// Vercel serverless function to create a Stripe checkout session
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 module.exports = async (req, res) => {
@@ -11,80 +11,51 @@ module.exports = async (req, res) => {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle OPTIONS request
+  // Handle preflight request
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', 'POST');
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   try {
-    const { line_items } = req.body;
+    const { items } = req.body;
     
-    // Create a checkout session with Stripe
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        error: 'Invalid request: missing or empty items array'
+      });
+    }
+
+    // Create a Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items,
+      line_items: items.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            description: item.description || '',
+          },
+          unit_amount: item.amount, // in cents
+        },
+        quantity: item.quantity,
+      })),
       mode: 'payment',
-      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/cart`,
-      // Enable automatic tax calculation
-      automatic_tax: { enabled: true },
-      // Collect shipping address
-      shipping_address_collection: {
-        allowed_countries: ['US'],
-      },
-      // Define shipping options
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 599, // $5.99 in cents
-              currency: 'usd',
-            },
-            display_name: 'Standard Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 5,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 7,
-              },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 1499, // $14.99 in cents
-              currency: 'usd',
-            },
-            display_name: 'Express Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 2,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 3,
-              },
-            },
-          },
-        },
-      ],
+      success_url: `${req.headers.origin}/checkout/success`,
+      cancel_url: `${req.headers.origin}/checkout/cancel`,
     });
 
-    res.status(200).json({ id: session.id });
+    res.status(200).json({ sessionId: session.id });
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: 'An error occurred while creating the checkout session'
+    });
   }
-} 
+}; 
