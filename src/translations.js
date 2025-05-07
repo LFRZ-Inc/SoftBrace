@@ -83,6 +83,29 @@ const translations = {
       note: '* Detailed instructions will be included with your order'
     },
     
+    // FAQ
+    faq: {
+      title: 'Frequently Asked Questions',
+      items: {
+        item1: {
+          question: 'What are SoftBrace Strips made of?',
+          answer: 'SoftBrace Strips are made from medical-grade silicone that is safe for oral use, hypoallergenic, and free from BPA and latex. Our materials are specifically chosen for comfort and biocompatibility.'
+        },
+        item2: {
+          question: 'How long does each strip last?',
+          answer: 'Each SoftBrace Strip is designed for single use and typically lasts 3-4 hours. We recommend replacing strips after eating or drinking for optimal hygiene and comfort.'
+        },
+        item3: {
+          question: 'Are SoftBrace Strips compatible with all braces?',
+          answer: 'Yes! SoftBrace Strips are designed to work with traditional metal braces, ceramic braces, and self-ligating braces. They may not be suitable for specialized orthodontic appliances.'
+        },
+        item4: {
+          question: 'How long does shipping take?',
+          answer: 'Domestic orders within the US typically ship within 1-2 business days and arrive within 3-5 business days. International shipping times vary by destination but usually take 7-14 business days.'
+        }
+      }
+    },
+    
     // Legal Notice
     legal: {
       title: 'Legal Notice',
@@ -327,6 +350,29 @@ const translations = {
         }
       },
       note: '* Instrucciones detalladas se incluirán con tu pedido'
+    },
+    
+    // FAQ
+    faq: {
+      title: 'Preguntas Frecuentes',
+      items: {
+        item1: {
+          question: '¿De qué están hechos los Tiras de SoftBrace?',
+          answer: 'Los Tiras de SoftBrace están hechos de silicona de grado médico que es segura para uso oral, hipoalergénica y libre de BPA y latex. Nuestros materiales se eligen específicamente para comodidad y biocompatibilidad.'
+        },
+        item2: {
+          question: '¿Cuánto duran las tiras?',
+          answer: 'Cada Tiras de SoftBrace está diseñada para uso único y generalmente dura 3-4 horas. Te recomendamos reemplazar las tiras después de comer o beber para una higiene óptima y comodidad.'
+        },
+        item3: {
+          question: '¿Son compatibles las tiras de SoftBrace con todos los brackets?',
+          answer: '¡Sí! Las tiras de SoftBrace están diseñadas para funcionar con brackets metálicos tradicionales, brackets de cerámica y brackets autoligantes. No podrían ser adecuadas para aplicaciones ortodónticas especializadas.'
+        },
+        item4: {
+          question: '¿Cuánto tarda el envío?',
+          answer: 'Los pedidos nacionales dentro de los EE. UU. generalmente se envían dentro de 1-2 días hábiles y llegan dentro de 3-5 días hábiles. Los tiempos de envío internacionales varían según el destino pero suelen tomar 7-14 días hábiles.'
+        }
+      }
     },
     
     // Legal Notice

@@ -120,6 +120,13 @@ function CheckoutPage() {
             </div>
           </div>
           
+          {/* Shipping Policy Announcement */}
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg">
+            <p className="text-center font-medium">
+              🚚 Orders under $9.99 ship for $1. Orders $9.99+ ship free!
+            </p>
+          </div>
+          
           {/* Order Summary */}
           <div className="space-y-3 mb-8">
             <div className="flex justify-between">

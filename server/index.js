@@ -24,6 +24,52 @@ app.post('/api/create-checkout-session', async (req, res) => {
   try {
     const { line_items } = req.body;
     
+    // Calculate total amount in cents
+    const totalAmount = line_items.reduce((sum, item) => {
+      return sum + (item.price_data.unit_amount * item.quantity);
+    }, 0);
+
+    // Conditional shipping logic
+    let shipping_options;
+
+    if (totalAmount < 999) {
+      // $1 shipping for orders under $9.99
+      shipping_options = [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 100, // $1 in cents
+              currency: 'usd',
+            },
+            display_name: 'Standard Shipping ($1)',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 3 },
+              maximum: { unit: 'business_day', value: 5 },
+            },
+          },
+        }
+      ];
+    } else {
+      // Free shipping for $9.99 or more
+      shipping_options = [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 0,
+              currency: 'usd',
+            },
+            display_name: 'Free Shipping',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 3 },
+              maximum: { unit: 'business_day', value: 5 },
+            },
+          },
+        }
+      ];
+    }
+    
     // Create a checkout session with Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -37,52 +83,10 @@ app.post('/api/create-checkout-session', async (req, res) => {
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      // Define shipping options
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 599, // $5.99 in cents
-              currency: 'usd',
-            },
-            display_name: 'Standard Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 5,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 7,
-              },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 1499, // $14.99 in cents
-              currency: 'usd',
-            },
-            display_name: 'Express Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 2,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 3,
-              },
-            },
-          },
-        },
-      ],
+      shipping_options,
     });
 
-    res.json({ id: session.id });
+    res.status(200).json({ id: session.id });
   } catch (error) {
     console.error('Error creating checkout session:', error);
     res.status(500).json({ error: error.message });

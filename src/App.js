@@ -14,6 +14,8 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import SuccessPage from './pages/SuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 
@@ -34,6 +36,8 @@ function App() {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/success" element={<SuccessPage />} />
+                    <Route path="/terms-of-service" element={<TermsPage />} />
+                    <Route path="/privacy-policy" element={<PrivacyPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>
                 </main>
