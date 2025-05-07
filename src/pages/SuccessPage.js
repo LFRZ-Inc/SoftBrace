@@ -33,12 +33,12 @@ function SuccessPage() {
           id: 'ORD-' + Math.floor(Math.random() * 10000000),
           date: new Date().toLocaleDateString(),
           items: [
-            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 3.99 }
+            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 4.99 }
           ],
-          subtotal: 3.99,
+          subtotal: 4.99,
           shipping: 5.99,
-          tax: 0.32,
-          total: 10.30
+          tax: 0.40,
+          total: 11.38
         });
         
         setLoading(false);
