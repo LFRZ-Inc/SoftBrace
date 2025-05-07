@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Product.css';
 import useTranslation from '../hooks/useTranslation';
 // Import images
@@ -39,6 +40,9 @@ function Product() {
             <p className="quantity">{t('product.packOptions.small.quantity')}</p>
             <p className="price">{t('product.packOptions.small.price')}</p>
             <p className="description">{t('product.packOptions.small.description')}</p>
+            <Link to="/product/1" className="product-button">
+              {t('product.addToCart')}
+            </Link>
           </div>
 
           <div className="product-option">
@@ -53,6 +57,9 @@ function Product() {
             <p className="quantity">{t('product.packOptions.medium.quantity')}</p>
             <p className="price">{t('product.packOptions.medium.price')}</p>
             <p className="description">{t('product.packOptions.medium.description')}</p>
+            <Link to="/product/2" className="product-button">
+              {t('product.addToCart')}
+            </Link>
           </div>
 
           <div className="product-option">
@@ -67,12 +74,15 @@ function Product() {
             <p className="quantity">{t('product.packOptions.large.quantity')}</p>
             <p className="price">{t('product.packOptions.large.price')}</p>
             <p className="description">{t('product.packOptions.large.description')}</p>
+            <Link to="/product/3" className="product-button">
+              {t('product.addToCart')}
+            </Link>
           </div>
         </div>
 
-        <button className="shop-button" disabled>
+        <Link to="/shop" className="shop-button">
           {t('product.shopButton')}
-        </button>
+        </Link>
       </div>
     </section>
   );

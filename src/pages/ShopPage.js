@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
+import SoftLaunchBanner from '../components/SoftLaunchBanner';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
@@ -50,71 +51,74 @@ function ShopPage() {
     : products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-heading font-bold mb-8 text-center">{t('shop.title')}</h1>
-      
-      {/* Category filter */}
-      <div className="flex justify-center mb-8 space-x-4">
-        <button 
-          className={`px-4 py-2 rounded-lg ${selectedCategory === 'all' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
-          onClick={() => setSelectedCategory('all')}
-        >
-          {t('shop.allCategories')}
-        </button>
-        <button 
-          className={`px-4 py-2 rounded-lg ${selectedCategory === 'small' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
-          onClick={() => setSelectedCategory('small')}
-        >
-          {t('shop.smallPacks')}
-        </button>
-        <button 
-          className={`px-4 py-2 rounded-lg ${selectedCategory === 'medium' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
-          onClick={() => setSelectedCategory('medium')}
-        >
-          {t('shop.mediumPacks')}
-        </button>
-        <button 
-          className={`px-4 py-2 rounded-lg ${selectedCategory === 'large' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
-          onClick={() => setSelectedCategory('large')}
-        >
-          {t('shop.largePacks')}
-        </button>
-      </div>
-      
-      {/* Products grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProducts.map(product => (
-          <div key={product.id} className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
-            <Link to={`/product/${product.id}`} className="block h-full">
-              <div className="h-64 bg-gray-700 flex items-center justify-center p-4">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="max-h-full max-w-full object-contain"
-                />
-              </div>
-              <div className="p-6">
-                <h2 className="text-xl font-bold mb-2 text-blue-400">{product.name}</h2>
-                <p className="text-gray-300 mb-2">{product.quantity}</p>
-                <p className="text-gray-400 mb-4">{product.shortDesc}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-blue-400">${product.price}</span>
-                  <button className="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded">
-                    {t('shop.viewDetails')}
-                  </button>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
-      
-      {filteredProducts.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-xl">{t('shop.noProductsFound')}</p>
+    <>
+      <SoftLaunchBanner />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-heading font-bold mb-8 text-center">{t('shop.title')}</h1>
+        
+        {/* Category filter */}
+        <div className="flex justify-center mb-8 space-x-4">
+          <button 
+            className={`px-4 py-2 rounded-lg ${selectedCategory === 'all' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
+            onClick={() => setSelectedCategory('all')}
+          >
+            {t('shop.allCategories')}
+          </button>
+          <button 
+            className={`px-4 py-2 rounded-lg ${selectedCategory === 'small' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
+            onClick={() => setSelectedCategory('small')}
+          >
+            {t('shop.smallPacks')}
+          </button>
+          <button 
+            className={`px-4 py-2 rounded-lg ${selectedCategory === 'medium' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
+            onClick={() => setSelectedCategory('medium')}
+          >
+            {t('shop.mediumPacks')}
+          </button>
+          <button 
+            className={`px-4 py-2 rounded-lg ${selectedCategory === 'large' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700'}`}
+            onClick={() => setSelectedCategory('large')}
+          >
+            {t('shop.largePacks')}
+          </button>
         </div>
-      )}
-    </div>
+        
+        {/* Products grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProducts.map(product => (
+            <div key={product.id} className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+              <Link to={`/product/${product.id}`} className="block h-full">
+                <div className="h-64 bg-gray-700 flex items-center justify-center p-4">
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+                <div className="p-6">
+                  <h2 className="text-xl font-bold mb-2 text-blue-400">{product.name}</h2>
+                  <p className="text-gray-300 mb-2">{product.quantity}</p>
+                  <p className="text-gray-400 mb-4">{product.shortDesc}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-2xl font-bold text-blue-400">${product.price}</span>
+                    <button className="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded">
+                      {t('shop.viewDetails')}
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+        
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-xl">{t('shop.noProductsFound')}</p>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

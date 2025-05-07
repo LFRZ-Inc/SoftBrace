@@ -1,0 +1,47 @@
+.soft-launch-banner {
+  background: linear-gradient(135deg, #0066cc 0%, #2989d8 50%, #207cca 100%);
+  color: white;
+  padding: 0.75rem 0;
+  text-align: center;
+  position: sticky;
+  top: 70px; /* Adjust based on header height */
+  z-index: 50;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.launch-badge {
+  background-color: white;
+  color: #0066cc;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.banner-content p {
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .soft-launch-banner {
+    padding: 0.75rem 0.5rem;
+  }
+} 

@@ -13,14 +13,14 @@ const translations = {
     // Hero
     hero: {
       title: 'SoftBrace',
-      comingSoon: 'Coming Late May',
+      comingSoon: 'Now Available!',
       tagline: 'The next-gen comfort solution for braces wearers',
-      learnMore: 'Learn More'
+      learnMore: 'Shop Now'
     },
     
     // Product
     product: {
-      title: 'Experience Next-Level Comfort',
+      title: 'SoftBrace is here—gum comfort for every smile',
       intro: 'SoftBrace strips provide a revolutionary solution for braces wearers, offering superior protection against irritation and discomfort with our innovative silicone barrier technology.',
       packOptions: {
         small: {
@@ -45,7 +45,7 @@ const translations = {
           longDescription: 'Maximum comfort at the best value. Our 31-pair pack contains over a month\'s supply of SoftBrace strips, ensuring you never have to experience bracket irritation again. Save more with our largest pack!'
         }
       },
-      shopButton: 'Shop Coming Soon',
+      shopButton: 'Shop Now',
       quantity: 'Quantity',
       inStock: 'in stock',
       addToCart: 'Add to Cart',
@@ -282,14 +282,14 @@ const translations = {
     // Hero
     hero: {
       title: 'SoftBrace',
-      comingSoon: 'Próximamente a fines de mayo',
+      comingSoon: '¡Ya Disponible!',
       tagline: 'La solución de confort de nueva generación para usuarios de brackets',
-      learnMore: 'Saber Más'
+      learnMore: 'Comprar Ahora'
     },
     
     // Product
     product: {
-      title: 'Experimenta un Confort de Nivel Superior',
+      title: 'SoftBrace está aquí—comodidad para cada sonrisa',
       intro: 'Las tiras SoftBrace proporcionan una solución revolucionaria para quienes usan brackets, ofreciendo protección superior contra la irritación y molestias con nuestra innovadora tecnología de barrera de silicona.',
       packOptions: {
         small: {
@@ -314,7 +314,7 @@ const translations = {
           longDescription: 'Máxima comodidad al mejor valor. Nuestro paquete de 31 pares contiene más de un mes de suministro de tiras SoftBrace, asegurando que nunca tengas que experimentar irritación por brackets nuevamente. ¡Ahorra más con nuestro paquete más grande!'
         }
       },
-      shopButton: 'Tienda Próximamente',
+      shopButton: 'Comprar Ahora',
       quantity: 'Cantidad',
       inStock: 'en stock',
       addToCart: 'Añadir al Carrito',

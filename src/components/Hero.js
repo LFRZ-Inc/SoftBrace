@@ -1,5 +1,6 @@
 import React from 'react';
 import './Hero.css';
+import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
 
 function Hero() {
@@ -20,11 +21,16 @@ function Hero() {
           />
         </div>
         <h1>{t('hero.title')}</h1>
-        <p className="coming-soon">{t('hero.comingSoon')}</p>
+        <p className="now-available">{t('hero.comingSoon')}</p>
         <p className="tagline">{t('hero.tagline')}</p>
-        <button onClick={scrollToProduct} className="cta-button">
-          {t('hero.learnMore')}
-        </button>
+        <div className="hero-buttons">
+          <button onClick={scrollToProduct} className="cta-button outline-button">
+            Learn More
+          </button>
+          <Link to="/shop" className="cta-button">
+            {t('hero.learnMore')}
+          </Link>
+        </div>
       </div>
       <div className="hero-background"></div>
     </section>
