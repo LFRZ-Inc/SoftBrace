@@ -10,13 +10,13 @@ import LegalNotice from '../components/LegalNotice';
 function HomePage() {
   return (
     <div className="home-page">
-      <Hero />
       <SoftLaunchBanner />
+      <Hero />
       <Product />
       <Usage />
       <FAQ />
-      <LegalNotice />
       <Contact />
+      <LegalNotice />
     </div>
   );
 }

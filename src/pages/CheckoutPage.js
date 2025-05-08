@@ -26,7 +26,8 @@ function CheckoutPage() {
   };
   
   const calculateShipping = () => {
-    return 5.99; // Flat shipping rate
+    // $1 shipping for orders under $5.99, free shipping for orders $5.99+
+    return total < 5.99 ? 1.00 : 0.00;
   };
   
   const calculateTotal = () => {
@@ -123,7 +124,7 @@ function CheckoutPage() {
           {/* Shipping Policy Announcement */}
           <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg">
             <p className="text-center font-medium">
-              🚚 Orders under $9.99 ship for $1. Orders $9.99+ ship free!
+              🚚 Orders under $5.99 ship for $1. Orders $5.99+ ship free!
             </p>
           </div>
           

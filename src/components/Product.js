@@ -78,6 +78,23 @@ function Product() {
               {t('product.addToCart')}
             </Link>
           </div>
+          
+          <div className="product-option">
+            <div className="product-image">
+              <img 
+                src={singleStripImage} 
+                alt="Orthodontic Wax" 
+                className="package-image"
+              />
+            </div>
+            <h3>{t('product.packOptions.wax.title')}</h3>
+            <p className="quantity">{t('product.packOptions.wax.quantity')}</p>
+            <p className="price">{t('product.packOptions.wax.price')}</p>
+            <p className="description">{t('product.packOptions.wax.description')}</p>
+            <Link to="/product/4" className="product-button">
+              {t('product.addToCart')}
+            </Link>
+          </div>
         </div>
 
         <Link to="/shop" className="shop-button">

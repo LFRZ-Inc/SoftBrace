@@ -32,8 +32,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
     // Conditional shipping logic
     let shipping_options;
 
-    if (totalAmount < 999) {
-      // $1 shipping for orders under $9.99
+    if (totalAmount < 599) {
+      // $1 shipping for orders under $5.99
       shipping_options = [
         {
           shipping_rate_data: {
@@ -51,7 +51,7 @@ app.post('/api/create-checkout-session', async (req, res) => {
         }
       ];
     } else {
-      // Free shipping for $9.99 or more
+      // Free shipping for $5.99 or more
       shipping_options = [
         {
           shipping_rate_data: {

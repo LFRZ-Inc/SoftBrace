@@ -7,6 +7,7 @@ import SoftLaunchBanner from '../components/SoftLaunchBanner';
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
 import largePackImage from '../assets/31-pack.png';
+import singleStripImage from '../assets/single-strip.png'; // We'll use this as placeholder for wax
 
 function ProductPage() {
   const { id } = useParams();
@@ -71,6 +72,22 @@ function ProductPage() {
           ],
           quantity: '31 Pairs (62 strips)',
           stock: 5
+        },
+        {
+          id: 4,
+          name: 'Orthodontic Wax',
+          price: 3.99,
+          image: singleStripImage,
+          category: 'wax',
+          description: t('product.packOptions.wax.description'),
+          longDescription: t('product.packOptions.wax.longDescription'),
+          features: [
+            'Medical-grade wax for maximum comfort',
+            'Easy to apply and remove',
+            'Discreet clear color to blend with braces'
+          ],
+          quantity: t('product.packOptions.wax.quantity'),
+          stock: 25
         }
       ];
       

@@ -30,6 +30,15 @@
   letter-spacing: 0.05em;
 }
 
+.shipping-badge {
+  background-color: #ffdd00;
+  color: #333;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
 .banner-content p {
   margin: 0;
   font-weight: 500;

@@ -43,6 +43,13 @@ const translations = {
           price: '$16.99',
           description: 'Best value for long-term comfort',
           longDescription: 'Maximum comfort at the best value. Our 31-pair pack contains over a month\'s supply of SoftBrace strips, ensuring you never have to experience bracket irritation again. Save more with our largest pack!'
+        },
+        wax: {
+          title: 'Orthodontic Wax',
+          quantity: '1 container',
+          price: '$3.99',
+          description: 'Classic relief for braces irritation',
+          longDescription: 'Our premium orthodontic wax provides reliable temporary relief from irritation caused by braces. Each container has enough wax for multiple applications, perfect for on-the-go protection. Use alongside SoftBrace strips for complete comfort.'
         }
       },
       shopButton: 'Shop Now',
@@ -86,23 +93,25 @@ const translations = {
     // FAQ
     faq: {
       title: 'Frequently Asked Questions',
-      items: {
-        item1: {
-          question: 'What are SoftBrace Strips made of?',
-          answer: 'SoftBrace Strips are made from medical-grade silicone that is safe for oral use, hypoallergenic, and free from BPA and latex. Our materials are specifically chosen for comfort and biocompatibility.'
-        },
-        item2: {
-          question: 'How long does each strip last?',
-          answer: 'Each SoftBrace Strip is designed for single use and typically lasts 3-4 hours. We recommend replacing strips after eating or drinking for optimal hygiene and comfort.'
-        },
-        item3: {
-          question: 'Are SoftBrace Strips compatible with all braces?',
-          answer: 'Yes! SoftBrace Strips are designed to work with traditional metal braces, ceramic braces, and self-ligating braces. They may not be suitable for specialized orthodontic appliances.'
-        },
-        item4: {
-          question: 'How long does shipping take?',
-          answer: 'Domestic orders within the US typically ship within 1-2 business days and arrive within 3-5 business days. International shipping times vary by destination but usually take 7-14 business days.'
-        }
+      materials: {
+        question: 'What materials are used in SoftBrace Strips?',
+        answer: 'SoftBrace Strips are made from medical-grade silicone that is soft, flexible, and designed to provide maximum comfort while being durable enough to last multiple days.'
+      },
+      duration: {
+        question: 'How long does each strip last?',
+        answer: 'Each strip typically lasts between 3-5 days depending on usage, eating habits, and proper application. We recommend replacing them if they become loose or uncomfortable.'
+      },
+      compatibility: {
+        question: 'Are SoftBrace Strips compatible with all types of braces?',
+        answer: 'Yes! SoftBrace Strips are designed to work with traditional metal braces, ceramic braces, and even some clear aligners. The flexible material adapts to the shape of different orthodontic appliances.'
+      },
+      shipping: {
+        question: 'How long does shipping take?',
+        answer: 'Orders ship within 1-2 business days. Delivery typically takes 3-5 business days. Orders over $5.99 qualify for free shipping!'
+      },
+      wax: {
+        question: 'How does orthodontic wax compare to SoftBrace Strips?',
+        answer: 'While traditional orthodontic wax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our wax product is a great companion for spot treatment alongside our strips.'
       }
     },
     
@@ -173,10 +182,19 @@ const translations = {
     // Shop Page
     shop: {
       title: 'Shop SoftBrace',
+      filterAll: 'All Products',
+      filterByCategory: 'Filter by Category',
+      sortBy: 'Sort by',
+      price: 'Price',
+      popularity: 'Popularity',
+      noProducts: 'No products found',
+      freeShippingAlert: 'Free Shipping Available!',
+      freeShippingMessage: 'Orders of $5.99 or more qualify for free shipping.',
       allCategories: 'All Products',
       smallPacks: 'Small Packs',
       mediumPacks: 'Medium Packs',
       largePacks: 'Large Packs',
+      waxProducts: 'Orthodontic Wax',
       viewDetails: 'View Details',
       noProductsFound: 'No products found in this category.'
     },
@@ -312,6 +330,13 @@ const translations = {
           price: '$16.99',
           description: 'Mejor valor para comodidad a largo plazo',
           longDescription: 'Máxima comodidad al mejor valor. Nuestro paquete de 31 pares contiene más de un mes de suministro de tiras SoftBrace, asegurando que nunca tengas que experimentar irritación por brackets nuevamente. ¡Ahorra más con nuestro paquete más grande!'
+        },
+        wax: {
+          title: 'Cera Ortodóntica',
+          quantity: '1 contenedor',
+          price: '$3.99',
+          description: 'Relieve clásico para irritación de brackets',
+          longDescription: 'Nuestra cera ortodóntica premium proporciona una relajación temporal confiable para reducir la irritación causada por brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección a diario. Usarlo junto con tiras SoftBrace para una comodidad completa.'
         }
       },
       shopButton: 'Comprar Ahora',
@@ -355,23 +380,25 @@ const translations = {
     // FAQ
     faq: {
       title: 'Preguntas Frecuentes',
-      items: {
-        item1: {
-          question: '¿De qué están hechos los Tiras de SoftBrace?',
-          answer: 'Los Tiras de SoftBrace están hechos de silicona de grado médico que es segura para uso oral, hipoalergénica y libre de BPA y latex. Nuestros materiales se eligen específicamente para comodidad y biocompatibilidad.'
-        },
-        item2: {
-          question: '¿Cuánto duran las tiras?',
-          answer: 'Cada Tiras de SoftBrace está diseñada para uso único y generalmente dura 3-4 horas. Te recomendamos reemplazar las tiras después de comer o beber para una higiene óptima y comodidad.'
-        },
-        item3: {
-          question: '¿Son compatibles las tiras de SoftBrace con todos los brackets?',
-          answer: '¡Sí! Las tiras de SoftBrace están diseñadas para funcionar con brackets metálicos tradicionales, brackets de cerámica y brackets autoligantes. No podrían ser adecuadas para aplicaciones ortodónticas especializadas.'
-        },
-        item4: {
-          question: '¿Cuánto tarda el envío?',
-          answer: 'Los pedidos nacionales dentro de los EE. UU. generalmente se envían dentro de 1-2 días hábiles y llegan dentro de 3-5 días hábiles. Los tiempos de envío internacionales varían según el destino pero suelen tomar 7-14 días hábiles.'
-        }
+      materials: {
+        question: '¿Qué materiales se utilizan en las Tiras SoftBrace?',
+        answer: 'Las Tiras SoftBrace están hechas de silicona de grado médico que es suave, flexible y diseñada para proporcionar máxima comodidad mientras es lo suficientemente duradera para durar varios días.'
+      },
+      duration: {
+        question: '¿Cuánto dura cada tira?',
+        answer: 'Cada tira generalmente dura entre 3-5 días dependiendo del uso, hábitos alimenticios y aplicación adecuada. Recomendamos reemplazarlas si se aflojan o se vuelven incómodas.'
+      },
+      compatibility: {
+        question: '¿Las Tiras SoftBrace son compatibles con todos los tipos de frenos?',
+        answer: '¡Sí! Las Tiras SoftBrace están diseñadas para funcionar con frenos metálicos tradicionales, frenos cerámicos e incluso algunos alineadores transparentes. El material flexible se adapta a la forma de diferentes aparatos ortodónticos.'
+      },
+      shipping: {
+        question: '¿Cuánto tiempo tarda el envío?',
+        answer: 'Los pedidos se envían dentro de 1-2 días hábiles. La entrega generalmente toma 3-5 días hábiles. ¡Los pedidos superiores a $5.99 califican para envío gratis!'
+      },
+      wax: {
+        question: '¿Cómo se compara la cera ortodóntica con las Tiras SoftBrace?',
+        answer: 'Mientras que la cera ortodóntica tradicional proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto de cera es un gran complemento para tratamientos puntuales junto con nuestras tiras.'
       }
     },
     
@@ -442,10 +469,19 @@ const translations = {
     // Shop Page
     shop: {
       title: 'Tienda SoftBrace',
+      filterAll: 'Todos los Productos',
+      filterByCategory: 'Filtrar por Categoría',
+      sortBy: 'Ordenar por',
+      price: 'Precio',
+      popularity: 'Popularidad',
+      noProducts: 'No se encontraron productos',
+      freeShippingAlert: '¡Envío Gratis Disponible!',
+      freeShippingMessage: 'Pedidos de $5.99 o más califican para envío gratis.',
       allCategories: 'Todos los Productos',
       smallPacks: 'Paquetes Pequeños',
       mediumPacks: 'Paquetes Medianos',
       largePacks: 'Paquetes Grandes',
+      waxProducts: 'Cera Ortodóntica',
       viewDetails: 'Ver Detalles',
       noProductsFound: 'No se encontraron productos en esta categoría.'
     },
