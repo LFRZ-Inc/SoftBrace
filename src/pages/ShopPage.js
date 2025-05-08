@@ -24,7 +24,8 @@ function ShopPage() {
         category: 'small',
         description: t('product.packOptions.small.description'),
         quantity: t('product.packOptions.small.quantity'),
-        shortDescription: t('product.packOptions.small.description')
+        shortDescription: t('product.packOptions.small.description'),
+        soldOut: true
       },
       {
         id: 2,
@@ -34,7 +35,8 @@ function ShopPage() {
         category: 'medium',
         description: t('product.packOptions.medium.description'),
         quantity: t('product.packOptions.medium.quantity'),
-        shortDescription: t('product.packOptions.medium.description')
+        shortDescription: t('product.packOptions.medium.description'),
+        soldOut: true
       },
       {
         id: 3,
@@ -44,7 +46,8 @@ function ShopPage() {
         category: 'large',
         description: t('product.packOptions.large.description'),
         quantity: t('product.packOptions.large.quantity'),
-        shortDescription: t('product.packOptions.large.description')
+        shortDescription: t('product.packOptions.large.description'),
+        soldOut: true
       },
       {
         id: 4,
@@ -54,7 +57,8 @@ function ShopPage() {
         category: 'wax',
         description: t('product.packOptions.wax.description'),
         quantity: t('product.packOptions.wax.quantity'),
-        shortDescription: t('product.packOptions.wax.description')
+        shortDescription: t('product.packOptions.wax.description'),
+        soldOut: false
       }
     ];
     
@@ -138,12 +142,19 @@ function ShopPage() {
           {filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
               <div key={product.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                <div className="h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                <div className="h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden relative">
                   <img 
                     src={product.image} 
                     alt={product.name}
                     className="w-full h-full object-contain"
                   />
+                  {product.soldOut && (
+                    <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+                      <span className="text-white font-bold text-xl px-4 py-2 bg-red-600 rounded-lg">
+                        {t('common.soldOut', 'SOLD OUT')}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
                   <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">{product.name}</h2>
@@ -153,9 +164,9 @@ function ShopPage() {
                     <span className="text-2xl font-bold text-gray-800 dark:text-blue-400">${product.price.toFixed(2)}</span>
                     <Link 
                       to={`/product/${product.id}`}
-                      className="bg-primary hover:bg-primary-light text-white py-2 px-4 rounded-lg transition-colors"
+                      className={`${product.soldOut ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-light'} text-white py-2 px-4 rounded-lg transition-colors`}
                     >
-                      {t('shop.viewDetails')}
+                      {product.soldOut ? t('common.soldOut', 'SOLD OUT') : t('shop.viewDetails')}
                     </Link>
                   </div>
                 </div>

@@ -283,9 +283,22 @@ const translations = {
     // Common words/phrases
     common: {
       loading: 'Loading...',
+      backToHome: 'Back to Home',
+      error: 'Error',
       productNotFound: 'Product Not Found',
-      productNotFoundMessage: 'Sorry, we couldn\'t find the product you were looking for.',
-      backToShop: 'Back to Shop'
+      productNotFoundMessage: 'The product you are looking for could not be found.',
+      backToShop: 'Back to Shop',
+      soldOut: 'SOLD OUT',
+      inStock: 'in stock',
+      addToCart: 'Add to Cart',
+      buyNow: 'Buy Now',
+      addedToCart: 'Added to cart!',
+      features: {
+        title: 'Features',
+        feature1: 'Medical-grade silicone for safety and comfort',
+        feature2: 'Transparent design is barely visible when worn',
+        feature3: 'Easy to apply and remove without damaging braces'
+      }
     },
 
     // ProductPage
@@ -588,9 +601,22 @@ const translations = {
     // Common words/phrases
     common: {
       loading: 'Cargando...',
+      backToHome: 'Volver a Inicio',
+      error: 'Error',
       productNotFound: 'Producto No Encontrado',
-      productNotFoundMessage: 'Lo sentimos, no pudimos encontrar el producto que estabas buscando.',
-      backToShop: 'Volver a la Tienda'
+      productNotFoundMessage: 'El producto que estás buscando no se encuentra disponible.',
+      backToShop: 'Volver a Tienda',
+      soldOut: 'AGOTADO',
+      inStock: 'en inventario',
+      addToCart: 'Añadir al Carrito',
+      buyNow: 'Comprar Ahora',
+      addedToCart: '¡Añadido al carrito!',
+      features: {
+        title: 'Características',
+        feature1: 'Silicona de grado médico para seguridad y comodidad',
+        feature2: 'Diseño transparente apenas visible cuando se usa',
+        feature3: 'Fácil de aplicar y quitar sin dañar los brackets'
+      }
     },
 
     // ProductPage

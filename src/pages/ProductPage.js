@@ -39,7 +39,8 @@ function ProductPage() {
             t('product.features.feature3')
           ],
           quantity: '5 Pairs (10 strips)',
-          stock: 15
+          stock: 15,
+          soldOut: true
         },
         {
           id: 2,
@@ -55,7 +56,8 @@ function ProductPage() {
             t('product.features.feature3')
           ],
           quantity: '15 Pairs (30 strips)',
-          stock: 10
+          stock: 10,
+          soldOut: true
         },
         {
           id: 3,
@@ -71,7 +73,8 @@ function ProductPage() {
             t('product.features.feature3')
           ],
           quantity: '31 Pairs (62 strips)',
-          stock: 5
+          stock: 5,
+          soldOut: true
         },
         {
           id: 4,
@@ -88,7 +91,8 @@ function ProductPage() {
             'Compact container for on-the-go use'
           ],
           quantity: t('product.packOptions.wax.quantity'),
-          stock: 25
+          stock: 25,
+          soldOut: false
         }
       ];
       
@@ -168,12 +172,19 @@ function ProductPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           <div className="md:flex">
             {/* Product Image */}
-            <div className="md:w-1/2 p-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+            <div className="md:w-1/2 p-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 relative">
               <img 
                 src={product.image} 
                 alt={product.name}
                 className="max-w-full max-h-96 object-contain"
               />
+              {product.soldOut && (
+                <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+                  <span className="text-white font-bold text-xl px-4 py-2 bg-red-600 rounded-lg">
+                    {t('common.soldOut', 'SOLD OUT')}
+                  </span>
+                </div>
+              )}
             </div>
             
             {/* Product Details */}
@@ -212,29 +223,33 @@ function ProductPage() {
                 <label className="block text-gray-700 dark:text-gray-300 mb-2">
                   {t('product.quantity')}
                 </label>
-                <div className="flex items-center">
-                  <button 
-                    onClick={decreaseQuantity}
-                    className="bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded-l"
-                  >
-                    -
-                  </button>
-                  <input 
-                    type="number" 
-                    value={quantity} 
-                    onChange={(e) => setQuantity(Math.min(Math.max(1, parseInt(e.target.value) || 1), product.stock))}
-                    className="w-16 text-center py-1 border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700"
-                  />
-                  <button 
-                    onClick={increaseQuantity}
-                    className="bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded-r"
-                  >
-                    +
-                  </button>
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="flex items-center border rounded-lg overflow-hidden">
+                    <button 
+                      onClick={decreaseQuantity} 
+                      className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                      disabled={product.soldOut}
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2">{quantity}</span>
+                    <button 
+                      onClick={increaseQuantity} 
+                      className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                      disabled={product.soldOut || quantity >= product.stock}
+                    >
+                      +
+                    </button>
+                  </div>
+                  
+                  <div className="text-gray-600 dark:text-gray-400">
+                    {product.soldOut ? (
+                      <span className="text-red-500 font-bold">{t('common.soldOut', 'SOLD OUT')}</span>
+                    ) : (
+                      <span>{product.stock} {t('common.inStock')}</span>
+                    )}
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {product.stock} {t('product.inStock')}
-                </p>
               </div>
               
               {addedToCart ? (
@@ -243,19 +258,25 @@ function ProductPage() {
                 </div>
               ) : null}
               
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <button 
-                  onClick={handleAddToCart}
-                  className="flex-1 bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg font-bold transition-colors"
+                  onClick={handleAddToCart} 
+                  className={`px-6 py-3 rounded-lg ${product.soldOut 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-primary hover:bg-primary-hover text-white'}`}
+                  disabled={product.soldOut}
                 >
-                  {t('product.addToCart')}
+                  {product.soldOut ? t('common.soldOut', 'SOLD OUT') : t('product.addToCart')}
                 </button>
                 
-                <button
-                  onClick={handleBuyNow}
-                  className="flex-1 border-2 border-primary hover:bg-gray-100 dark:hover:bg-gray-700 text-primary py-3 px-6 rounded-lg font-bold transition-colors"
+                <button 
+                  onClick={handleBuyNow} 
+                  className={`px-6 py-3 rounded-lg ${product.soldOut 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                  disabled={product.soldOut}
                 >
-                  {t('product.buyNow')}
+                  {product.soldOut ? t('common.soldOut', 'SOLD OUT') : t('product.buyNow')}
                 </button>
               </div>
             </div>
