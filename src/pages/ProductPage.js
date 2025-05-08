@@ -75,16 +75,17 @@ function ProductPage() {
         },
         {
           id: 4,
-          name: 'Orthodontic Wax',
+          name: t('product.packOptions.wax.title'),
           price: 3.99,
           image: singleStripImage,
           category: 'wax',
           description: t('product.packOptions.wax.description'),
           longDescription: t('product.packOptions.wax.longDescription'),
           features: [
-            'Medical-grade wax for maximum comfort',
+            'Medical-grade orthodontic wax for braces',
             'Easy to apply and remove',
-            'Discreet clear color to blend with braces'
+            'Discreet clear color to blend with braces',
+            'Compact container for on-the-go use'
           ],
           quantity: t('product.packOptions.wax.quantity'),
           stock: 25

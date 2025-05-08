@@ -45,11 +45,11 @@ const translations = {
           longDescription: 'Maximum comfort at the best value. Our 31-pair pack contains over a month\'s supply of SoftBrace strips, ensuring you never have to experience bracket irritation again. Save more with our largest pack!'
         },
         wax: {
-          title: 'Orthodontic Wax',
+          title: 'SoftWax',
           quantity: '1 container',
           price: '$3.99',
-          description: 'Classic relief for braces irritation',
-          longDescription: 'Our premium orthodontic wax provides reliable temporary relief from irritation caused by braces. Each container has enough wax for multiple applications, perfect for on-the-go protection. Use alongside SoftBrace strips for complete comfort.'
+          description: 'Classic relief for braces irritation*',
+          longDescription: 'Our premium orthodontic wax provides reliable temporary relief from irritation caused by braces. Each container has enough wax for multiple applications, perfect for on-the-go protection. Use alongside SoftBrace strips for complete comfort. *Traditional orthodontic wax'
         }
       },
       shopButton: 'Shop Now',
@@ -110,8 +110,8 @@ const translations = {
         answer: 'Orders ship within 1-2 business days. Delivery typically takes 3-5 business days. Orders over $5.99 qualify for free shipping!'
       },
       wax: {
-        question: 'How does orthodontic wax compare to SoftBrace Strips?',
-        answer: 'While traditional orthodontic wax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our wax product is a great companion for spot treatment alongside our strips.'
+        question: 'How does SoftWax compare to SoftBrace Strips?',
+        answer: 'While traditional orthodontic wax like SoftWax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our SoftWax product is a great companion for spot treatment alongside our strips.'
       }
     },
     
@@ -194,7 +194,7 @@ const translations = {
       smallPacks: 'Small Packs',
       mediumPacks: 'Medium Packs',
       largePacks: 'Large Packs',
-      waxProducts: 'Orthodontic Wax',
+      waxProducts: 'SoftWax',
       viewDetails: 'View Details',
       noProductsFound: 'No products found in this category.'
     },
@@ -266,6 +266,10 @@ const translations = {
         invalidCvv: 'Please enter a valid CVV (3-4 digits)',
         emptyCart: 'Your cart is empty. Please add items before checkout.',
         paymentFailed: 'Payment failed. Please try again or use a different payment method.'
+      },
+      banner: {
+        softLaunch: 'Soft Launch',
+        message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!'
       }
     },
 
@@ -282,6 +286,20 @@ const translations = {
       productNotFound: 'Product Not Found',
       productNotFoundMessage: 'Sorry, we couldn\'t find the product you were looking for.',
       backToShop: 'Back to Shop'
+    },
+
+    // ProductPage
+    productPage: {
+      addToCart: 'Add to Cart',
+      buyNow: 'Buy Now',
+      productNotFoundMessage: 'Sorry, we couldn\'t find the product you were looking for.',
+      backToShop: 'Back to Shop'
+    },
+
+    // Banner
+    banner: {
+      softLaunch: 'Soft Launch',
+      message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!'
     }
   },
   
@@ -332,11 +350,11 @@ const translations = {
           longDescription: 'Máxima comodidad al mejor valor. Nuestro paquete de 31 pares contiene más de un mes de suministro de tiras SoftBrace, asegurando que nunca tengas que experimentar irritación por brackets nuevamente. ¡Ahorra más con nuestro paquete más grande!'
         },
         wax: {
-          title: 'Cera Ortodóntica',
+          title: 'SoftWax',
           quantity: '1 contenedor',
           price: '$3.99',
-          description: 'Relieve clásico para irritación de brackets',
-          longDescription: 'Nuestra cera ortodóntica premium proporciona una relajación temporal confiable para reducir la irritación causada por brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección a diario. Usarlo junto con tiras SoftBrace para una comodidad completa.'
+          description: 'Alivio clásico para irritación de brackets*',
+          longDescription: 'Nuestra cera ortodóncica premium proporciona un alivio temporal confiable de la irritación causada por los brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección en movimiento. Utilícela junto con las tiras SoftBrace para una comodidad completa. *Cera ortodóncica tradicional'
         }
       },
       shopButton: 'Comprar Ahora',
@@ -397,8 +415,8 @@ const translations = {
         answer: 'Los pedidos se envían dentro de 1-2 días hábiles. La entrega generalmente toma 3-5 días hábiles. ¡Los pedidos superiores a $5.99 califican para envío gratis!'
       },
       wax: {
-        question: '¿Cómo se compara la cera ortodóntica con las Tiras SoftBrace?',
-        answer: 'Mientras que la cera ortodóntica tradicional proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto de cera es un gran complemento para tratamientos puntuales junto con nuestras tiras.'
+        question: '¿Cómo se compara SoftWax con las Tiras SoftBrace?',
+        answer: 'Mientras que la cera ortodóntica tradicional como SoftWax proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto SoftWax es un gran complemento para tratamientos puntuales junto con nuestras tiras.'
       }
     },
     
@@ -481,7 +499,7 @@ const translations = {
       smallPacks: 'Paquetes Pequeños',
       mediumPacks: 'Paquetes Medianos',
       largePacks: 'Paquetes Grandes',
-      waxProducts: 'Cera Ortodóntica',
+      waxProducts: 'SoftWax',
       viewDetails: 'Ver Detalles',
       noProductsFound: 'No se encontraron productos en esta categoría.'
     },
@@ -553,6 +571,10 @@ const translations = {
         invalidCvv: 'Por favor, introduce un CVV válido (3-4 dígitos)',
         emptyCart: 'Tu carrito está vacío. Por favor, añade artículos antes de continuar.',
         paymentFailed: 'El pago falló. Por favor, inténtalo de nuevo o usa otro método de pago.'
+      },
+      banner: {
+        softLaunch: 'Lanzamiento Suave',
+        message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!'
       }
     },
 
@@ -569,6 +591,20 @@ const translations = {
       productNotFound: 'Producto No Encontrado',
       productNotFoundMessage: 'Lo sentimos, no pudimos encontrar el producto que estabas buscando.',
       backToShop: 'Volver a la Tienda'
+    },
+
+    // ProductPage
+    productPage: {
+      addToCart: 'Añadir al Carrito',
+      buyNow: 'Comprar Ahora',
+      productNotFoundMessage: 'Lo sentimos, no pudimos encontrar el producto que estabas buscando.',
+      backToShop: 'Volver a la Tienda'
+    },
+
+    // Banner
+    banner: {
+      softLaunch: 'Lanzamiento Suave',
+      message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!'
     }
   }
 };
