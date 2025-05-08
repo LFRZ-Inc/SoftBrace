@@ -7,7 +7,7 @@ import SoftLaunchBanner from '../components/SoftLaunchBanner';
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
 import largePackImage from '../assets/31-pack.png';
-import singleStripImage from '../assets/single-strip.png'; // We'll use this as placeholder for wax
+import softWaxImage from '../assets/SoftWax.png'; // New SoftWax image
 
 function ProductPage() {
   const { id } = useParams();
@@ -80,7 +80,7 @@ function ProductPage() {
           id: 4,
           name: t('product.packOptions.wax.title'),
           price: 3.99,
-          image: singleStripImage,
+          image: softWaxImage, // Using the new SoftWax image
           category: 'wax',
           description: t('product.packOptions.wax.description'),
           longDescription: t('product.packOptions.wax.longDescription'),

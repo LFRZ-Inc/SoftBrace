@@ -7,6 +7,7 @@ import singleStripImage from '../assets/single-strip.png';
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
 import largePackImage from '../assets/31-pack.png';
+import softWaxImage from '../assets/SoftWax.png';
 
 function Product() {
   const { t } = useTranslation();
@@ -107,7 +108,7 @@ function Product() {
           <div className="product-option">
             <div className="product-image relative">
               <img 
-                src={singleStripImage} 
+                src={softWaxImage} 
                 alt="Orthodontic Wax" 
                 className="package-image"
               />
