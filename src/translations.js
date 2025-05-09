@@ -14,21 +14,21 @@ const translations = {
     hero: {
       title: 'SoftBrace',
       comingSoon: 'Now Available!',
-      tagline: 'The next-gen comfort solution for braces wearers',
+      tagline: 'The #1 brand for brace comfort',
       learnMore: 'Shop Now'
     },
     
     // Product
     product: {
       title: 'SoftBrace is here—gum comfort for every smile',
-      intro: 'SoftBrace strips provide a revolutionary solution for braces wearers, offering superior protection against irritation and discomfort with our innovative silicone barrier technology.',
+      intro: 'SoftBrace strips provide a revolutionary solution for braces wearers, offering superior protection against irritation and discomfort with our innovative silicone barrier technology. Comfort that lasts—no more constant reapplication of wax.',
       packOptions: {
         small: {
           title: '5-Pair Pack',
           quantity: '10 strips',
-          price: '$4.99',
+          price: '$5.99',
           description: 'Perfect starter pack for first-time users',
-          longDescription: 'Our 5-pair pack is the perfect introduction to SoftBrace comfort. Each strip is made with medical-grade silicone, designed to create a protective barrier between your braces and the inside of your mouth, reducing irritation and discomfort.'
+          longDescription: 'Our 5-pair pack is the perfect introduction to SoftBrace comfort. Each strip is made with FDA-approved silicone, designed to create a protective barrier between your braces and the inside of your mouth, reducing irritation and discomfort.'
         },
         medium: {
           title: '15-Pair Pack',
@@ -60,7 +60,7 @@ const translations = {
       addedToCart: 'Added to cart!',
       features: {
         title: 'Features',
-        feature1: 'Medical-grade silicone for safety and comfort',
+        feature1: 'FDA-approved silicone for safety and comfort',
         feature2: 'Transparent design is barely visible when worn',
         feature3: 'Easy to apply and remove without damaging braces'
       }
@@ -95,11 +95,11 @@ const translations = {
       title: 'Frequently Asked Questions',
       materials: {
         question: 'What materials are used in SoftBrace Strips?',
-        answer: 'SoftBrace Strips are made from medical-grade silicone that is soft, flexible, and designed to provide maximum comfort while being durable enough to last multiple days.'
+        answer: 'SoftBrace Strips are made from FDA-approved silicone that is soft, flexible, and designed to provide maximum comfort while being durable enough to last multiple days.'
       },
       duration: {
         question: 'How long does each strip last?',
-        answer: 'Each strip typically lasts between 3-5 days depending on usage, eating habits, and proper application. We recommend replacing them if they become loose or uncomfortable.'
+        answer: 'While marketed as single-use for liability reasons, each strip realistically can last up to 3 days with proper cleaning. We recommend removing before eating or sleeping.'
       },
       compatibility: {
         question: 'Are SoftBrace Strips compatible with all types of braces?',
@@ -107,11 +107,11 @@ const translations = {
       },
       shipping: {
         question: 'How long does shipping take?',
-        answer: 'Orders ship within 1-2 business days. Delivery typically takes 3-5 business days. Orders over $5.99 qualify for free shipping!'
+        answer: 'Orders ship within 1-2 business days. Delivery typically takes 3-5 business days. Orders over $5.99 qualify for free shipping, while orders under $5.99 have a flat $1 shipping fee.'
       },
       wax: {
         question: 'How does SoftWax compare to SoftBrace Strips?',
-        answer: 'While traditional orthodontic wax like SoftWax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our SoftWax product is a great companion for spot treatment alongside our strips.'
+        answer: 'While traditional orthodontic wax like SoftWax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our SoftWax product is a great companion for spot treatment alongside our strips and includes a free pair of SoftBrace strips.'
       }
     },
     
@@ -295,7 +295,7 @@ const translations = {
       addedToCart: 'Added to cart!',
       features: {
         title: 'Features',
-        feature1: 'Medical-grade silicone for safety and comfort',
+        feature1: 'FDA-approved silicone for safety and comfort',
         feature2: 'Transparent design is barely visible when worn',
         feature3: 'Easy to apply and remove without damaging braces'
       }
@@ -367,7 +367,7 @@ const translations = {
           quantity: '1 contenedor',
           price: '$3.99',
           description: 'Alivio clásico para irritación de brackets*',
-          longDescription: 'Nuestra cera ortodóncica premium proporciona un alivio temporal confiable de la irritación causada por los brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección en movimiento. Utilícela junto con las tiras SoftBrace para una comodidad completa. *Cera ortodóncica tradicional'
+          longDescription: 'Nuestra cera ortodóncica premium proporciona un alivio temporal confiable de la irritación causada por los brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección en movimiento. Use alongside SoftBrace strips for complete comfort. *Cera ortodóncica tradicional'
         }
       },
       shopButton: 'Comprar Ahora',

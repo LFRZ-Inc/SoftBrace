@@ -28,7 +28,7 @@ function Hero() {
             Learn More
           </button>
           <Link to="/shop" className="cta-button">
-            {t('hero.learnMore')}
+            Shop Now
           </Link>
         </div>
       </div>

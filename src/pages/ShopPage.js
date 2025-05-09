@@ -30,7 +30,7 @@ function ShopPage() {
       {
         id: 2,
         name: t('product.packOptions.medium.title'),
-        price: 14.99,
+        price: 9.99,
         image: mediumPackImage,
         category: 'medium',
         description: t('product.packOptions.medium.description'),
@@ -41,7 +41,7 @@ function ShopPage() {
       {
         id: 3,
         name: t('product.packOptions.large.title'),
-        price: 24.99,
+        price: 16.99,
         image: largePackImage,
         category: 'large',
         description: t('product.packOptions.large.description'),
@@ -58,7 +58,7 @@ function ShopPage() {
         description: t('product.packOptions.wax.description'),
         quantity: t('product.packOptions.wax.quantity'),
         shortDescription: t('product.packOptions.wax.description'),
-        soldOut: false
+        soldOut: true
       }
     ];
     

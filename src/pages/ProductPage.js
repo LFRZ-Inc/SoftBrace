@@ -28,7 +28,7 @@ function ProductPage() {
         {
           id: 1,
           name: 'SoftBrace 5-Pair Pack',
-          price: 4.99,
+          price: 5.99,
           image: smallPackImage,
           category: 'small',
           description: t('product.packOptions.small.description'),
@@ -92,7 +92,7 @@ function ProductPage() {
           ],
           quantity: t('product.packOptions.wax.quantity'),
           stock: 25,
-          soldOut: false
+          soldOut: true
         }
       ];
       

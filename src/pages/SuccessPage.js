@@ -29,7 +29,7 @@ function SuccessPage() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Set dummy order details
-        const subtotal = 4.99;
+        const subtotal = 5.99;
         // Calculate shipping based on our policy - free for orders $5.99+
         const shipping = subtotal >= 5.99 ? 0.00 : 1.00;
         const tax = subtotal * 0.08; // 8% tax
@@ -42,7 +42,7 @@ function SuccessPage() {
           id: `ORD-${orderNum}`,
           date: new Date().toLocaleDateString(),
           items: [
-            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 4.99 }
+            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 5.99 }
           ],
           subtotal: subtotal,
           shipping: shipping,
@@ -95,7 +95,8 @@ function SuccessPage() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
         <div className="text-green-500 text-5xl mb-4 text-center">✓</div>
         <h1 className="text-2xl font-bold mb-4 text-center">{t('checkout.paymentSuccess')}</h1>
-        <p className="mb-6 text-center">{t('checkout.paymentSuccessMessage')}</p>
+        <p className="mb-2 text-center">{t('checkout.paymentSuccessMessage')}</p>
+        <p className="mb-6 text-center text-gray-600 dark:text-gray-400">A receipt has been sent to your email address.</p>
         
         {orderDetails && (
           <div className="mb-6">
