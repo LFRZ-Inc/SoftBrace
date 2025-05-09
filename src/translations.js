@@ -26,7 +26,7 @@ const translations = {
         small: {
           title: '5-Pair Pack',
           quantity: '10 strips',
-          price: '$5.99',
+          price: '$4.99',
           description: 'Perfect starter pack for first-time users',
           longDescription: 'Our 5-pair pack is the perfect introduction to SoftBrace comfort. Each strip is made with FDA-approved silicone, designed to create a protective barrier between your braces and the inside of your mouth, reducing irritation and discomfort.'
         },
@@ -99,7 +99,7 @@ const translations = {
       },
       duration: {
         question: 'How long does each strip last?',
-        answer: 'While marketed as single-use for liability reasons, each strip realistically can last up to 3 days with proper cleaning. We recommend removing before eating or sleeping.'
+        answer: 'While SoftBrace Strips are marketed as single-use for hygiene and safety, some customers have reported reusing them for up to 3 days with proper care. We do not officially recommend reuse.'
       },
       compatibility: {
         question: 'Are SoftBrace Strips compatible with all types of braces?',

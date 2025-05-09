@@ -29,7 +29,7 @@ function SuccessPage() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Set dummy order details
-        const subtotal = 5.99;
+        const subtotal = 4.99;
         // Calculate shipping based on our policy - free for orders $5.99+
         const shipping = subtotal >= 5.99 ? 0.00 : 1.00;
         const tax = subtotal * 0.08; // 8% tax
@@ -42,7 +42,7 @@ function SuccessPage() {
           id: `ORD-${orderNum}`,
           date: new Date().toLocaleDateString(),
           items: [
-            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 5.99 }
+            { name: 'SoftBrace 5-Pair Pack', quantity: 1, price: 4.99 }
           ],
           subtotal: subtotal,
           shipping: shipping,

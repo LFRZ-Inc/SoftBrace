@@ -19,7 +19,7 @@ function ShopPage() {
       {
         id: 1,
         name: t('product.packOptions.small.title'),
-        price: 5.99,
+        price: 4.99,
         image: smallPackImage,
         category: 'small',
         description: t('product.packOptions.small.description'),
@@ -58,6 +58,17 @@ function ShopPage() {
         description: t('product.packOptions.wax.description'),
         quantity: t('product.packOptions.wax.quantity'),
         shortDescription: t('product.packOptions.wax.description'),
+        soldOut: false
+      },
+      {
+        id: 5,
+        name: 'SoftBrace 100-Pair Bulk Pack',
+        price: 49.99,
+        image: largePackImage, // Reusing the large pack image
+        category: 'bulk',
+        description: 'Professional bulk pack for clinics or wholesale',
+        quantity: '100 Pairs (200 strips)',
+        shortDescription: 'Professional bulk pack for clinics or wholesale',
         soldOut: true
       }
     ];
@@ -117,6 +128,16 @@ function ShopPage() {
             }`}
           >
             {t('shop.largePacks')}
+          </button>
+          <button
+            onClick={() => setSelectedCategory('bulk')}
+            className={`px-4 py-2 rounded-lg ${
+              selectedCategory === 'bulk'
+                ? 'bg-primary text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+            }`}
+          >
+            Bulk Packs
           </button>
           <button
             onClick={() => setSelectedCategory('wax')}

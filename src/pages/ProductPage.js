@@ -28,7 +28,7 @@ function ProductPage() {
         {
           id: 1,
           name: 'SoftBrace 5-Pair Pack',
-          price: 5.99,
+          price: 4.99,
           image: smallPackImage,
           category: 'small',
           description: t('product.packOptions.small.description'),
@@ -92,6 +92,24 @@ function ProductPage() {
           ],
           quantity: t('product.packOptions.wax.quantity'),
           stock: 25,
+          soldOut: false
+        },
+        {
+          id: 5,
+          name: 'SoftBrace 100-Pair Bulk Pack',
+          price: 49.99,
+          image: largePackImage, // Reusing the large pack image
+          category: 'bulk',
+          description: 'Professional bulk pack for clinics or wholesale',
+          longDescription: 'Our professional bulk pack contains 100 pairs (200 strips) of SoftBrace strips, perfect for orthodontic clinics or wholesale orders. The ideal solution for practices that want to offer superior comfort to their patients.',
+          features: [
+            t('product.features.feature1'),
+            t('product.features.feature2'),
+            t('product.features.feature3'),
+            'Perfect for orthodontic clinics and professionals'
+          ],
+          quantity: '100 Pairs (200 strips)',
+          stock: 3,
           soldOut: true
         }
       ];
