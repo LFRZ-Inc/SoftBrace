@@ -270,7 +270,9 @@ const translations = {
       },
       banner: {
         softLaunch: 'Soft Launch',
-        message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!'
+        message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!',
+        freeShipping: 'Free shipping on orders over $5.99!',
+        waxAvailable: 'SoftWax now available!'
       }
     },
 
@@ -313,7 +315,9 @@ const translations = {
     // Banner
     banner: {
       softLaunch: 'Soft Launch',
-      message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!'
+      message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!',
+      freeShipping: 'Free shipping on orders over $5.99!',
+      waxAvailable: 'SoftWax now available!'
     }
   },
   
@@ -589,7 +593,9 @@ const translations = {
       },
       banner: {
         softLaunch: 'Lanzamiento Suave',
-        message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!'
+        message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!',
+        freeShipping: '¡Envío gratis en pedidos superiores a $5.99!',
+        waxAvailable: '¡SoftWax ya disponible!'
       }
     },
 
@@ -632,7 +638,9 @@ const translations = {
     // Banner
     banner: {
       softLaunch: 'Lanzamiento Suave',
-      message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!'
+      message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!',
+      freeShipping: '¡Envío gratis en pedidos superiores a $5.99!',
+      waxAvailable: '¡SoftWax ya disponible!'
     }
   }
 };

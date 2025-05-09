@@ -10,8 +10,8 @@ function SoftLaunchBanner() {
       <div className="banner-content">
         <span className="launch-badge">{t('banner.softLaunch')}</span>
         <p>{t('banner.message')}</p>
-        <span className="shipping-badge">Free shipping on orders over $5.99!</span>
-        <span className="product-badge">SoftWax now available!</span>
+        <span className="shipping-badge">{t('banner.freeShipping', 'Free shipping on orders over $5.99!')}</span>
+        <span className="product-badge">{t('banner.waxAvailable', 'SoftWax now available!')}</span>
       </div>
     </div>
   );

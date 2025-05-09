@@ -24,7 +24,22 @@
 }
 
 .product-visual {
-  margin: 3rem 0;
+  margin: 3rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.strip-image {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px var(--color-shadow);
+  display: block;
+  margin: 0 auto;
 }
 
 .product-image {
@@ -34,14 +49,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.strip-image {
-  width: 100%;
-  height: auto;
-  max-width: 500px;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px var(--color-shadow);
 }
 
 .product-image-placeholder {
