@@ -1,100 +1,71 @@
-.soft-launch-banner {
+/* Banner component */
+.banner {
   background: linear-gradient(135deg, #0066cc 0%, #2989d8 50%, #207cca 100%);
   color: white;
-  padding: 0.75rem 0;
-  text-align: center;
-  position: sticky;
-  top: 70px; /* Adjust based on header height */
-  z-index: 50;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  overflow: hidden;
-}
-
-.banner-content {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  gap: 12px;
+  padding: 8px 16px;
+  text-align: center;
+  position: sticky;
+  top: 70px;
+  z-index: 50;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.launch-badge {
+/* Badge base styles */
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* Badge variants */
+.badge-soft-launch {
   background-color: white;
   color: #0066cc;
-  font-weight: bold;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
 }
 
-.shipping-badge {
+.badge-shipping {
   background-color: #ffdd00;
   color: #333;
-  font-weight: bold;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  white-space: nowrap;
 }
 
-.product-badge {
+.badge-product {
   background-color: #ff6b6b;
   color: white;
-  font-weight: bold;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
   animation: pulse 2s infinite;
-  white-space: nowrap;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.banner-content p,
-.banner-message {
-  margin: 0;
+/* Banner text */
+.banner-text {
   font-weight: 500;
+  margin: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-@media (min-width: 769px) {
-  .banner-content {
-    height: 2rem;
-  }
+/* Animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
+/* Mobile styles */
 @media (max-width: 768px) {
-  .banner-content {
+  .banner {
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    padding: 12px;
+    gap: 8px;
   }
   
-  .soft-launch-banner {
-    padding: 0.75rem 0.5rem;
-  }
-  
-  .banner-content p,
-  .banner-message {
+  .banner-text {
     white-space: normal;
+    margin: 4px 0;
   }
 } 

@@ -6,13 +6,11 @@ function SoftLaunchBanner() {
   const { t } = useTranslation();
   
   return (
-    <div className="soft-launch-banner">
-      <div className="banner-content">
-        <span className="launch-badge">{t('banner.softLaunch')}</span>
-        <span className="banner-message">{t('banner.message')}</span>
-        <span className="shipping-badge">{t('banner.freeShipping', 'Free shipping on orders over $5.99!')}</span>
-        <span className="product-badge">{t('banner.waxAvailable', 'SoftWax now available!')}</span>
-      </div>
+    <div className="banner">
+      <div className="badge badge-soft-launch">{t('banner.softLaunch')}</div>
+      <div className="banner-text">{t('banner.message')}</div>
+      <div className="badge badge-shipping">{t('banner.freeShipping')}</div>
+      <div className="badge badge-product">{t('banner.waxAvailable')}</div>
     </div>
   );
 }
