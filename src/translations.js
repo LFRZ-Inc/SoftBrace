@@ -334,21 +334,21 @@ const translations = {
     hero: {
       title: 'SoftBrace',
       comingSoon: '¡Ya Disponible!',
-      tagline: 'La solución de confort de nueva generación para usuarios de brackets',
+      tagline: 'La marca #1 para comodidad con brackets',
       learnMore: 'Comprar Ahora'
     },
     
     // Product
     product: {
-      title: 'SoftBrace está aquí—comodidad para cada sonrisa',
-      intro: 'Las tiras SoftBrace proporcionan una solución revolucionaria para quienes usan brackets, ofreciendo protección superior contra la irritación y molestias con nuestra innovadora tecnología de barrera de silicona.',
+      title: 'SoftBrace está aquí—comodidad para cada sonrisa con brackets',
+      intro: 'Las tiras SoftBrace proporcionan una solución revolucionaria para quienes usan brackets, ofreciendo protección superior contra la irritación y molestias con nuestra innovadora tecnología de barrera de silicona. Comodidad que dura—sin necesidad de reaplicar cera constantemente.',
       packOptions: {
         small: {
           title: 'Paquete de 5 pares',
           quantity: '10 tiras',
           price: '$4.99',
           description: 'Paquete ideal para usuarios por primera vez',
-          longDescription: 'Nuestro paquete de 5 pares es la introducción perfecta a la comodidad de SoftBrace. Cada tira está hecha con silicona de grado médico, diseñada para crear una barrera protectora entre tus brackets y el interior de tu boca, reduciendo la irritación y las molestias.'
+          longDescription: 'Nuestro paquete de 5 pares es la introducción perfecta a la comodidad de SoftBrace. Cada tira está hecha con silicona aprobada por la FDA, diseñada para crear una barrera protectora entre tus brackets y el interior de tu boca, reduciendo la irritación y las molestias.'
         },
         medium: {
           title: 'Paquete de 15 pares',
@@ -369,7 +369,7 @@ const translations = {
           quantity: '1 contenedor',
           price: '$3.99',
           description: 'Alivio clásico para irritación de brackets*',
-          longDescription: 'Nuestra cera ortodóncica premium proporciona un alivio temporal confiable de la irritación causada por los brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección en movimiento. Use alongside SoftBrace strips for complete comfort. *Cera ortodóncica tradicional'
+          longDescription: 'Nuestra cera ortodóncica premium proporciona un alivio temporal confiable de la irritación causada por los brackets. Cada contenedor tiene suficiente cera para múltiples aplicaciones, perfecto para protección en movimiento. Úsalo junto con las tiras SoftBrace para una comodidad completa. *Cera ortodóncica tradicional'
         }
       },
       shopButton: 'Comprar Ahora',
@@ -380,7 +380,7 @@ const translations = {
       addedToCart: '¡Añadido al carrito!',
       features: {
         title: 'Características',
-        feature1: 'Silicona de grado médico para seguridad y comodidad',
+        feature1: 'Silicona aprobada por la FDA para seguridad y comodidad',
         feature2: 'Diseño transparente apenas visible cuando se usa',
         feature3: 'Fácil de aplicar y quitar sin dañar los brackets'
       }
@@ -415,23 +415,23 @@ const translations = {
       title: 'Preguntas Frecuentes',
       materials: {
         question: '¿Qué materiales se utilizan en las Tiras SoftBrace?',
-        answer: 'Las Tiras SoftBrace están hechas de silicona de grado médico que es suave, flexible y diseñada para proporcionar máxima comodidad mientras es lo suficientemente duradera para durar varios días.'
+        answer: 'Las Tiras SoftBrace están hechas de silicona aprobada por la FDA que es suave, flexible y diseñada para proporcionar máxima comodidad mientras es lo suficientemente duradera para durar varios días.'
       },
       duration: {
         question: '¿Cuánto dura cada tira?',
-        answer: 'Cada tira generalmente dura entre 3-5 días dependiendo del uso, hábitos alimenticios y aplicación adecuada. Recomendamos reemplazarlas si se aflojan o se vuelven incómodas.'
+        answer: 'Aunque las Tiras SoftBrace se comercializan como de un solo uso por razones de higiene y seguridad, algunos clientes han informado que las reutilizan hasta por 3 días con el cuidado adecuado. No recomendamos oficialmente la reutilización.'
       },
       compatibility: {
-        question: '¿Las Tiras SoftBrace son compatibles con todos los tipos de frenos?',
-        answer: '¡Sí! Las Tiras SoftBrace están diseñadas para funcionar con frenos metálicos tradicionales, frenos cerámicos e incluso algunos alineadores transparentes. El material flexible se adapta a la forma de diferentes aparatos ortodónticos.'
+        question: '¿Las Tiras SoftBrace son compatibles con todos los tipos de brackets?',
+        answer: '¡Sí! Las Tiras SoftBrace están diseñadas para funcionar con brackets metálicos tradicionales, brackets cerámicos e incluso algunos alineadores transparentes. El material flexible se adapta a la forma de diferentes aparatos ortodónticos.'
       },
       shipping: {
         question: '¿Cuánto tiempo tarda el envío?',
-        answer: 'Los pedidos se envían dentro de 1-2 días hábiles. La entrega generalmente toma 3-5 días hábiles. ¡Los pedidos superiores a $5.99 califican para envío gratis!'
+        answer: 'Los pedidos se envían dentro de 1-2 días hábiles. La entrega generalmente toma 3-5 días hábiles. Los pedidos superiores a $5.99 califican para envío gratis, mientras que los pedidos menores a $5.99 tienen una tarifa fija de envío de $1.'
       },
       wax: {
         question: '¿Cómo se compara SoftWax con las Tiras SoftBrace?',
-        answer: 'Mientras que la cera ortodóntica tradicional como SoftWax proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto SoftWax es un gran complemento para tratamientos puntuales junto con nuestras tiras.'
+        answer: 'Mientras que la cera ortodóntica tradicional como SoftWax proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto SoftWax es un gran complemento para tratamientos puntuales junto con nuestras tiras e incluye un par gratuito de tiras SoftBrace.'
       }
     },
     
