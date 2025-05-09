@@ -34,6 +34,7 @@ function Header() {
               <li><Link to="/">{t('nav.home')}</Link></li>
             )}
             <li><Link to="/shop">{t('nav.shop')}</Link></li>
+            <li><Link to="/blog">{t('nav.blog')}</Link></li>
             <li>
               <Link to="/cart" className="cart-link">
                 {t('nav.cart')}

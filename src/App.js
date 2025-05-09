@@ -7,6 +7,7 @@ import ThemeProvider from './components/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
 import LanguageProvider from './components/LanguageContext';
 import LanguageSelector from './components/LanguageSelector';
+import WebsiteSchema from './components/WebsiteSchema';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductPage from './pages/ProductPage';
@@ -16,6 +17,7 @@ import SuccessPage from './pages/SuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import Blog from './pages/Blog';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 
@@ -27,6 +29,7 @@ function App() {
           <StripeProvider>
             <Router>
               <div className="App">
+                <WebsiteSchema />
                 <Header />
                 <main className="main-content">
                   <Routes>
@@ -38,6 +41,7 @@ function App() {
                     <Route path="/success" element={<SuccessPage />} />
                     <Route path="/terms-of-service" element={<TermsPage />} />
                     <Route path="/privacy-policy" element={<PrivacyPage />} />
+                    <Route path="/blog" element={<Blog />} />
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>
                 </main>

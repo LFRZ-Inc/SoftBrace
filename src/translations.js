@@ -7,7 +7,8 @@ const translations = {
       usage: 'How to Use',
       contact: 'Contact',
       shop: 'Shop',
-      cart: 'Cart'
+      cart: 'Cart',
+      blog: 'Blog'
     },
     
     // Hero
@@ -325,7 +326,8 @@ const translations = {
       usage: 'Cómo Usar',
       contact: 'Contacto',
       shop: 'Tienda',
-      cart: 'Carrito'
+      cart: 'Carrito',
+      blog: 'Blog'
     },
     
     // Hero

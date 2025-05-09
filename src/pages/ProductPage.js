@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
+import ProductSchema from '../components/ProductSchema';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
@@ -186,6 +187,7 @@ function ProductPage() {
   return (
     <>
       <SoftLaunchBanner />
+      <ProductSchema product={product} />
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           <div className="md:flex">
