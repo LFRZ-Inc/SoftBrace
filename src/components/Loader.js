@@ -1,39 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import './Loader.css';
 
-// Import with error handling
-const importWithFallback = (path) => {
-  try {
-    // Try to load the image
-    return require(`../${path}`);
-  } catch (error) {
-    console.warn(`Failed to load image: ${path}`, error);
-    // Return a placeholder or null
-    return null;
-  }
-};
+// Direct imports with try/catch for each image
+let logoBlue, logoLilac, logoPurple, logoGreen;
 
-// Try to get logo images with fallbacks
-const logoBlue = importWithFallback('assets/SoftBrace small Logo.png');
-const logoLilac = importWithFallback('assets/SoftBrace Logo Lilac.png');
-const logoPurple = importWithFallback('assets/SoftBrace Logo Purple.png');
-const logoGreen = importWithFallback('assets/SoftBrace Logo Green.png');
+try {
+  logoBlue = require('../assets/SoftBrace small Logo.png');
+} catch (error) {
+  console.warn('Failed to load blue logo', error);
+}
 
-// Filter out any null logos
-const logos = [logoBlue, logoLilac, logoPurple, logoGreen].filter(Boolean);
+try {
+  logoLilac = require('../assets/SoftBrace Logo Lilac.png');
+} catch (error) {
+  console.warn('Failed to load lilac logo', error);
+}
 
-// Use public URLs as fallbacks if imports fail
-const fallbackLogos = [
-  '/images/SoftBrace small Logo.png',
-  '/images/SoftBrace Logo Lilac.png',
-  '/images/SoftBrace Logo Purple.png',
-  '/images/SoftBrace Logo Green.png'
-];
+try {
+  logoPurple = require('../assets/SoftBrace Logo Purple.png');
+} catch (error) {
+  console.warn('Failed to load purple logo', error);
+}
 
+try {
+  logoGreen = require('../assets/SoftBrace Logo Green.png');
+} catch (error) {
+  console.warn('Failed to load green logo', error);
+}
+
+// Determine which logos are available and use them, or fall back to public URLs
 function Loader() {
   const [mode, setMode] = useState('spin'); // 'spin' or 'pulse'
-  const [error, setError] = useState(false);
-  const logosToUse = logos.length > 0 ? logos : fallbackLogos;
+  
+  // Define public URLs as fallbacks
+  const fallbackLogos = [
+    '/images/SoftBrace small Logo.png',
+    '/images/SoftBrace Logo Lilac.png',
+    '/images/SoftBrace Logo Purple.png',
+    '/images/SoftBrace Logo Green.png'
+  ];
+  
+  // Create array of imported logo paths, falling back to public URLs when imports fail
+  const logoPaths = [
+    logoBlue || fallbackLogos[0],
+    logoLilac || fallbackLogos[1],
+    logoPurple || fallbackLogos[2],
+    logoGreen || fallbackLogos[3]
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,21 +55,23 @@ function Loader() {
     return () => clearInterval(interval);
   }, []);
 
-  // If both import methods failed
-  if (logosToUse.length === 0) {
-    return <div className="loader-container">Loading...</div>;
-  }
-
   return (
     <div className={`loader-container ${mode}`}>
-      {logosToUse.map((logo, idx) => (
-        <img
-          key={idx}
-          src={logo}
-          alt={`SoftBrace Logo ${idx + 1}`}
-          className={`loader-logo logo-${idx + 1}`}
-          onError={() => setError(true)}
-        />
+      {logoPaths.map((src, idx) => (
+        <div key={idx} className={`logo-wrapper logo-${idx + 1}`}>
+          <img
+            src={src}
+            alt={`SoftBrace Logo ${idx + 1}`}
+            className="loader-logo"
+            onError={(e) => {
+              // If the image fails to load, try the fallback URL
+              if (e.target.src !== fallbackLogos[idx]) {
+                console.log(`Falling back to public URL for logo ${idx + 1}`);
+                e.target.src = fallbackLogos[idx];
+              }
+            }}
+          />
+        </div>
       ))}
     </div>
   );
