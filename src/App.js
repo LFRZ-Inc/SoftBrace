@@ -20,7 +20,14 @@ import PrivacyPage from './pages/PrivacyPage';
 import Blog from './pages/Blog';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
-import Loader from './components/Loader';
+
+// Conditionally import the Loader to avoid breaking the build
+let Loader = null;
+try {
+  Loader = require('./components/Loader').default;
+} catch (error) {
+  console.warn('Could not load the Loader component:', error);
+}
 
 function App() {
   return (
@@ -32,7 +39,7 @@ function App() {
               <div className="App">
                 <WebsiteSchema />
                 <Header />
-                <Loader />
+                {Loader && <Loader />} {/* Only render if Loader was successfully imported */}
                 <main className="main-content">
                   <Routes>
                     <Route path="/" element={<HomePage />} />
