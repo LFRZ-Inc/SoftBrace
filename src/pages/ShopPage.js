@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
+import { useCart } from '../contexts/CartContext';
+import { useLoading } from '../contexts/LoadingContext';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
@@ -10,9 +12,26 @@ import softWaxImage from '../assets/SoftWax.png'; // New SoftWax image
 
 function ShopPage() {
   const { t } = useTranslation();
+  const { addToCart } = useCart();
+  const { isLoading, showLoader, hideLoader } = useLoading();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [products, setProducts] = useState([]);
   
+  useEffect(() => {
+    // Show loader when fetching products
+    showLoader();
+    
+    // Simulate product loading
+    const timer = setTimeout(() => {
+      hideLoader();
+    }, 1500);
+    
+    return () => {
+      clearTimeout(timer);
+      hideLoader();
+    };
+  }, [showLoader, hideLoader]);
+
   useEffect(() => {
     // Simulate products fetch
     const productData = [
