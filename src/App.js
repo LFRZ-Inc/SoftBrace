@@ -20,6 +20,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import Blog from './pages/Blog';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
+import Loader from './components/Loader';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <div className="App">
                 <WebsiteSchema />
                 <Header />
+                <Loader />
                 <main className="main-content">
                   <Routes>
                     <Route path="/" element={<HomePage />} />
