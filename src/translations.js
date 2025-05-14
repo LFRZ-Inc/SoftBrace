@@ -94,6 +94,8 @@ const translations = {
     // FAQ
     faq: {
       title: 'Frequently Asked Questions',
+      viewMore: 'View More',
+      viewLess: 'View Less',
       materials: {
         question: 'What materials are used in SoftBrace Strips?',
         answer: 'SoftBrace Strips are made from FDA-compliant, platinum-cured silicone that is soft, flexible, and designed to protect your mouth from bracket irritation. While they're durable, they are intended for short-term relief and single use.'
@@ -433,6 +435,8 @@ const translations = {
     // FAQ
     faq: {
       title: 'Preguntas Frecuentes',
+      viewMore: 'Ver Más',
+      viewLess: 'Ver Menos',
       materials: {
         question: '¿Qué materiales se utilizan en las Tiras SoftBrace?',
         answer: 'Las Tiras SoftBrace están hechas de silicona platino-curada y conforme a la FDA, que es suave, flexible y diseñada para proteger su boca de la irritación causada por los brackets. Aunque son duraderas, están destinadas a un alivio a corto plazo y de un solo uso.'
