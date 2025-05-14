@@ -41,7 +41,7 @@ function ProductPage() {
           ],
           quantity: '5 Pairs (10 strips)',
           stock: 15,
-          soldOut: true
+          soldOut: false
         },
         {
           id: 2,
@@ -58,7 +58,7 @@ function ProductPage() {
           ],
           quantity: '15 Pairs (30 strips)',
           stock: 10,
-          soldOut: true
+          soldOut: false
         },
         {
           id: 3,
@@ -75,7 +75,9 @@ function ProductPage() {
           ],
           quantity: '31 Pairs (62 strips)',
           stock: 5,
-          soldOut: true
+          soldOut: false,
+          hidden: true,
+          comingSoon: true
         },
         {
           id: 4,
@@ -111,7 +113,9 @@ function ProductPage() {
           ],
           quantity: '100 Pairs (200 strips)',
           stock: 3,
-          soldOut: true
+          soldOut: false,
+          hidden: true,
+          comingSoon: true
         }
       ];
       
@@ -184,6 +188,32 @@ function ProductPage() {
     );
   }
   
+  if (product.hidden) {
+    return (
+      <>
+        <SoftLaunchBanner />
+        <div className="container mx-auto px-4 py-12 text-center">
+          <h1 className="text-3xl font-bold mb-4">Coming Soon</h1>
+          <div className="mb-6 max-w-xl mx-auto">
+            <img 
+              src={product.image} 
+              alt={product.name}
+              className="max-w-full max-h-64 object-contain mx-auto mb-6"
+            />
+            <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
+            <p className="mb-6">
+              This product will be available soon! We're working hard to make our larger packs available for purchase.
+              Check back later or sign up for our newsletter to be notified when it's ready.
+            </p>
+            <Link to="/shop" className="bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-lg">
+              {t('common.backToShop')}
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+  
   return (
     <>
       <SoftLaunchBanner />
@@ -198,13 +228,6 @@ function ProductPage() {
                 alt={product.name}
                 className="max-w-full max-h-96 object-contain"
               />
-              {product.soldOut && (
-                <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl px-4 py-2 bg-red-600 rounded-lg">
-                    {t('common.soldOut', 'SOLD OUT')}
-                  </span>
-                </div>
-              )}
             </div>
             
             {/* Product Details */}
@@ -248,7 +271,6 @@ function ProductPage() {
                     <button 
                       onClick={decreaseQuantity} 
                       className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
-                      disabled={product.soldOut}
                     >
                       -
                     </button>
@@ -256,18 +278,9 @@ function ProductPage() {
                     <button 
                       onClick={increaseQuantity} 
                       className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
-                      disabled={product.soldOut || quantity >= product.stock}
                     >
                       +
                     </button>
-                  </div>
-                  
-                  <div className="text-gray-600 dark:text-gray-400">
-                    {product.soldOut ? (
-                      <span className="text-red-500 font-bold">{t('common.soldOut', 'SOLD OUT')}</span>
-                    ) : (
-                      <span>{product.stock} {t('common.inStock')}</span>
-                    )}
                   </div>
                 </div>
               </div>
@@ -281,22 +294,16 @@ function ProductPage() {
               <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <button 
                   onClick={handleAddToCart} 
-                  className={`px-6 py-3 rounded-lg ${product.soldOut 
-                    ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-primary hover:bg-primary-hover text-white'}`}
-                  disabled={product.soldOut}
+                  className="px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-white"
                 >
-                  {product.soldOut ? t('common.soldOut', 'SOLD OUT') : t('product.addToCart')}
+                  {t('product.addToCart')}
                 </button>
                 
                 <button 
                   onClick={handleBuyNow} 
-                  className={`px-6 py-3 rounded-lg ${product.soldOut 
-                    ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-                  disabled={product.soldOut}
+                  className="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  {product.soldOut ? t('common.soldOut', 'SOLD OUT') : t('product.buyNow')}
+                  {t('product.buyNow')}
                 </button>
               </div>
             </div>
