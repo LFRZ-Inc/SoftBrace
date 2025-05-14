@@ -73,22 +73,22 @@ const translations = {
       steps: {
         step1: {
           title: 'Preparation',
-          description: '— Clean and dry your braces thoroughly —'
+          description: '— Clean and dry your braces and gums before use.'
         },
         step2: {
           title: 'Application',
-          description: '— Carefully place strip over brackets —'
+          description: '— Peel and gently press strip along the gumline above your brackets.'
         },
         step3: {
           title: 'Positioning',
-          description: '— Ensure proper alignment and coverage —'
+          description: '— Adjust for full comfort and coverage—strip should sit flat, not folded.'
         },
         step4: {
           title: 'Duration',
-          description: '— Replace as needed throughout the day —'
+          description: '— Use during the day. Remove before sleep, eating, or chewing.'
         }
       },
-      note: '* Detailed instructions will be included with your order'
+      note: '* Detailed instructions will be included with your order. Not a medical device.'
     },
     
     // FAQ
@@ -396,22 +396,22 @@ const translations = {
       steps: {
         step1: {
           title: 'Preparación',
-          description: '— Limpia y seca tus brackets completamente —'
+          description: '— Limpia y seca tus brackets y encías antes de usar.'
         },
         step2: {
           title: 'Aplicación',
-          description: '— Coloca la tira cuidadosamente sobre los brackets —'
+          description: '— Despega y presiona suavemente la tira a lo largo de la línea de la encía sobre tus brackets.'
         },
         step3: {
           title: 'Posicionamiento',
-          description: '— Asegura un alineamiento y cobertura adecuados —'
+          description: '— Ajusta para máxima comodidad y cobertura—la tira debe quedar plana, no doblada.'
         },
         step4: {
           title: 'Duración',
-          description: '— Reemplaza según sea necesario durante el día —'
+          description: '— Usa durante el día. Retira antes de dormir, comer o masticar.'
         }
       },
-      note: '* Instrucciones detalladas se incluirán con tu pedido'
+      note: '* Instrucciones detalladas se incluirán con tu pedido. No es un dispositivo médico.'
     },
     
     // FAQ
