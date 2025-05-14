@@ -96,23 +96,39 @@ const translations = {
       title: 'Frequently Asked Questions',
       materials: {
         question: 'What materials are used in SoftBrace Strips?',
-        answer: 'SoftBrace Strips are made from FDA-approved silicone that is soft, flexible, and designed to provide maximum comfort while being durable enough to last multiple days.'
+        answer: 'SoftBrace Strips are made from FDA-compliant, platinum-cured silicone that is soft, flexible, and designed to protect your mouth from bracket irritation. While they're durable, they are intended for short-term relief and single use.'
       },
       duration: {
         question: 'How long does each strip last?',
-        answer: 'While SoftBrace Strips are marketed as single-use for hygiene and safety, some customers have reported reusing them for up to 3 days with proper care. We do not officially recommend reuse.'
+        answer: 'Each SoftBrace Strip is designed for single-use comfort and hygiene. While some users report using a strip for multiple reuses, we do not recommend reuse. Always discard daily and replace if dirty, loose, or damaged.'
       },
       compatibility: {
         question: 'Are SoftBrace Strips compatible with all types of braces?',
-        answer: 'Yes! SoftBrace Strips are designed to work with traditional metal braces, ceramic braces, and even some clear aligners. The flexible material adapts to the shape of different orthodontic appliances.'
+        answer: 'Yes! SoftBrace Strips are compatible with most types of orthodontic appliances, including traditional metal braces, ceramic braces, and some clear aligners. The soft, flexible material molds to different shapes for a better fit.'
       },
       shipping: {
         question: 'How long does shipping take?',
-        answer: 'Orders ship within 1-2 business days. Delivery typically takes 3-5 business days. Orders over $5.99 qualify for free shipping, while orders under $5.99 have a flat $1 shipping fee.'
+        answer: 'Delivery typically takes 3–5 business days, but may vary depending on your location and carrier delays. While we strive to ship orders as quickly as possible, exact delivery times are not guaranteed. U.S. orders over $5.99 ship free; orders under $5.99 include a flat $1 shipping fee.'
       },
       wax: {
         question: 'How does SoftWax compare to SoftBrace Strips?',
-        answer: 'While traditional orthodontic wax like SoftWax provides temporary relief, it needs to be reapplied frequently and can be messy. SoftBrace Strips stay in place longer, are cleaner to use, and provide more consistent protection. Our SoftWax product is a great companion for spot treatment alongside our strips and includes a free pair of SoftBrace strips.'
+        answer: 'SoftWax is our classic orthodontic wax for temporary relief. It's great for quick fixes but can wear off quickly. SoftBrace Strips stay in place better, are less messy, and are ideal for longer-term comfort. Some users use both—SoftWax for spot treatment and SoftBrace for full-coverage relief. Each SoftWax purchase includes a free pair of SoftBrace strips.'
+      },
+      application: {
+        question: 'How do I apply SoftBrace Strips correctly?',
+        answer: 'Gently press the strip onto the gum area directly above or below the brackets, wherever you're experiencing irritation—not on the brackets themselves. The strip should cover the sensitive tissue where braces tend to rub. Trim if needed, and press gently until secure. Tip: For top teeth, apply along the upper gums. For bottom teeth, apply along the lower gums.'
+      },
+      sleep: {
+        question: 'Is it safe to sleep with SoftBrace Strips in?',
+        answer: 'Do NOT Sleep with SoftBrace Strips. While they are soft and flexible, any oral product can pose a risk if dislodged during sleep. Always remove the strip before bed.'
+      },
+      swallow: {
+        question: 'What if I accidentally swallow a strip?',
+        answer: 'SoftBrace is made of non-toxic, FDA-compliant silicone. If accidentally swallowed, it will usually pass through the digestive system without harm. However, please consult a doctor if you feel discomfort or have health concerns.'
+      },
+      kids: {
+        question: 'Is SoftBrace safe for kids or teens?',
+        answer: 'Yes, but always under adult supervision. Our strips are safe for most users with braces, including teens, but we recommend adult guidance to ensure proper application and removal.'
       }
     },
     
@@ -419,23 +435,39 @@ const translations = {
       title: 'Preguntas Frecuentes',
       materials: {
         question: '¿Qué materiales se utilizan en las Tiras SoftBrace?',
-        answer: 'Las Tiras SoftBrace están hechas de silicona aprobada por la FDA que es suave, flexible y diseñada para proporcionar máxima comodidad mientras es lo suficientemente duradera para durar varios días.'
+        answer: 'Las Tiras SoftBrace están hechas de silicona platino-curada y conforme a la FDA, que es suave, flexible y diseñada para proteger su boca de la irritación causada por los brackets. Aunque son duraderas, están destinadas a un alivio a corto plazo y de un solo uso.'
       },
       duration: {
         question: '¿Cuánto dura cada tira?',
-        answer: 'Aunque las Tiras SoftBrace se comercializan como de un solo uso por razones de higiene y seguridad, algunos clientes han informado que las reutilizan hasta por 3 días con el cuidado adecuado. No recomendamos oficialmente la reutilización.'
+        answer: 'Cada Tira SoftBrace está diseñada para comodidad e higiene de un solo uso. Aunque algunos usuarios informan usar una tira para múltiples reusos, no recomendamos la reutilización. Deséchela diariamente y reemplácela si está sucia, suelta o dañada.'
       },
       compatibility: {
         question: '¿Las Tiras SoftBrace son compatibles con todos los tipos de brackets?',
-        answer: '¡Sí! Las Tiras SoftBrace están diseñadas para funcionar con brackets metálicos tradicionales, brackets cerámicos e incluso algunos alineadores transparentes. El material flexible se adapta a la forma de diferentes aparatos ortodónticos.'
+        answer: '¡Sí! Las Tiras SoftBrace son compatibles con la mayoría de los tipos de aparatos ortodónticos, incluidos los brackets metálicos tradicionales, brackets cerámicos y algunos alineadores transparentes. El material suave y flexible se moldea a diferentes formas para un mejor ajuste.'
       },
       shipping: {
         question: '¿Cuánto tiempo tarda el envío?',
-        answer: 'Los pedidos se envían dentro de 1-2 días hábiles. La entrega generalmente toma 3-5 días hábiles. Los pedidos superiores a $5.99 califican para envío gratis, mientras que los pedidos menores a $5.99 tienen una tarifa fija de envío de $1.'
+        answer: 'La entrega generalmente toma de 3 a 5 días hábiles, pero puede variar según su ubicación y retrasos del transportista. Aunque nos esforzamos por enviar los pedidos lo más rápido posible, los tiempos exactos de entrega no están garantizados. Los pedidos en EE. UU. superiores a $5.99 tienen envío gratis; los pedidos menores a $5.99 incluyen una tarifa de envío fija de $1.'
       },
       wax: {
         question: '¿Cómo se compara SoftWax con las Tiras SoftBrace?',
-        answer: 'Mientras que la cera ortodóntica tradicional como SoftWax proporciona alivio temporal, necesita ser reaplicada con frecuencia y puede ser desordenada. Las Tiras SoftBrace permanecen en su lugar por más tiempo, son más limpias de usar y proporcionan una protección más consistente. Nuestro producto SoftWax es un gran complemento para tratamientos puntuales junto con nuestras tiras e incluye un par gratuito de tiras SoftBrace.'
+        answer: 'SoftWax es nuestra cera ortodóntica clásica para alivio temporal. Es excelente para soluciones rápidas, pero puede desgastarse rápidamente. Las Tiras SoftBrace se mantienen mejor en su lugar, son menos desordenadas y son ideales para una comodidad a más largo plazo. Algunos usuarios usan ambos—SoftWax para tratamiento puntual y SoftBrace para alivio de cobertura completa. Cada compra de SoftWax incluye un par gratuito de tiras SoftBrace.'
+      },
+      application: {
+        question: '¿Cómo aplico las Tiras SoftBrace correctamente?',
+        answer: 'Presiona suavemente la tira sobre la zona de la encía directamente arriba o debajo de los brackets, donde sientas irritación—no sobre los brackets en sí. La tira debe cubrir el tejido sensible donde los brackets tienden a rozar. Recórtala si es necesario y presiona suavemente hasta que esté segura. Consejo: Para los dientes superiores, aplícala a lo largo de las encías superiores. Para los dientes inferiores, aplícala a lo largo de las encías inferiores.'
+      },
+      sleep: {
+        question: '¿Es seguro dormir con las Tiras SoftBrace puestas?',
+        answer: 'NO duerma con las Tiras SoftBrace. Aunque son suaves y flexibles, cualquier producto oral puede representar un riesgo si se desprende durante el sueño. Siempre retire la tira antes de acostarse.'
+      },
+      swallow: {
+        question: '¿Qué pasa si accidentalmente trago una tira?',
+        answer: 'SoftBrace está hecho de silicona no tóxica, conforme a la FDA. Si se traga accidentalmente, generalmente pasará por el sistema digestivo sin daño. Sin embargo, consulte a un médico si siente molestias o tiene preocupaciones de salud.'
+      },
+      kids: {
+        question: '¿Es SoftBrace seguro para niños o adolescentes?',
+        answer: 'Sí, pero siempre bajo supervisión de un adulto. Nuestras tiras son seguras para la mayoría de los usuarios con brackets, incluyendo adolescentes, pero recomendamos la guía de un adulto para garantizar la aplicación y eliminación adecuadas.'
       }
     },
     
