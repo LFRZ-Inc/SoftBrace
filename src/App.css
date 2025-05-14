@@ -20,7 +20,12 @@ body {
 
 main {
   flex: 1;
-  margin-top: 70px; /* Account for fixed header */
+}
+
+/* Main body content area - add margin to account for header and banner */
+.main-content {
+  margin-top: 113px; /* Header (73px) + Banner (approx 40px) */
+  padding-top: 20px;
 }
 
 .landing-container {
@@ -99,14 +104,9 @@ main {
   line-height: 1.7;
 }
 
-/* Main body content area - add margin to account for header */
-.main-content {
-  padding-top: 20px; /* Reduced padding as banner already adds space */
-}
-
 @media (max-width: 768px) {
-  main {
-    margin-top: 60px;
+  .main-content {
+    margin-top: 126px; /* Smaller header (70px) + taller banner on mobile (approx 56px) */
   }
 
   .coming-soon h2 {
