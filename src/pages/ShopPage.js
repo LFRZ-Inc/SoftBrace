@@ -109,7 +109,7 @@ function ShopPage() {
         <h1 className="text-4xl font-heading font-bold mb-8 text-center">{t('shop.title')}</h1>
         
         {/* Filter buttons */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button
             onClick={() => setSelectedCategory('all')}
             className={`px-4 py-2 rounded-lg ${
@@ -160,7 +160,7 @@ function ShopPage() {
         </div>
         
         {/* Coming soon section for 31-pack and 100-pack */}
-        <div className="mb-8 p-4 bg-purple-100 dark:bg-purple-900 rounded-lg">
+        <div className="mb-8 p-4 bg-purple-100 dark:bg-purple-900 rounded-lg max-w-2xl mx-auto">
           <h2 className="text-xl font-bold text-purple-800 dark:text-purple-200 mb-2">✨ Coming Soon</h2>
           <p className="text-purple-700 dark:text-purple-300">
             We're excited to announce that our 31-Pair Pack and 100-Pair Bulk Pack will be available soon! 
@@ -169,10 +169,13 @@ function ShopPage() {
         </div>
         
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-center gap-8 mx-auto max-w-6xl">
           {filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
-              <div key={product.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div 
+                key={product.id} 
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full sm:w-80 max-w-sm flex-grow-0 flex-shrink-0"
+              >
                 <div className="h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden relative">
                   <img 
                     src={product.image} 
@@ -203,7 +206,7 @@ function ShopPage() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12">
+            <div className="text-center py-12 w-full">
               <p className="text-gray-500 dark:text-gray-400">{t('shop.noProductsFound')}</p>
             </div>
           )}
