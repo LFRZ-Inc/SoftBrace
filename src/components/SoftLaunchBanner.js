@@ -11,7 +11,7 @@ function SoftLaunchBanner() {
       <div className="banner-text">{t('banner.message')}</div>
       <div className="badge badge-shipping">{t('banner.freeShipping')}</div>
       <div className="badge badge-product">
-        <span className="new-tag">NEW!</span> {t('banner.waxAvailable')}
+        <span className="new-tag">NEW</span>{t('banner.waxAvailable')}
       </div>
     </div>
   );

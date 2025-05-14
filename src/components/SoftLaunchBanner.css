@@ -10,7 +10,7 @@
   padding: 10px 16px;
   text-align: center;
   position: fixed;
-  top: 80px;
+  top: 73px; /* Re-attach to header with no gap */
   left: 0;
   right: 0;
   z-index: 999;
@@ -39,27 +39,27 @@
 }
 
 .badge-product {
-  background-color: #ff6b6b;
+  background-color: #ff2222;
   color: white;
-  animation: pulse 3s ease-in-out infinite;
   border: 1px solid white;
-  box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px 4px 8px;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  animation: slow-flash 4s infinite;
+  font-weight: bold;
+  padding: 4px 10px;
 }
 
 /* NEW tag inside product badge */
 .new-tag {
-  background-color: white;
-  color: #ff6b6b;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 4px;
-  border-radius: 8px;
+  background-color: yellow;
+  color: #ff2222;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 0px 3px;
+  border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-right: 3px;
+  vertical-align: text-top;
 }
 
 /* Banner text */
@@ -69,11 +69,16 @@
   white-space: nowrap;
 }
 
-/* Animation */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.9; }
+/* Slower, more subtle flashing animation */
+@keyframes slow-flash {
+  0%, 100% { 
+    background-color: #ff2222; 
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  }
+  50% { 
+    background-color: #ff5555; 
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  }
 }
 
 /* Desktop styles to ensure proper spacing and layout */
@@ -87,10 +92,6 @@
     font-size: 13px;
     padding: 5px 14px;
   }
-  
-  .badge-product {
-    padding: 5px 14px 5px 10px;
-  }
 }
 
 /* Mobile styles */
@@ -99,7 +100,7 @@
     flex-direction: column;
     padding: 12px;
     gap: 8px;
-    top: 77px;
+    top: 70px; /* Attach to mobile header */
   }
   
   .banner-text {
