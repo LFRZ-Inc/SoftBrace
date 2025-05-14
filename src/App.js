@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
@@ -32,11 +32,31 @@ try {
 
 // Wrapper component that uses the loading context
 const LoaderComponent = () => {
-  const { isLoading } = useLoading();
-  if (Loader && isLoading) {
-    return <Loader />;
+  const { isLoading, hideLoader } = useLoading();
+  const [forceHide, setForceHide] = useState(false);
+  
+  useEffect(() => {
+    if (isLoading) {
+      // Reset force hide when loading starts
+      setForceHide(false);
+      
+      // Force hide the loader after 3 seconds no matter what
+      const timer = setTimeout(() => {
+        console.log('Force hiding loader after timeout');
+        setForceHide(true);
+        hideLoader(); // Also call the context's hideLoader
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, hideLoader]);
+  
+  // Don't render if force hidden or not loading
+  if (forceHide || !isLoading || !Loader) {
+    return null;
   }
-  return null;
+  
+  return <Loader />;
 };
 
 function App() {

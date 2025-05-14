@@ -28,18 +28,19 @@ try {
   console.warn('Failed to load green logo', error);
 }
 
+// Define public URLs as fallbacks
+const fallbackLogos = [
+  '/images/SoftBrace small Logo.png',
+  '/images/SoftBrace Logo Lilac.png',
+  '/images/SoftBrace Logo Purple.png',
+  '/images/SoftBrace Logo Green.png'
+];
+
 // Determine which logos are available and use them, or fall back to public URLs
 function Loader() {
   const [mode, setMode] = useState('spin'); // 'spin' or 'pulse'
+  const [visible, setVisible] = useState(true);
   const intervalRef = useRef(null);
-  
-  // Define public URLs as fallbacks
-  const fallbackLogos = [
-    '/images/SoftBrace small Logo.png',
-    '/images/SoftBrace Logo Lilac.png',
-    '/images/SoftBrace Logo Purple.png',
-    '/images/SoftBrace Logo Green.png'
-  ];
   
   // Create array of imported logo paths, falling back to public URLs when imports fail
   const logoPaths = [
@@ -49,6 +50,25 @@ function Loader() {
     logoGreen || fallbackLogos[3]
   ];
 
+  // Function to clean up all animations and intervals
+  const stopAnimation = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setVisible(false);
+  };
+
+  // Extra safety - force hide after 5 seconds no matter what
+  useEffect(() => {
+    const forceHideTimer = setTimeout(() => {
+      console.log('Force hiding loader from within component after 5s');
+      stopAnimation();
+    }, 5000);
+
+    return () => clearTimeout(forceHideTimer);
+  }, []);
+
   useEffect(() => {
     // Start animation
     intervalRef.current = setInterval(() => {
@@ -57,12 +77,13 @@ function Loader() {
     
     // Cleanup animation on unmount
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      stopAnimation();
     };
   }, []);
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className={`loader-container ${mode}`}>
