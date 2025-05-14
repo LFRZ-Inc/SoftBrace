@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './Loader.css';
 
 // Direct imports with try/catch for each image
@@ -31,6 +31,7 @@ try {
 // Determine which logos are available and use them, or fall back to public URLs
 function Loader() {
   const [mode, setMode] = useState('spin'); // 'spin' or 'pulse'
+  const intervalRef = useRef(null);
   
   // Define public URLs as fallbacks
   const fallbackLogos = [
@@ -49,10 +50,18 @@ function Loader() {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    // Start animation
+    intervalRef.current = setInterval(() => {
       setMode((prev) => (prev === 'spin' ? 'pulse' : 'spin'));
     }, 2000);
-    return () => clearInterval(interval);
+    
+    // Cleanup animation on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, []);
 
   return (
@@ -65,9 +74,17 @@ function Loader() {
             className="loader-logo"
             onError={(e) => {
               // If the image fails to load, try the fallback URL
-              if (e.target.src !== fallbackLogos[idx]) {
+              // But prevent infinite loop if fallback also fails
+              const currentSrc = e.target.src;
+              const fallbackSrc = fallbackLogos[idx];
+              
+              if (currentSrc !== fallbackSrc) {
                 console.log(`Falling back to public URL for logo ${idx + 1}`);
-                e.target.src = fallbackLogos[idx];
+                e.target.src = fallbackSrc;
+              } else {
+                console.error(`Both original and fallback logo ${idx + 1} failed to load`);
+                // Remove the broken image by setting a transparent 1px GIF
+                e.target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
               }
             }}
           />

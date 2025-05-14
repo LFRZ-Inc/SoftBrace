@@ -17,85 +17,101 @@ function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [products, setProducts] = useState([]);
   
+  // Load products only once on component mount
   useEffect(() => {
-    // Show loader when fetching products
-    showLoader();
+    let isMounted = true;
     
-    // Simulate product loading
-    const timer = setTimeout(() => {
-      hideLoader();
-    }, 1500);
+    const loadProducts = async () => {
+      try {
+        // Show loader when fetching products
+        showLoader();
+        
+        // Simulate API loading delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Simulate products fetch
+        const productData = [
+          {
+            id: 1,
+            name: t('product.packOptions.small.title'),
+            price: 4.99,
+            image: smallPackImage,
+            category: 'small',
+            description: t('product.packOptions.small.description'),
+            quantity: t('product.packOptions.small.quantity'),
+            shortDescription: t('product.packOptions.small.description'),
+            soldOut: false
+          },
+          {
+            id: 2,
+            name: t('product.packOptions.medium.title'),
+            price: 9.99,
+            image: mediumPackImage,
+            category: 'medium',
+            description: t('product.packOptions.medium.description'),
+            quantity: t('product.packOptions.medium.quantity'),
+            shortDescription: t('product.packOptions.medium.description'),
+            soldOut: false
+          },
+          {
+            id: 3,
+            name: t('product.packOptions.large.title'),
+            price: 16.99,
+            image: largePackImage,
+            category: 'large',
+            description: t('product.packOptions.large.description'),
+            quantity: t('product.packOptions.large.quantity'),
+            shortDescription: t('product.packOptions.large.description'),
+            soldOut: false,
+            hidden: true
+          },
+          {
+            id: 4,
+            name: t('product.packOptions.wax.title'),
+            price: 3.99,
+            image: softWaxImage,
+            category: 'wax',
+            description: t('product.packOptions.wax.description'),
+            quantity: t('product.packOptions.wax.quantity'),
+            shortDescription: t('product.packOptions.wax.description'),
+            soldOut: false
+          },
+          {
+            id: 5,
+            name: 'SoftBrace 100-Pair Bulk Pack',
+            price: 49.99,
+            image: largePackImage,
+            category: 'bulk',
+            description: 'Professional bulk pack for clinics or wholesale',
+            quantity: '100 Pairs (200 strips)',
+            shortDescription: 'Professional bulk pack for clinics or wholesale',
+            soldOut: false,
+            hidden: true
+          }
+        ];
+        
+        // Only update if component is still mounted
+        if (isMounted) {
+          setProducts(productData);
+          // Always hide loader when done
+          hideLoader();
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        if (isMounted) {
+          hideLoader();
+        }
+      }
+    };
     
+    loadProducts();
+    
+    // Clean up function to ensure loader is hidden if component unmounts during loading
     return () => {
-      clearTimeout(timer);
+      isMounted = false;
       hideLoader();
     };
-  }, [showLoader, hideLoader]);
-
-  useEffect(() => {
-    // Simulate products fetch
-    const productData = [
-      {
-        id: 1,
-        name: t('product.packOptions.small.title'),
-        price: 4.99,
-        image: smallPackImage,
-        category: 'small',
-        description: t('product.packOptions.small.description'),
-        quantity: t('product.packOptions.small.quantity'),
-        shortDescription: t('product.packOptions.small.description'),
-        soldOut: false
-      },
-      {
-        id: 2,
-        name: t('product.packOptions.medium.title'),
-        price: 9.99,
-        image: mediumPackImage,
-        category: 'medium',
-        description: t('product.packOptions.medium.description'),
-        quantity: t('product.packOptions.medium.quantity'),
-        shortDescription: t('product.packOptions.medium.description'),
-        soldOut: false
-      },
-      {
-        id: 3,
-        name: t('product.packOptions.large.title'),
-        price: 16.99,
-        image: largePackImage,
-        category: 'large',
-        description: t('product.packOptions.large.description'),
-        quantity: t('product.packOptions.large.quantity'),
-        shortDescription: t('product.packOptions.large.description'),
-        soldOut: false,
-        hidden: true
-      },
-      {
-        id: 4,
-        name: t('product.packOptions.wax.title'),
-        price: 3.99,
-        image: softWaxImage, // Using the new SoftWax image
-        category: 'wax',
-        description: t('product.packOptions.wax.description'),
-        quantity: t('product.packOptions.wax.quantity'),
-        shortDescription: t('product.packOptions.wax.description'),
-        soldOut: false
-      },
-      {
-        id: 5,
-        name: 'SoftBrace 100-Pair Bulk Pack',
-        price: 49.99,
-        image: largePackImage, // Reusing the large pack image
-        category: 'bulk',
-        description: 'Professional bulk pack for clinics or wholesale',
-        quantity: '100 Pairs (200 strips)',
-        shortDescription: 'Professional bulk pack for clinics or wholesale',
-        soldOut: false,
-        hidden: true
-      }
-    ];
-    
-    setProducts(productData);
-  }, [t]);
+  }, [t, showLoader, hideLoader]);
 
   // Filter products based on selected category and hidden status
   const filteredProducts = selectedCategory === 'all'
