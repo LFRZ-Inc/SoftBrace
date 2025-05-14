@@ -1,4 +1,4 @@
-// Translations file - Updated for Vercel deployment fix
+// Translations file - Fixed syntax for Vercel deployment
 const translations = {
   en: {
     // Header
@@ -99,7 +99,7 @@ const translations = {
       viewLess: 'View Less',
       materials: {
         question: 'What materials are used in SoftBrace Strips?',
-        answer: 'SoftBrace Strips are made from FDA-compliant, platinum-cured silicone that is soft, flexible, and designed to protect your mouth from bracket irritation. While they're durable, they are intended for short-term relief and single use.'
+        answer: 'SoftBrace Strips are made from FDA-compliant, platinum-cured silicone that is soft, flexible, and designed to protect your mouth from bracket irritation. While they\'re durable, they are intended for short-term relief and single use.'
       },
       duration: {
         question: 'How long does each strip last?',
@@ -115,18 +115,18 @@ const translations = {
       },
       wax: {
         question: 'How does SoftWax compare to SoftBrace Strips?',
-        answer: 'SoftWax is our classic orthodontic wax for temporary relief. It's great for quick fixes but can wear off quickly. SoftBrace Strips stay in place better, are less messy, and are ideal for longer-term comfort. Some users use both—SoftWax for spot treatment and SoftBrace for full-coverage relief. Each SoftWax purchase includes a free pair of SoftBrace strips.'
+        answer: 'SoftWax is our classic orthodontic wax for temporary relief. It\'s great for quick fixes but can wear off quickly. SoftBrace Strips stay in place better, are less messy, and are ideal for longer-term comfort. Some users use both—SoftWax for spot treatment and SoftBrace for full-coverage relief. Each SoftWax purchase includes a free pair of SoftBrace strips.'
       },
       application: {
         question: 'How do I apply SoftBrace Strips correctly?',
-        answer: 'Gently press the strip onto the gum area directly above or below the brackets, wherever you're experiencing irritation—not on the brackets themselves. The strip should cover the sensitive tissue where braces tend to rub. Trim if needed, and press gently until secure. Tip: For top teeth, apply along the upper gums. For bottom teeth, apply along the lower gums.'
+        answer: 'Gently press the strip onto the gum area directly above or below the brackets, wherever you\'re experiencing irritation—not on the brackets themselves. The strip should cover the sensitive tissue where braces tend to rub. Trim if needed, and press gently until secure. Tip: For top teeth, apply along the upper gums. For bottom teeth, apply along the lower gums.'
       },
       sleep: {
         question: 'Is it safe to sleep with SoftBrace Strips in?',
         answer: 'Do NOT Sleep with SoftBrace Strips. While they are soft and flexible, any oral product can pose a risk if dislodged during sleep. Always remove the strip before bed.'
       },
       swallow: {
-        question: 'What if I accidentally swallow a strip?',
+        question: 'What if I accidentally swallowed a strip?',
         answer: 'SoftBrace is made of non-toxic, FDA-compliant silicone. If accidentally swallowed, it will usually pass through the digestive system without harm. However, please consult a doctor if you feel discomfort or have health concerns.'
       },
       kids: {
