@@ -99,6 +99,11 @@ main {
   line-height: 1.7;
 }
 
+/* Main body content area - add margin to account for header */
+.main-content {
+  padding-top: 20px; /* Reduced padding as banner already adds space */
+}
+
 @media (max-width: 768px) {
   main {
     margin-top: 60px;

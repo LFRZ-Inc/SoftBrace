@@ -7,10 +7,10 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 8px 16px;
+  padding: 10px 16px;
   text-align: center;
-  position: sticky;
-  top: 70px;
+  position: relative;
+  margin-top: 73px;
   z-index: 50;
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -56,12 +56,26 @@
   100% { transform: scale(1); }
 }
 
+/* Desktop styles to ensure proper spacing and layout */
+@media (min-width: 769px) {
+  .banner {
+    padding: 10px 20px;
+    gap: 16px;
+  }
+  
+  .badge {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .banner {
     flex-direction: column;
     padding: 12px;
     gap: 8px;
+    margin-top: 70px;
   }
   
   .banner-text {
