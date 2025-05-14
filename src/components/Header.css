@@ -63,9 +63,63 @@
   color: var(--color-primary);
 }
 
+/* Mobile menu button */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 24px;
+  position: relative;
+  z-index: 1001;
+}
+
+.mobile-menu-icon, 
+.mobile-menu-icon::before, 
+.mobile-menu-icon::after {
+  position: absolute;
+  width: 30px;
+  height: 3px;
+  background-color: var(--color-text);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-icon {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mobile-menu-icon::before {
+  content: '';
+  top: -8px;
+}
+
+.mobile-menu-icon::after {
+  content: '';
+  bottom: -8px;
+}
+
+/* Styles for when menu is open */
+.menu-open .mobile-menu-icon {
+  background-color: transparent;
+}
+
+.menu-open .mobile-menu-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.menu-open .mobile-menu-icon::after {
+  bottom: 0;
+  transform: rotate(-45deg);
+}
+
 @media (max-width: 768px) {
   .header {
-    height: 70px;
+    height: 60px;
   }
   
   .header-container {
@@ -75,13 +129,50 @@
   .logo-text {
     font-size: 1.2rem;
   }
-
+  
+  /* Show mobile menu button */
+  .mobile-menu-button {
+    display: block;
+  }
+  
+  /* Hide desktop nav by default */
+  .nav-menu {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: var(--color-card-background);
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    z-index: 999;
+  }
+  
+  /* Show nav when open */
+  .nav-menu.open {
+    height: auto;
+    padding: 1rem 0;
+  }
+  
   .nav-menu ul {
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 1.5rem;
+  }
+  
+  .nav-menu li {
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .nav-menu li:last-child {
+    border-bottom: none;
   }
 
   .nav-menu a {
-    font-size: 0.9rem;
-    padding: 6px 0;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    display: block;
+    width: 100%;
   }
 } 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 import useTranslation from '../hooks/useTranslation';
@@ -9,6 +9,16 @@ function Header() {
   const location = useLocation();
   const { itemCount } = useCart();
   const isHomePage = location.pathname === '/';
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  // Close menu when route changes
+  React.useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
 
   return (
     <header className="header">
@@ -19,7 +29,16 @@ function Header() {
             <span className="logo-text">{t('hero.title')}</span>
           </Link>
         </div>
-        <nav className="nav-menu">
+        
+        <button 
+          className={`mobile-menu-button ${menuOpen ? 'menu-open' : ''}`} 
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <span className="mobile-menu-icon"></span>
+        </button>
+        
+        <nav className={`nav-menu ${menuOpen ? 'open' : ''}`}>
           <ul>
             {isHomePage ? (
               // Home page uses anchor links
