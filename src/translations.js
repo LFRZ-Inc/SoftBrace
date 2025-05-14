@@ -1,3 +1,4 @@
+// Translations file - Updated for Vercel deployment fix
 const translations = {
   en: {
     // Header
