@@ -31,7 +31,7 @@ function Contact() {
       <div className="contact-container">
         <h2>{t('contact.title')}</h2>
         <p className="contact-intro">
-          {t('contact.intro')}
+          Questions, support requests, or wholesale inquiries? Reach out to us—we're here to help.
         </p>
 
         <form className="contact-form" onSubmit={handleSubmit}>
@@ -67,9 +67,11 @@ function Contact() {
               value={formData.inquiryType}
               onChange={handleChange}
             >
-              <option value="general">{t('contact.form.inquiryOptions.general')}</option>
-              <option value="wholesale">{t('contact.form.inquiryOptions.wholesale')}</option>
-              <option value="support">{t('contact.form.inquiryOptions.support')}</option>
+              <option value="general">General Inquiry</option>
+              <option value="wholesale">Wholesale Information</option>
+              <option value="support">Product Support</option>
+              <option value="order">Order Status / Shipping</option>
+              <option value="returns">Returns & Safety Concerns</option>
             </select>
           </div>
 

@@ -173,7 +173,7 @@ const translations = {
     // Contact
     contact: {
       title: 'Contact Us',
-      intro: 'Have questions or interested in wholesale opportunities? We\'d love to hear from you.',
+      intro: 'Questions, support requests, or wholesale inquiries? Reach out to us—we\'re here to help.',
       form: {
         name: 'Name',
         email: 'Email',
@@ -181,7 +181,9 @@ const translations = {
         inquiryOptions: {
           general: 'General Inquiry',
           wholesale: 'Wholesale Information',
-          support: 'Product Support'
+          support: 'Product Support',
+          order: 'Order Status / Shipping',
+          returns: 'Returns & Safety Concerns'
         },
         message: 'Message',
         submit: 'Send Message'
@@ -514,7 +516,7 @@ const translations = {
     // Contact
     contact: {
       title: 'Contáctenos',
-      intro: '¿Tiene preguntas o está interesado en oportunidades de venta al por mayor? Nos encantaría saber de usted.',
+      intro: '¿Preguntas, solicitudes de soporte o consultas al por mayor? Contáctenos—estamos aquí para ayudar.',
       form: {
         name: 'Nombre',
         email: 'Correo Electrónico',
@@ -522,7 +524,9 @@ const translations = {
         inquiryOptions: {
           general: 'Consulta General',
           wholesale: 'Información de Venta al por Mayor',
-          support: 'Soporte de Producto'
+          support: 'Soporte de Producto',
+          order: 'Estado del Pedido / Envío',
+          returns: 'Devoluciones y Preocupaciones de Seguridad'
         },
         message: 'Mensaje',
         submit: 'Enviar Mensaje'
