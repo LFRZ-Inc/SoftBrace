@@ -25,7 +25,7 @@ main {
 /* Main body content area - add margin to account for header and banner */
 .main-content {
   margin-top: 113px; /* Header (73px) + Banner (approx 40px) */
-  padding-top: 50px; /* Add extra padding to push the logo down */
+  padding-top: 0; /* Remove extra padding from here */
 }
 
 .landing-container {
@@ -107,7 +107,7 @@ main {
 @media (max-width: 768px) {
   .main-content {
     margin-top: 126px; /* Smaller header (70px) + taller banner on mobile (approx 56px) */
-    padding-top: 30px; /* Less padding on mobile but still some space */
+    padding-top: 0; /* Remove extra padding from here */
   }
 
   .coming-soon h2 {
