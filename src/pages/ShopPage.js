@@ -202,12 +202,15 @@ function ShopPage() {
                   <p className="text-gray-500 dark:text-gray-400 mb-4">{product.shortDescription}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-2xl font-bold text-gray-800 dark:text-blue-400">${product.price.toFixed(2)}</span>
-                    <Link 
-                      to={`/product/${product.id}`}
+                    <button 
+                      onClick={() => {
+                        addToCart(product);
+                        alert(t('common.addedToCart'));
+                      }}
                       className="bg-primary hover:bg-primary-light text-white py-2 px-4 rounded-lg transition-colors"
                     >
-                      {t('shop.viewDetails')}
-                    </Link>
+                      {t('common.addToCart')}
+                    </button>
                   </div>
                 </div>
               </div>
