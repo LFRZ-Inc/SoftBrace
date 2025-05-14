@@ -10,7 +10,7 @@
   padding: 10px 16px;
   text-align: center;
   position: fixed;
-  top: 73px;
+  top: 80px;
   left: 0;
   right: 0;
   z-index: 999;
@@ -41,7 +41,25 @@
 .badge-product {
   background-color: #ff6b6b;
   color: white;
-  animation: pulse 2s infinite;
+  animation: pulse 3s ease-in-out infinite;
+  border: 1px solid white;
+  box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px 4px 8px;
+}
+
+/* NEW tag inside product badge */
+.new-tag {
+  background-color: white;
+  color: #ff6b6b;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Banner text */
@@ -53,9 +71,9 @@
 
 /* Animation */
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
 }
 
 /* Desktop styles to ensure proper spacing and layout */
@@ -69,6 +87,10 @@
     font-size: 13px;
     padding: 5px 14px;
   }
+  
+  .badge-product {
+    padding: 5px 14px 5px 10px;
+  }
 }
 
 /* Mobile styles */
@@ -77,7 +99,7 @@
     flex-direction: column;
     padding: 12px;
     gap: 8px;
-    top: 70px;
+    top: 77px;
   }
   
   .banner-text {

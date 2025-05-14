@@ -22,9 +22,9 @@ main {
   flex: 1;
 }
 
-/* Main body content area - add margin to account for header and banner */
+/* Main body content area - add margin to account for header and banner with increased spacing */
 .main-content {
-  margin-top: 113px; /* Header (73px) + Banner (approx 40px) */
+  margin-top: 120px; /* Header (73px) + gap (7px) + Banner (approx 40px) */
   padding-top: 20px;
 }
 
@@ -106,7 +106,7 @@ main {
 
 @media (max-width: 768px) {
   .main-content {
-    margin-top: 126px; /* Smaller header (70px) + taller banner on mobile (approx 56px) */
+    margin-top: 133px; /* Smaller header (70px) + gap (7px) + taller banner on mobile (approx 56px) */
   }
 
   .coming-soon h2 {
