@@ -49,7 +49,7 @@ function Product() {
             <p className="price">{t('product.packOptions.small.price')}</p>
             <p className="description">{t('product.packOptions.small.description')}</p>
             <Link to="/product/1" className="product-button">
-              {t('product.viewDetails')}
+              View Details
             </Link>
           </div>
 
@@ -66,7 +66,7 @@ function Product() {
             <p className="price">{t('product.packOptions.medium.price')}</p>
             <p className="description">{t('product.packOptions.medium.description')}</p>
             <Link to="/product/2" className="product-button">
-              {t('product.viewDetails')}
+              View Details
             </Link>
           </div>
 
@@ -84,7 +84,7 @@ function Product() {
               <p className="price">{t('product.packOptions.large.price')}</p>
               <p className="description">{t('product.packOptions.large.description')}</p>
               <Link to="/product/3" className="product-button">
-                {t('product.viewDetails')}
+                View Details
               </Link>
             </div>
           )}
@@ -102,7 +102,7 @@ function Product() {
             <p className="price">{t('product.packOptions.wax.price')}</p>
             <p className="description">{t('product.packOptions.wax.description')}</p>
             <Link to="/product/4" className="product-button">
-              {t('product.viewDetails')}
+              View Details
             </Link>
           </div>
         </div>
