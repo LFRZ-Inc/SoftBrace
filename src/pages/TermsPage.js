@@ -30,7 +30,7 @@ function TermsPage() {
         
         <h2 className="text-xl font-bold mt-6 mb-3">5. Shipping and Delivery</h2>
         <p>
-          Orders under $9.99 are subject to a $1 shipping fee. Orders of $9.99 or more qualify for free shipping. Delivery times are estimates and not guaranteed.
+          Orders under $5.99 are subject to a $2.00 shipping fee. Orders of $5.99 or more qualify for free shipping. Delivery times are estimates and not guaranteed.
         </p>
         
         <h2 className="text-xl font-bold mt-6 mb-3">6. Returns and Refunds</h2>

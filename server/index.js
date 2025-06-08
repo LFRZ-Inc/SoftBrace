@@ -33,16 +33,16 @@ app.post('/api/create-checkout-session', async (req, res) => {
     let shipping_options;
 
     if (totalAmount < 599) {
-      // $1 shipping for orders under $5.99
+      // $2 shipping for orders under $5.99
       shipping_options = [
         {
           shipping_rate_data: {
             type: 'fixed_amount',
             fixed_amount: {
-              amount: 100, // $1 in cents
+              amount: 200, // $2 in cents
               currency: 'usd',
             },
-            display_name: 'Standard Shipping ($1)',
+            display_name: 'Standard Shipping ($2.00)',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 3 },
               maximum: { unit: 'business_day', value: 5 },

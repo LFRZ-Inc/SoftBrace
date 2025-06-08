@@ -35,7 +35,7 @@ const translations = {
         medium: {
           title: '15-Pair Pack',
           quantity: '30 strips',
-          price: '$9.99',
+          price: '$10.99',
           description: 'Most popular choice for regular users',
           longDescription: 'Our most popular option! The 15-pair pack gives you enough strips for over 2 weeks of continuous use. Perfect for regular wearers who want lasting comfort throughout their orthodontic treatment.'
         },
@@ -111,7 +111,7 @@ const translations = {
       },
       shipping: {
         question: 'How long does shipping take?',
-        answer: 'Delivery typically takes 3–5 business days, but may vary depending on your location and carrier delays. While we strive to ship orders as quickly as possible, exact delivery times are not guaranteed. U.S. orders over $5.99 ship free; orders under $5.99 include a flat $1 shipping fee.'
+        answer: 'Delivery typically takes 3–5 business days, but may vary depending on your location and carrier delays. While we strive to ship orders as quickly as possible, exact delivery times are not guaranteed. U.S. orders over $5.99 ship free; orders under $5.99 include a flat $2.00 shipping fee.'
       },
       wax: {
         question: 'How does SoftWax compare to SoftBrace Strips?',
@@ -378,7 +378,7 @@ const translations = {
         medium: {
           title: 'Paquete de 15 pares',
           quantity: '30 tiras',
-          price: '$9.99',
+          price: '$10.99',
           description: 'Opción más popular para usuarios regulares',
           longDescription: '¡Nuestra opción más popular! El paquete de 15 pares te da suficientes tiras para más de 2 semanas de uso continuo. Perfecto para usuarios regulares que desean comodidad duradera durante su tratamiento de ortodoncia.'
         },
@@ -454,7 +454,7 @@ const translations = {
       },
       shipping: {
         question: '¿Cuánto tiempo tarda el envío?',
-        answer: 'La entrega generalmente toma de 3 a 5 días hábiles, pero puede variar según su ubicación y retrasos del transportista. Aunque nos esforzamos por enviar los pedidos lo más rápido posible, los tiempos exactos de entrega no están garantizados. Los pedidos en EE. UU. superiores a $5.99 tienen envío gratis; los pedidos menores a $5.99 incluyen una tarifa de envío fija de $1.'
+        answer: 'La entrega generalmente toma de 3 a 5 días hábiles, pero puede variar según su ubicación y retrasos del transportista. Aunque nos esforzamos por enviar los pedidos lo más rápido posible, los tiempos exactos de entrega no están garantizados. Los pedidos en EE. UU. superiores a $5.99 tienen envío gratis; los pedidos menores a $5.99 incluyen una tarifa de envío fija de $2.00.'
       },
       wax: {
         question: '¿Cómo se compara SoftWax con las Tiras SoftBrace?',

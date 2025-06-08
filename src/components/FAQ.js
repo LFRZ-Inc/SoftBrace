@@ -77,7 +77,7 @@ const FAQ = () => {
               <h3>How long does shipping take?</h3>
             </div>
             <div className="faq-answer">
-              <p>Delivery typically takes 3–5 business days, but may vary depending on your location and carrier delays. While we strive to ship orders as quickly as possible, exact delivery times are not guaranteed. U.S. orders over $5.99 ship free; orders under $5.99 include a flat $1 shipping fee.</p>
+              <p>Delivery typically takes 3–5 business days, but may vary depending on your location and carrier delays. While we strive to ship orders as quickly as possible, exact delivery times are not guaranteed. U.S. orders over $5.99 ship free; orders under $5.99 include a flat $2.00 shipping fee.</p>
             </div>
           </div>
           

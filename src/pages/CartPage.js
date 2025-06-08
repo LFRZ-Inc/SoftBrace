@@ -12,8 +12,8 @@ function CartPage() {
   };
   
   const calculateShipping = () => {
-    // $1 shipping for orders under $5.99, free shipping for orders $5.99+
-    return total < 5.99 ? 1.00 : 0.00;
+    // $2 shipping for orders under $5.99, free shipping for orders $5.99+
+    return total < 5.99 ? 2.00 : 0.00;
   };
   
   const calculateTotal = () => {
@@ -126,7 +126,7 @@ function CartPage() {
               
               {/* Shipping Policy Notice */}
               <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-md text-sm">
-                <p>🚚 Orders under $5.99 ship for $1. Orders $5.99+ ship free!</p>
+                <p>🚚 Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!</p>
               </div>
               
               <div className="space-y-4">
