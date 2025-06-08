@@ -46,7 +46,7 @@ function ProductPage() {
         {
           id: 2,
           name: 'SoftBrace 15-Pair Pack',
-          price: 9.99,
+          price: 10.99,
           image: mediumPackImage,
           category: 'medium',
           description: t('product.packOptions.medium.description'),

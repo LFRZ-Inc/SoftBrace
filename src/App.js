@@ -18,6 +18,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import Blog from './pages/Blog';
+import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
@@ -82,6 +83,8 @@ function App() {
                       <Route path="/terms-of-service" element={<TermsPage />} />
                       <Route path="/privacy-policy" element={<PrivacyPage />} />
                       <Route path="/blog" element={<Blog />} />
+                      <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
+                      <Route path="/insert-card" element={<SoftBraceUsagePage />} />
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </main>

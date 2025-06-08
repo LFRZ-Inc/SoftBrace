@@ -28,7 +28,7 @@ const createProductData = (t) => [
   {
     id: 2,
     name: t('product.packOptions.medium.title'),
-    price: 9.99,
+    price: 10.99,
     image: mediumPackImage,
     category: 'medium',
     description: "Our most popular value pack. Includes 15 pairs (30 strips) for ongoing relief.",
@@ -36,7 +36,7 @@ const createProductData = (t) => [
     shortDescription: "Our most popular value pack. Includes 15 pairs (30 strips) for ongoing relief.",
     soldOut: false,
     badge: "Best Value",
-    pricePerPair: "$0.67"
+    pricePerPair: "$0.73"
   },
   {
     id: 3,
@@ -155,7 +155,7 @@ function ShopPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">15-Pair</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">30 strips</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Regular users</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.67</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.73</td>
               </tr>
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">SoftWax</td>
@@ -232,7 +232,7 @@ function ShopPage() {
         {/* Add shipping threshold alert */}
         <div className="bg-yellow-100 dark:bg-yellow-900 border-l-4 border-yellow-500 p-4 mb-6">
           <p className="text-yellow-700 dark:text-yellow-200">
-            <span className="font-bold">🚚 {t('shop.freeShippingAlert')}</span> {t('shop.freeShippingMessage')}
+            <span className="font-bold">🚚 Free Shipping Available!</span> Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!
           </p>
         </div>
         

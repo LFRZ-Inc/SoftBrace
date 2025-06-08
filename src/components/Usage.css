@@ -60,6 +60,49 @@
   line-height: 1.6;
 }
 
+.important-tips {
+  margin: 3rem 0 2rem;
+  padding: 2rem;
+  background-color: var(--color-card-background);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px var(--color-shadow);
+  border-left: 4px solid var(--color-primary);
+}
+
+.tips-title {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.tips-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  text-align: left;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.tip-icon {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.tip-item p {
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
 .usage-note {
   color: var(--color-text-tertiary);
   font-size: 0.9rem;
@@ -78,5 +121,20 @@
 
   .step {
     padding: 1.5rem;
+  }
+
+  .important-tips {
+    padding: 1.5rem;
+    margin: 2rem 0 1.5rem;
+  }
+
+  .tips-title {
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .tips-list {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 } 
