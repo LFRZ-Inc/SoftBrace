@@ -22,12 +22,44 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 10px 30px var(--color-shadow);
+  position: relative;
 }
 
 .logo-image {
   width: 100%;
   height: auto;
   display: block;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Image indicators for cycling */
+.image-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.2);
+}
+
+.indicator:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
 }
 
 .hero h1 {
