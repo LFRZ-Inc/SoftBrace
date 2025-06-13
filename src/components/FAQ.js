@@ -56,7 +56,7 @@ const FAQ = () => {
           
           <div className="faq-item">
             <div className="faq-question">
-              <h3>What if I accidentally swallow a strip?</h3>
+              <h3>What if I accidentally swallowed a strip?</h3>
             </div>
             <div className="faq-answer">
               <p>SoftBrace is made of non-toxic, FDA-compliant silicone. If accidentally swallowed, it will usually pass through the digestive system without harm. However, please consult a doctor if you feel discomfort or have health concerns.</p>
@@ -86,7 +86,7 @@ const FAQ = () => {
               <h3>Is SoftBrace safe for kids or teens?</h3>
             </div>
             <div className="faq-answer">
-              <p>Yes, but always under adult supervision. Our strips are safe for most users with braces, including teens, but we recommend adult guidance to ensure proper application and removal.</p>
+              <p>Yes, but always under adult supervision. <strong>SoftBrace is not for use by children under 10 years old.</strong> Our strips are safe for most users with braces, including teens, but we recommend adult guidance to ensure proper application and removal.</p>
             </div>
           </div>
         </div>
