@@ -153,6 +153,9 @@ function SoftBraceUsagePage() {
             <p className="text-gray-700 dark:text-gray-200 mb-2">
               Always monitor for signs of irritation.
             </p>
+            <p className="text-gray-700 dark:text-gray-200 mb-2">
+              <strong>Not for use by children under 10 years old.</strong>
+            </p>
             <p className="text-gray-700 dark:text-gray-200">
               <em>Not a medical device. Use only as directed.</em>
             </p>
