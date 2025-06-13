@@ -4,13 +4,14 @@ import useTranslation from '../hooks/useTranslation';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
 import { useCart } from '../contexts/CartContext';
 import { useLoading } from '../contexts/LoadingContext';
+import { shouldShowProduct, shouldShowAllProducts, getReleaseDate, getDaysUntilRelease, isReleaseDay } from '../utils/releaseSchedule';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
 import largePackImage from '../assets/31-pack.png';
 import softWaxImage from '../assets/SoftWax.png'; // New SoftWax image
 
-// Preload product data
+// Preload product data with scheduled release logic
 const createProductData = (t) => [
   {
     id: 1,
@@ -48,7 +49,8 @@ const createProductData = (t) => [
     quantity: t('product.packOptions.large.quantity'),
     shortDescription: t('product.packOptions.large.description'),
     soldOut: false,
-    hidden: true,
+    hidden: !shouldShowProduct('3'), // Use scheduled release
+    badge: isReleaseDay() ? "🎉 Birthday Release!" : "Premium Pack",
     pricePerPair: "$0.55"
   },
   {
@@ -74,7 +76,8 @@ const createProductData = (t) => [
     quantity: '100 Pairs (200 strips)',
     shortDescription: 'Professional bulk pack for clinics or wholesale',
     soldOut: false,
-    hidden: true,
+    hidden: !shouldShowProduct('5'), // Use scheduled release
+    badge: isReleaseDay() ? "🎉 Birthday Release!" : "Professional Grade",
     pricePerPair: "$0.50"
   },
   {
@@ -176,6 +179,22 @@ function ShopPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Spot relief</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">—</td>
               </tr>
+              {shouldShowProduct('3') && (
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">31-Pair</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">62 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Long-term users</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.55</td>
+                </tr>
+              )}
+              {shouldShowProduct('5') && (
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">100-Pair Bulk</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">200 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Clinics/Wholesale</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.50</td>
+                </tr>
+              )}
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Bundle</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 10 strips</td>
@@ -254,6 +273,24 @@ function ShopPage() {
             <span className="font-bold">🚚 Free Shipping Available!</span> Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!
           </p>
         </div>
+
+        {/* Birthday celebration message - only show on release day */}
+        {isReleaseDay() && (
+          <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 border-l-4 border-orange-500 p-4 mb-6">
+            <p className="text-orange-700 dark:text-orange-200">
+              <span className="font-bold">🎉 Happy Birthday Release!</span> All products including our 31-Pair Pack and 100-Pair Bulk Pack are now available!
+            </p>
+          </div>
+        )}
+
+        {/* Scheduled release countdown - only show if products are not yet released */}
+        {!shouldShowAllProducts() && (
+          <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 border-l-4 border-purple-500 p-4 mb-6">
+            <p className="text-purple-700 dark:text-purple-200">
+              <span className="font-bold">🎂 Birthday Release Coming!</span> Our complete product lineup will be available on <strong>{getReleaseDate()}</strong> - only {getDaysUntilRelease()} days to go!
+            </p>
+          </div>
+        )}
         
         {/* Products grid */}
         <div className="flex flex-wrap justify-center gap-8 mx-auto max-w-6xl">

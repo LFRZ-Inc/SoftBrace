@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Product.css';
 import useTranslation from '../hooks/useTranslation';
+import { shouldShowProduct, shouldShowAllProducts, getReleaseDate, getDaysUntilRelease, isReleaseDay } from '../utils/releaseSchedule';
 // Import images
 import singleStripImage from '../assets/single-strip.png';
 import smallPackImage from '../assets/5-pack.png';
@@ -13,69 +14,90 @@ function Product() {
   const { t } = useTranslation();
   const [showComparisonModal, setShowComparisonModal] = useState(false);
   
-  // Set all products as available
-  const stripsSoldOut = false;
-  const waxSoldOut = false;
-  
-  // Flag to hide the 31-pack (large pack)
-  const hideLargePack = true;
+  // Use scheduled release system instead of hard-coded flags
+  const showLargePack = shouldShowProduct('3'); // 31-pack
+  const showBulkPack = shouldShowProduct('5'); // 100-pack
+  const showBundle = shouldShowProduct('6'); // $8.99 bundle
+  const showAllProducts = shouldShowAllProducts();
 
-  // Comparison modal component
+  // Comparison modal component with updated information including bundle
   const ComparisonModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Compare SoftBrace Products</h3>
-          <button 
-            onClick={() => setShowComparisonModal(false)}
-            className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pack</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contents</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ideal For</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price per Pair</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">5-Pair</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">10 strips</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">First-time users</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.99</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">15-Pair</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">30 strips</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Regular users</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.67</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">SoftWax</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 2 strips</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Spot relief</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">—</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <div className="mt-6 flex justify-end">
-          <button 
-            onClick={() => setShowComparisonModal(false)}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors"
-          >
-            Close
-          </button>
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-bold">Pack Comparison</h3>
+            <button 
+              onClick={() => setShowComparisonModal(false)}
+              className="text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              ×
+            </button>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pack</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contents</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ideal For</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price per Pair</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">5-Pair</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">10 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">First-time users</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.99</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">15-Pair</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">30 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Regular users</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.73</td>
+                </tr>
+                {showLargePack && (
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">31-Pair</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">62 strips</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Long-term users</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.55</td>
+                  </tr>
+                )}
+                {showBulkPack && (
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">100-Pair Bulk</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">200 strips</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Clinics/Wholesale</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.50</td>
+                  </tr>
+                )}
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">SoftWax</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 2 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Spot relief</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">—</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Bundle</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 10 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Best starter combo</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.90</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="mt-6 flex justify-end">
+            <button 
+              onClick={() => setShowComparisonModal(false)}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -98,6 +120,7 @@ function Product() {
         </div>
 
         <div className="product-options">
+          {/* 5-Pair Pack */}
           <div className="product-option relative">
             <div className="badge-container absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg z-10">
               <span className="text-sm font-bold">Starter Pack</span>
@@ -122,6 +145,7 @@ function Product() {
             </div>
           </div>
 
+          {/* 15-Pair Pack */}
           <div className="product-option relative">
             <div className="badge-container absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg z-10">
               <span className="text-sm font-bold">Best Value</span>
@@ -146,8 +170,39 @@ function Product() {
             </div>
           </div>
 
-          {!hideLargePack && (
-            <div className="product-option">
+          {/* $8.99 Bundle - Now showing as actual product card! */}
+          <div className="product-option relative">
+            <div className="badge-container absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg z-10">
+              <span className="text-sm font-bold">Bundle Deal</span>
+            </div>
+            <div className="product-image relative">
+              <img 
+                src={softWaxImage} 
+                alt="SoftWax + SoftBrace Bundle" 
+                className="package-image"
+              />
+            </div>
+            <h3>SoftWax + 5-Pair SoftBrace Bundle</h3>
+            <p className="quantity">(1 wax case + 10 strips)</p>
+            <p className="price">$8.99</p>
+            <p className="description">Get the best of both worlds! SoftWax case plus 5-pair SoftBrace starter pack. Perfect for new users or as a gift.</p>
+            <Link to="/product/6" className="product-button">
+              View Details
+            </Link>
+            <div className="trust-badges">
+              <span className="badge">Bundle Savings</span>
+              <span className="badge">Best Starter Combo</span>
+            </div>
+          </div>
+
+          {/* 31-Pair Pack - Scheduled for July 13th */}
+          {showLargePack && (
+            <div className="product-option relative">
+              {isReleaseDay() && (
+                <div className="badge-container absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-bl-lg z-10">
+                  <span className="text-sm font-bold">🎉 Birthday Release!</span>
+                </div>
+              )}
               <div className="product-image relative">
                 <img 
                   src={largePackImage} 
@@ -158,17 +213,18 @@ function Product() {
               <h3>{t('product.packOptions.large.title')}</h3>
               <p className="quantity">(62 strips total)</p>
               <p className="price">{t('product.packOptions.large.price')}</p>
-              <p className="description">Best value for long-term comfort.</p>
+              <p className="description">Best value for long-term comfort. Perfect for extended orthodontic treatment.</p>
               <Link to="/product/3" className="product-button">
                 View Details
               </Link>
               <div className="trust-badges">
                 <span className="badge">FDA-Compliant Silicone</span>
-                <span className="badge">Safe for Braces & Gums</span>
+                <span className="badge">Best Value</span>
               </div>
             </div>
           )}
-          
+
+          {/* SoftWax */}
           <div className="product-option relative">
             <div className="badge-container absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg z-10">
               <span className="text-sm font-bold">Free SoftBrace Pair Inside</span>
@@ -191,10 +247,36 @@ function Product() {
               <span className="badge">Non-Toxic</span>
               <span className="badge">Safe for Braces & Gums</span>
             </div>
-            <div className="coming-soon-upsell">
-              <p>Coming Soon: Combo Bundle — SoftWax + 5-Pair Pack for $8.49</p>
-            </div>
           </div>
+
+          {/* 100-Pair Bulk Pack - Scheduled for July 13th */}
+          {showBulkPack && (
+            <div className="product-option relative">
+              {isReleaseDay() && (
+                <div className="badge-container absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-bl-lg z-10">
+                  <span className="text-sm font-bold">🎉 Birthday Release!</span>
+                </div>
+              )}
+              <div className="product-image relative">
+                <img 
+                  src={largePackImage} 
+                  alt="SoftBrace 100-Pair Bulk Pack" 
+                  className="package-image"
+                />
+              </div>
+              <h3>SoftBrace 100-Pair Bulk Pack</h3>
+              <p className="quantity">(200 strips total)</p>
+              <p className="price">$49.99</p>
+              <p className="description">Professional bulk pack for orthodontic clinics or wholesale orders. Best value per strip.</p>
+              <Link to="/product/5" className="product-button">
+                View Details
+              </Link>
+              <div className="trust-badges">
+                <span className="badge">Professional Grade</span>
+                <span className="badge">Wholesale Pricing</span>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Compare Packs button */}
@@ -210,14 +292,29 @@ function Product() {
           </button>
         </div>
         
-        {/* Add coming soon message for larger packs */}
-        <div className="mt-6 mb-8 p-4 bg-purple-100 dark:bg-purple-900 rounded-lg max-w-2xl mx-auto">
-          <h3 className="text-xl font-bold text-purple-800 dark:text-purple-200 mb-2">✨ Coming Soon</h3>
-          <p className="text-purple-700 dark:text-purple-300">
-            We're excited to announce that our 31-Pair Pack and 100-Pair Bulk Pack will be available soon! 
-            Stay tuned for these larger size options.
-          </p>
-        </div>
+        {/* Scheduled release countdown - only show if products are not yet released */}
+        {!showAllProducts && (
+          <div className="mt-6 mb-8 p-4 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-lg max-w-2xl mx-auto">
+            <h3 className="text-xl font-bold text-purple-800 dark:text-purple-200 mb-2">🎂 Birthday Release Coming!</h3>
+            <p className="text-purple-700 dark:text-purple-300 mb-2">
+              Our 31-Pair Pack and 100-Pair Bulk Pack will be released on <strong>{getReleaseDate()}</strong>!
+            </p>
+            <p className="text-sm text-purple-600 dark:text-purple-400">
+              Only <strong>{getDaysUntilRelease()}</strong> days to go! 🎉
+            </p>
+          </div>
+        )}
+
+        {/* Birthday celebration message - only show on release day */}
+        {isReleaseDay() && (
+          <div className="mt-6 mb-8 p-4 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 rounded-lg max-w-2xl mx-auto">
+            <h3 className="text-xl font-bold text-orange-800 dark:text-orange-200 mb-2">🎉 Happy Birthday! All Products Now Available!</h3>
+            <p className="text-orange-700 dark:text-orange-300">
+              Celebrating the special day with the release of our complete product lineup! 
+              The 31-Pair Pack and 100-Pair Bulk Pack are now available for purchase.
+            </p>
+          </div>
+        )}
 
         <Link to="/shop" className="shop-button">
           {t('product.shopButton')}

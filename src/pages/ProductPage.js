@@ -4,6 +4,7 @@ import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
 import ProductSchema from '../components/ProductSchema';
+import { shouldShowProduct, isReleaseDay, getReleaseDate } from '../utils/releaseSchedule';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
 import mediumPackImage from '../assets/15-pack.png';
@@ -76,8 +77,9 @@ function ProductPage() {
           quantity: '31 Pairs (62 strips)',
           stock: 5,
           soldOut: false,
-          hidden: true,
-          comingSoon: true
+          hidden: !shouldShowProduct('3'),
+          comingSoon: !shouldShowProduct('3'),
+          birthdayRelease: isReleaseDay()
         },
         {
           id: 4,
@@ -114,8 +116,9 @@ function ProductPage() {
           quantity: '100 Pairs (200 strips)',
           stock: 3,
           soldOut: false,
-          hidden: true,
-          comingSoon: true
+          hidden: !shouldShowProduct('5'),
+          comingSoon: !shouldShowProduct('5'),
+          birthdayRelease: isReleaseDay()
         },
         {
           id: 6,
@@ -211,7 +214,7 @@ function ProductPage() {
       <>
         <SoftLaunchBanner />
         <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="text-3xl font-bold mb-4">Coming Soon</h1>
+          <h1 className="text-3xl font-bold mb-4">🎂 Birthday Release Coming!</h1>
           <div className="mb-6 max-w-xl mx-auto">
             <img 
               src={product.image} 
@@ -219,10 +222,14 @@ function ProductPage() {
               className="max-w-full max-h-64 object-contain mx-auto mb-6"
             />
             <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
-            <p className="mb-6">
-              This product will be available soon! We're working hard to make our larger packs available for purchase.
-              Check back later or sign up for our newsletter to be notified when it's ready.
-            </p>
+            <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 p-6 rounded-lg mb-6">
+              <p className="text-purple-700 dark:text-purple-300 mb-4">
+                This premium product will be released as part of our special birthday celebration on <strong>{getReleaseDate()}</strong>!
+              </p>
+              <p className="text-sm text-purple-600 dark:text-purple-400">
+                🎉 Mark your calendar - all our products including the 31-Pair Pack and 100-Pair Bulk Pack will be available on this special day!
+              </p>
+            </div>
             <Link to="/shop" className="bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-lg">
               {t('common.backToShop')}
             </Link>
@@ -241,6 +248,11 @@ function ProductPage() {
           <div className="md:flex">
             {/* Product Image */}
             <div className="md:w-1/2 p-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 relative">
+              {product.birthdayRelease && (
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-lg text-sm font-bold z-10">
+                  🎉 Birthday Release!
+                </div>
+              )}
               <img 
                 src={product.image} 
                 alt={product.name}
