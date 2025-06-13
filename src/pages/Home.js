@@ -23,8 +23,11 @@ const Home = () => {
             </div>
           </div>
           <div className="hero-image">
-            {/* Placeholder for hero image */}
-            <div className="image-placeholder">Product Image</div>
+            <img 
+              src="/images/softbrace-usage-example.jpg" 
+              alt="SoftBrace strips in use - comfortable protection for braces"
+              className="rounded-lg shadow-lg max-w-full h-auto"
+            />
           </div>
         </div>
       </section>

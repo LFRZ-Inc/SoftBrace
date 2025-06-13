@@ -57,12 +57,25 @@ function SoftBraceUsagePage() {
           <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
             How to Use:
           </h2>
+          
+          {/* Usage Example Image */}
+          <div className="mb-6 text-center">
+            <img 
+              src="/images/softbrace-usage-example.jpg" 
+              alt="Example of SoftBrace strips properly applied on upper braces"
+              className="mx-auto rounded-lg shadow-md max-w-md w-full"
+            />
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+              Example: SoftBrace strips properly applied on upper braces. The same technique applies to bottom braces.
+            </p>
+          </div>
+
           <div className="space-y-3">
             <div className="flex items-start">
               <span className="text-green-500 mr-3 mt-1">✅</span>
               <p className="text-gray-700 dark:text-gray-200">
                 SoftBrace is designed to rest on your gum and brace brackets, not directly on the wire. 
-                (See example image on our website for correct placement.)
+                As shown in the image above, the blue strips cover the brackets while protecting your gums.
               </p>
             </div>
             <div className="flex items-start">
@@ -75,6 +88,12 @@ function SoftBraceUsagePage() {
               <span className="text-green-500 mr-3 mt-1">✅</span>
               <p className="text-gray-700 dark:text-gray-200">
                 Do not press strip tightly onto the wire.
+              </p>
+            </div>
+            <div className="flex items-start">
+              <span className="text-green-500 mr-3 mt-1">✅</span>
+              <p className="text-gray-700 dark:text-gray-200">
+                <strong>For bottom braces:</strong> Use the exact same technique as shown for the upper braces.
               </p>
             </div>
           </div>
