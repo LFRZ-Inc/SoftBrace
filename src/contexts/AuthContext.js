@@ -52,16 +52,38 @@ export const AuthProvider = ({ children }) => {
       
       // If no profile exists, create one
       if (!userProfile) {
-        const user = await supabase.auth.getUser()
-        const isAdmin = user.data.user?.email === 'luisdrod750@gmail.com'
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        const isAdmin = authUser?.email === 'luisdrod750@gmail.com'
         
-        userProfile = await createUserProfile({
-          id: userId,
-          email: user.data.user?.email,
-          full_name: user.data.user?.user_metadata?.full_name || (isAdmin ? 'Luis Rodriguez (Admin)' : ''),
-          phone: user.data.user?.user_metadata?.phone || '',
-          is_admin: isAdmin
-        })
+        try {
+          userProfile = await createUserProfile({
+            id: userId,
+            email: authUser?.email,
+            full_name: authUser?.user_metadata?.full_name || (isAdmin ? 'Luis Rodriguez (Admin)' : ''),
+            phone: authUser?.user_metadata?.phone || '',
+            is_admin: isAdmin
+          })
+        } catch (createError) {
+          console.error('Error creating user profile:', createError)
+          // If profile creation fails, try to call the ensure function
+          try {
+            await supabase.rpc('ensure_admin_profile', { 
+              user_email: authUser?.email,
+              user_id: userId 
+            })
+            // Try to get the profile again
+            userProfile = await getUserProfile(userId)
+          } catch (ensureError) {
+            console.error('Error ensuring admin profile:', ensureError)
+            // Create a minimal profile object to prevent app crashes
+            userProfile = {
+              id: userId,
+              email: authUser?.email,
+              full_name: authUser?.user_metadata?.full_name || '',
+              is_admin: authUser?.email === 'luisdrod750@gmail.com'
+            }
+          }
+        }
       }
       
       setProfile(userProfile)
@@ -72,21 +94,41 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error loading user profile:', error)
+      // Don't crash the app, just log the error
+      setProfile(null)
     }
   }
 
   const signUp = async (email, password, metadata = {}) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          ...metadata,
-          full_name: metadata.full_name || (email === 'luisdrod750@gmail.com' ? 'Luis Rodriguez (Admin)' : '')
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            ...metadata,
+            full_name: metadata.full_name || (email === 'luisdrod750@gmail.com' ? 'Luis Rodriguez (Admin)' : '')
+          }
+        }
+      })
+      
+      // If signup successful but there's a profile issue, try to ensure the profile exists
+      if (data.user && !error && email === 'luisdrod750@gmail.com') {
+        try {
+          await supabase.rpc('ensure_admin_profile', { 
+            user_email: email,
+            user_id: data.user.id 
+          })
+        } catch (ensureError) {
+          console.warn('Could not ensure admin profile, but signup was successful:', ensureError)
         }
       }
-    })
-    return { data, error }
+      
+      return { data, error }
+    } catch (err) {
+      console.error('Signup error:', err)
+      return { data: null, error: err }
+    }
   }
 
   const signIn = async (email, password) => {

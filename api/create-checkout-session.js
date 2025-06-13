@@ -50,10 +50,26 @@ module.exports = async (req, res) => {
       }];
     }
 
-    // Enhanced shipping logic with Laredo, TX support
+    // Enhanced shipping logic with proper Laredo, TX support
     let shipping_options = [];
 
-    // Always offer standard shipping options based on order total
+    // ALWAYS add Laredo, TX local delivery option (free for all orders)
+    shipping_options.push({
+      shipping_rate_data: {
+        type: 'fixed_amount',
+        fixed_amount: {
+          amount: 0,
+          currency: 'usd',
+        },
+        display_name: 'Laredo, TX Local Delivery (FREE)',
+        delivery_estimate: {
+          minimum: { unit: 'business_day', value: 1 },
+          maximum: { unit: 'business_day', value: 2 },
+        },
+      },
+    });
+
+    // Add standard shipping options based on order total
     if (totalAmount < 599) {
       // $2 shipping for orders under $5.99
       shipping_options.push({
@@ -88,22 +104,6 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Always add Laredo, TX local delivery option (free)
-    shipping_options.push({
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: {
-          amount: 0,
-          currency: 'usd',
-        },
-        display_name: 'Laredo, TX Local Delivery (FREE)',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 1 },
-          maximum: { unit: 'business_day', value: 2 },
-        },
-      },
-    });
-
     // Create checkout session configuration
     const sessionConfig = {
       payment_method_types: ['card'],
@@ -123,7 +123,8 @@ module.exports = async (req, res) => {
         has_laredo_option: 'true',
         user_type: isRegisteredUser ? 'registered' : 'guest',
         user_id: user_id || 'guest',
-        discount_applied: isRegisteredUser ? '5_percent' : 'none'
+        discount_applied: isRegisteredUser ? '5_percent' : 'none',
+        order_total_cents: totalAmount.toString()
       }
     };
 
@@ -143,7 +144,9 @@ module.exports = async (req, res) => {
     res.status(200).json({ 
       id: session.id,
       discount_applied: isRegisteredUser,
-      discount_amount: isRegisteredUser ? '5%' : '0%'
+      discount_amount: isRegisteredUser ? '5%' : '0%',
+      laredo_shipping_available: true,
+      order_total: (totalAmount / 100).toFixed(2)
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);
