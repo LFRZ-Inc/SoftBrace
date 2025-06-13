@@ -188,7 +188,7 @@ const translations = {
         message: 'Message',
         submit: 'Send Message'
       },
-      note: '* Business email setup in progress. Form submissions will be enabled soon.'
+      note: '* Contact us directly at coolipod0@gmail.com or (956) 999-2944 for immediate assistance.'
     },
     
     // Footer
@@ -531,7 +531,7 @@ const translations = {
         message: 'Mensaje',
         submit: 'Enviar Mensaje'
       },
-      note: '* Configuración de correo electrónico de negocios en progreso. El envío de formularios se habilitará pronto.'
+      note: '* Contáctenos directamente en coolipod0@gmail.com o (956) 999-2944 para asistencia inmediata.'
     },
     
     // Footer

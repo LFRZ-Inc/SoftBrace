@@ -58,10 +58,10 @@ const Contact = () => {
               {/* Personal line (956) 482-3122 is for family/friends only */}
             </div>
             <div className="info-item">
-              <h3>Visit Us</h3>
-              <p>123 Support Street</p>
-              <p>Health City, FL 12345</p>
-              <p>United States</p>
+              <h3>Contact Info</h3>
+              <p>Email: coolipod0@gmail.com</p>
+              <p>Phone: (956) 999-2944</p>
+              <p>Based in Laredo, TX</p>
             </div>
             <div className="info-item">
               <h3>Connect With Us</h3>
