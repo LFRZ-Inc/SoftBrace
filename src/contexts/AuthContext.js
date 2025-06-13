@@ -63,7 +63,23 @@ export const AuthProvider = ({ children }) => {
       console.log('Loading user profile for:', userId)
       
       // Try to get existing profile first
-      let userProfile = await getUserProfile(userId)
+      let userProfile = null
+      
+      try {
+        userProfile = await getUserProfile(userId)
+      } catch (profileError) {
+        console.warn('Standard profile fetch failed, trying alternative method:', profileError)
+        
+        // Try the safe function as fallback
+        try {
+          const { data } = await supabase.rpc('safe_get_profile', { user_id: userId })
+          if (data && data.length > 0) {
+            userProfile = data[0]
+          }
+        } catch (rpcError) {
+          console.warn('RPC profile fetch also failed:', rpcError)
+        }
+      }
       
       // If no profile exists, create one
       if (!userProfile) {

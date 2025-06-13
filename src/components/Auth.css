@@ -84,6 +84,32 @@
   box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.password-toggle:hover {
+  color: var(--color-text);
+}
+
 .auth-error {
   background: #fee;
   color: #c33;
