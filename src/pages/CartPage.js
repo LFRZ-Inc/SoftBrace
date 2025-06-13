@@ -214,9 +214,10 @@ function CartPage() {
       </div>
 
       {/* Auth Modal */}
-      {showAuth && (
-        <Auth onClose={() => setShowAuth(false)} />
-      )}
+      <Auth 
+        isOpen={showAuth}
+        onClose={() => setShowAuth(false)} 
+      />
     </>
   );
 }

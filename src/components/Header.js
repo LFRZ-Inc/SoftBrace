@@ -112,9 +112,10 @@ function Header() {
       </header>
 
       {/* Auth Modal */}
-      {showAuth && (
-        <Auth onClose={() => setShowAuth(false)} />
-      )}
+      <Auth 
+        isOpen={showAuth}
+        onClose={() => setShowAuth(false)} 
+      />
     </>
   );
 }
