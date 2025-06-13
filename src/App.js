@@ -17,6 +17,7 @@ import SuccessPage from './pages/SuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import { CartProvider } from './contexts/CartContext';
@@ -82,6 +83,7 @@ function App() {
                         <Route path="/cart" element={<CartPage />} />
                         <Route path="/checkout" element={<CheckoutPage />} />
                         <Route path="/success" element={<SuccessPage />} />
+                        <Route path="/contact" element={<Contact />} />
                         <Route path="/terms-of-service" element={<TermsPage />} />
                         <Route path="/privacy-policy" element={<PrivacyPage />} />
                         <Route path="/blog" element={<Blog />} />

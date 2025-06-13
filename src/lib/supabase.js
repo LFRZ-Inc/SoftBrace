@@ -3,7 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://ebodynepuqrocggtevdw.supabase.co'
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVib2R5bmVwdXFyb2NnZ3RldmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3ODk5OTMsImV4cCI6MjA2NTM2NTk5M30.LMq1DcLd5_pPf77NL0EqQmUHIp0WnU61UpxndtSmhr8'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Add debug logging
+console.log('Supabase Config:', {
+  url: supabaseUrl,
+  keyPrefix: supabaseAnonKey.substring(0, 20) + '...'
+})
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    debug: true
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'supabase-js'
+    }
+  }
+})
 
 // Helper functions for common operations
 export const auth = supabase.auth

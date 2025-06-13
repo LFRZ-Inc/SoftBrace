@@ -9,6 +9,9 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,20 +21,44 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to a server
-    console.log('Form submitted:', formData);
-    // Reset form after submission
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
-    // Show success message (in a real app)
-    alert('Thank you for your message. We will respond shortly!');
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    
+    try {
+      // For now, simulate sending the email by logging the data
+      console.log('Form submitted:', formData);
+      
+      // Create a mailto link as a fallback solution
+      const subject = encodeURIComponent(`Contact Form: ${formData.subject}`);
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\n` +
+        `Email: ${formData.email}\n` +
+        `Phone: ${formData.phone}\n\n` +
+        `Message:\n${formData.message}\n\n` +
+        `Sent from SoftBraceStrips.com contact form`
+      );
+      
+      // Open default email client
+      window.location.href = `mailto:coolipod0@gmail.com?subject=${subject}&body=${body}`;
+      
+      // Reset form after submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+      
+      setSubmitStatus('success');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -77,6 +104,32 @@ const Contact = () => {
           <div className="contact-form-container">
             <h2>Send Us a Message</h2>
             <form className="contact-form" onSubmit={handleSubmit}>
+              {submitStatus === 'success' && (
+                <div className="success-message" style={{
+                  background: '#d4edda',
+                  color: '#155724',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  marginBottom: '20px',
+                  border: '1px solid #c3e6cb'
+                }}>
+                  ✅ Thank you for your message! Your default email client should open to send the message to coolipod0@gmail.com.
+                </div>
+              )}
+              
+              {submitStatus === 'error' && (
+                <div className="error-message" style={{
+                  background: '#f8d7da',
+                  color: '#721c24',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  marginBottom: '20px',
+                  border: '1px solid #f5c6cb'
+                }}>
+                  ❌ There was an error submitting your message. Please try again or email us directly at coolipod0@gmail.com.
+                </div>
+              )}
+              
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
@@ -131,7 +184,9 @@ const Contact = () => {
                   required
                 ></textarea>
               </div>
-              <button type="submit" className="btn">Send Message</button>
+              <button type="submit" className="btn" disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
             </form>
           </div>
         </div>
