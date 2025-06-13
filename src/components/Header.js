@@ -3,16 +3,25 @@ import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import Auth from './Auth';
 
 function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const { itemCount } = useCart();
+  const { user, profile, signOut, loading } = useAuth();
   const isHomePage = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setMenuOpen(false);
   };
 
   // Close menu when route changes
@@ -21,53 +30,90 @@ function Header() {
   }, [location]);
 
   return (
-    <header className="header">
-      <div className="header-container">
-        <div className="logo">
-          <Link to="/">
-            <img src="/images/softbrace-logos.jpg.png" alt="SoftBrace Logo" />
-            <span className="logo-text">{t('hero.title')}</span>
-          </Link>
+    <>
+      <header className="header">
+        <div className="header-container">
+          <div className="logo">
+            <Link to="/">
+              <img src="/images/softbrace-logos.jpg.png" alt="SoftBrace Logo" />
+              <span className="logo-text">{t('hero.title')}</span>
+            </Link>
+          </div>
+          
+          <button 
+            className={`mobile-menu-button ${menuOpen ? 'menu-open' : ''}`} 
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span className="mobile-menu-icon"></span>
+          </button>
+          
+          <nav className={`nav-menu ${menuOpen ? 'open' : ''}`}>
+            <ul>
+              {isHomePage ? (
+                // Home page uses anchor links
+                <>
+                  <li><a href="#home">{t('nav.home')}</a></li>
+                  <li><a href="#product">{t('nav.product')}</a></li>
+                  <li><a href="#usage">{t('nav.usage')}</a></li>
+                  <li><a href="#contact">{t('nav.contact')}</a></li>
+                </>
+              ) : (
+                // Other pages use router links
+                <li><Link to="/">{t('nav.home')}</Link></li>
+              )}
+              <li><Link to="/shop">{t('nav.shop')}</Link></li>
+              <li><Link to="/blog">{t('nav.blog')}</Link></li>
+              <li>
+                <Link to="/cart" className="cart-link">
+                  {t('nav.cart')}
+                  {itemCount > 0 && (
+                    <span className="cart-count bg-primary text-white rounded-full h-5 w-5 inline-flex items-center justify-center text-xs ml-1">
+                      {itemCount}
+                    </span>
+                  )}
+                </Link>
+              </li>
+              
+              {/* Authentication Section */}
+              {!loading && (
+                <>
+                  {user ? (
+                    <li className="auth-section">
+                      <div className="user-menu">
+                        <span className="user-greeting">
+                          Hi, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
+                        </span>
+                        <button 
+                          className="sign-out-btn"
+                          onClick={handleSignOut}
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </li>
+                  ) : (
+                    <li className="auth-section">
+                      <button 
+                        className="sign-in-btn"
+                        onClick={() => setShowAuth(true)}
+                      >
+                        Sign In
+                      </button>
+                    </li>
+                  )}
+                </>
+              )}
+            </ul>
+          </nav>
         </div>
-        
-        <button 
-          className={`mobile-menu-button ${menuOpen ? 'menu-open' : ''}`} 
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          <span className="mobile-menu-icon"></span>
-        </button>
-        
-        <nav className={`nav-menu ${menuOpen ? 'open' : ''}`}>
-          <ul>
-            {isHomePage ? (
-              // Home page uses anchor links
-              <>
-                <li><a href="#home">{t('nav.home')}</a></li>
-                <li><a href="#product">{t('nav.product')}</a></li>
-                <li><a href="#usage">{t('nav.usage')}</a></li>
-                <li><a href="#contact">{t('nav.contact')}</a></li>
-              </>
-            ) : (
-              // Other pages use router links
-              <li><Link to="/">{t('nav.home')}</Link></li>
-            )}
-            <li><Link to="/shop">{t('nav.shop')}</Link></li>
-            <li><Link to="/blog">{t('nav.blog')}</Link></li>
-            <li>
-              <Link to="/cart" className="cart-link">
-                {t('nav.cart')}
-                {itemCount > 0 && (
-                  <span className="cart-count bg-primary text-white rounded-full h-5 w-5 inline-flex items-center justify-center text-xs ml-1">
-                    {itemCount}
-                  </span>
-                )}
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+      </header>
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <Auth onClose={() => setShowAuth(false)} />
+      )}
+    </>
   );
 }
 

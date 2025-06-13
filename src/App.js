@@ -22,6 +22,7 @@ import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Conditionally import the Loader to avoid breaking the build
 let Loader = null;
@@ -64,38 +65,40 @@ function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <CartProvider>
-          <StripeProvider>
-            <LoadingProvider>
-              <Router>
-                <div className="App">
-                  <WebsiteSchema />
-                  <Header />
-                  <LoaderComponent />
-                  <main className="main-content">
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/shop" element={<ShopPage />} />
-                      <Route path="/product/:id" element={<ProductPage />} />
-                      <Route path="/cart" element={<CartPage />} />
-                      <Route path="/checkout" element={<CheckoutPage />} />
-                      <Route path="/success" element={<SuccessPage />} />
-                      <Route path="/terms-of-service" element={<TermsPage />} />
-                      <Route path="/privacy-policy" element={<PrivacyPage />} />
-                      <Route path="/blog" element={<Blog />} />
-                      <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
-                      <Route path="/insert-card" element={<SoftBraceUsagePage />} />
-                      <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                  <ThemeToggle />
-                  <LanguageSelector />
-                </div>
-              </Router>
-            </LoadingProvider>
-          </StripeProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <StripeProvider>
+              <LoadingProvider>
+                <Router>
+                  <div className="App">
+                    <WebsiteSchema />
+                    <Header />
+                    <LoaderComponent />
+                    <main className="main-content">
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/shop" element={<ShopPage />} />
+                        <Route path="/product/:id" element={<ProductPage />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/success" element={<SuccessPage />} />
+                        <Route path="/terms-of-service" element={<TermsPage />} />
+                        <Route path="/privacy-policy" element={<PrivacyPage />} />
+                        <Route path="/blog" element={<Blog />} />
+                        <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
+                        <Route path="/insert-card" element={<SoftBraceUsagePage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                    <ThemeToggle />
+                    <LanguageSelector />
+                  </div>
+                </Router>
+              </LoadingProvider>
+            </StripeProvider>
+          </CartProvider>
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

@@ -55,7 +55,8 @@ function TermsPage() {
         
         <h2 className="text-xl font-bold mt-6 mb-3">10. Contact Us</h2>
         <p>
-          If you have any questions about these Terms, please contact us at support@softbracestrips.com.
+          If you have any questions about these Terms, please contact us at coolipod0@gmail.com or call (956) 999-2944.
+          {/* Future: support@SoftBraceStrips.com */}
         </p>
       </div>
     </div>

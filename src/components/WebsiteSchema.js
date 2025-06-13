@@ -16,7 +16,9 @@ function WebsiteSchema() {
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer support",
-      "email": "support@softbracestrips.com"
+      "email": "coolipod0@gmail.com",
+      "telephone": "+1-956-999-2944"
+      // Future: "email": "support@SoftBraceStrips.com"
     }
   };
 

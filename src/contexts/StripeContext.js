@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useAuth } from './AuthContext';
 
 // Create a context for Stripe functions
 const StripeContext = createContext(null);
@@ -13,6 +14,8 @@ const stripePromise = loadStripe(
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 export function StripeProvider({ children }) {
+  const { user, profile } = useAuth();
+
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items) => {
     try {
@@ -31,6 +34,13 @@ export function StripeProvider({ children }) {
         },
         quantity: item.quantity,
       }));
+
+      // Prepare user information for discount eligibility
+      const requestBody = {
+        line_items,
+        user_id: user?.id || null,
+        user_email: user?.email || profile?.email || null
+      };
       
       // Call our API endpoint to create a checkout session
       const response = await fetch('/api/create-checkout-session', {
@@ -38,7 +48,7 @@ export function StripeProvider({ children }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ line_items }),
+        body: JSON.stringify(requestBody),
       });
       
       if (!response.ok) {
@@ -47,6 +57,11 @@ export function StripeProvider({ children }) {
       }
       
       const session = await response.json();
+      
+      // Show discount notification if applicable
+      if (session.discount_applied) {
+        console.log(`🎉 5% registered user discount applied!`);
+      }
       
       // Redirect to Stripe checkout
       const stripe = await stripePromise;
@@ -62,7 +77,11 @@ export function StripeProvider({ children }) {
         throw new Error(error.message);
       }
       
-      return { success: true };
+      return { 
+        success: true,
+        discount_applied: session.discount_applied,
+        discount_amount: session.discount_amount
+      };
     } catch (error) {
       console.error('Error redirecting to checkout:', error);
       return {
@@ -73,7 +92,9 @@ export function StripeProvider({ children }) {
   };
 
   const value = {
-    redirectToCheckout
+    redirectToCheckout,
+    isUserLoggedIn: !!user,
+    userEmail: user?.email || profile?.email
   };
 
   return (

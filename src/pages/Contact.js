@@ -48,13 +48,14 @@ const Contact = () => {
           <div className="contact-info">
             <div className="info-item">
               <h3>Email Us</h3>
-              <p>info@softbracestrips.com</p>
-              <p>support@softbracestrips.com</p>
+              <p>coolipod0@gmail.com</p>
+              {/* Future: <p>support@SoftBraceStrips.com</p> */}
             </div>
             <div className="info-item">
               <h3>Call Us</h3>
-              <p>(555) 123-4567</p>
-              <p>Monday-Friday: 9am-5pm EST</p>
+              <p>(956) 999-2944</p>
+              <p>Monday-Friday: 9am-5pm CST</p>
+              {/* Personal line (956) 482-3122 is for family/friends only */}
             </div>
             <div className="info-item">
               <h3>Visit Us</h3>

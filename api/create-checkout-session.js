@@ -22,56 +22,90 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { line_items } = req.body;
+    const { line_items, user_id, user_email } = req.body;
     
     // Calculate total amount in cents
     const totalAmount = line_items.reduce((sum, item) => {
       return sum + (item.price_data.unit_amount * item.quantity);
     }, 0);
 
-    // Conditional shipping logic
-    let shipping_options;
-
-    if (totalAmount < 599) {
-      // $2 shipping for orders under $5.99
-      shipping_options = [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 200, // $2 in cents
-              currency: 'usd',
-            },
-            display_name: 'Standard Shipping ($2.00)',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 3 },
-              maximum: { unit: 'business_day', value: 5 },
-            },
-          },
+    // Apply 5% discount for registered users
+    let discounts = [];
+    let isRegisteredUser = user_id && user_email;
+    
+    if (isRegisteredUser) {
+      // Create a coupon for 5% off for registered users
+      const coupon = await stripe.coupons.create({
+        percent_off: 5,
+        duration: 'once',
+        name: 'Registered User Discount',
+        metadata: {
+          user_id: user_id,
+          discount_type: 'registered_user'
         }
-      ];
-    } else {
-      // Free shipping for $5.99 or more
-      shipping_options = [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 0,
-              currency: 'usd',
-            },
-            display_name: 'Free Shipping',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 3 },
-              maximum: { unit: 'business_day', value: 5 },
-            },
-          },
-        }
-      ];
+      });
+      
+      discounts = [{
+        coupon: coupon.id
+      }];
     }
 
-    // Create a checkout session with Stripe
-    const session = await stripe.checkout.sessions.create({
+    // Enhanced shipping logic with Laredo, TX support
+    let shipping_options = [];
+
+    // Always offer standard shipping options based on order total
+    if (totalAmount < 599) {
+      // $2 shipping for orders under $5.99
+      shipping_options.push({
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 200, // $2 in cents
+            currency: 'usd',
+          },
+          display_name: 'Standard Shipping ($2.00)',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 3 },
+            maximum: { unit: 'business_day', value: 5 },
+          },
+        },
+      });
+    } else {
+      // Free shipping for $5.99 or more
+      shipping_options.push({
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 0,
+            currency: 'usd',
+          },
+          display_name: 'Free Shipping',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 3 },
+            maximum: { unit: 'business_day', value: 5 },
+          },
+        },
+      });
+    }
+
+    // Always add Laredo, TX local delivery option (free)
+    shipping_options.push({
+      shipping_rate_data: {
+        type: 'fixed_amount',
+        fixed_amount: {
+          amount: 0,
+          currency: 'usd',
+        },
+        display_name: 'Laredo, TX Local Delivery (FREE)',
+        delivery_estimate: {
+          minimum: { unit: 'business_day', value: 1 },
+          maximum: { unit: 'business_day', value: 2 },
+        },
+      },
+    });
+
+    // Create checkout session configuration
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
@@ -84,9 +118,33 @@ module.exports = async (req, res) => {
         allowed_countries: ['US'],
       },
       shipping_options,
-    });
+      // Add metadata
+      metadata: {
+        has_laredo_option: 'true',
+        user_type: isRegisteredUser ? 'registered' : 'guest',
+        user_id: user_id || 'guest',
+        discount_applied: isRegisteredUser ? '5_percent' : 'none'
+      }
+    };
 
-    res.status(200).json({ id: session.id });
+    // Add discounts if user is registered
+    if (discounts.length > 0) {
+      sessionConfig.discounts = discounts;
+    }
+
+    // Pre-fill customer email if available
+    if (user_email) {
+      sessionConfig.customer_email = user_email;
+    }
+
+    // Create a checkout session with Stripe
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    res.status(200).json({ 
+      id: session.id,
+      discount_applied: isRegisteredUser,
+      discount_amount: isRegisteredUser ? '5%' : '0%'
+    });
   } catch (error) {
     console.error('Error creating checkout session:', error);
     res.status(500).json({ error: error.message });

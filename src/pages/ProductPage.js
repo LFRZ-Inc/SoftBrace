@@ -116,6 +116,24 @@ function ProductPage() {
           soldOut: false,
           hidden: true,
           comingSoon: true
+        },
+        {
+          id: 6,
+          name: 'SoftWax + 5-Pair SoftBrace Strips Bundle',
+          price: 8.99,
+          image: softWaxImage,
+          category: 'bundle',
+          description: 'Get the best of both worlds: 1 SoftWax case and a 5-pair (10 strips) SoftBrace starter pack. Perfect for new users or as a gift!',
+          longDescription: 'Bundle: SoftWax + 5-pair SoftBrace Strips. Save and try both comfort solutions! Includes 1 wax case and 5 pairs (10 strips) of SoftBrace.',
+          features: [
+            'Includes both SoftWax and SoftBrace strips',
+            'Best starter combo for new users',
+            'Save compared to buying separately',
+            'Great as a gift or for travel'
+          ],
+          quantity: '1 wax case + 5 pairs (10 strips)',
+          stock: 20,
+          soldOut: false
         }
       ];
       

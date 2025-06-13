@@ -76,7 +76,20 @@ const createProductData = (t) => [
     soldOut: false,
     hidden: true,
     pricePerPair: "$0.50"
-  }
+  },
+  {
+    id: 6,
+    name: 'SoftWax + 5-Pair SoftBrace Strips Bundle',
+    price: 8.99,
+    image: softWaxImage,
+    category: 'bundle',
+    description: 'Get the best of both worlds: 1 SoftWax case and a 5-pair (10 strips) SoftBrace starter pack. Perfect for new users or as a gift!',
+    quantity: '1 wax case + 5 pairs (10 strips)',
+    shortDescription: 'Bundle: SoftWax + 5-pair SoftBrace Strips. Save and try both comfort solutions!',
+    soldOut: false,
+    badge: 'Bundle Deal',
+    pricePerPair: '$0.90'
+  },
 ];
 
 function ShopPage() {
@@ -162,6 +175,12 @@ function ShopPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 2 strips</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Spot relief</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">—</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Bundle</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 10 strips</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Best starter combo</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.90</td>
               </tr>
             </tbody>
           </table>
@@ -284,13 +303,6 @@ function ShopPage() {
                     <span className="inline-block text-xs bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-200 px-2 py-1 rounded-full">Non-Toxic & One-Time Use</span>
                     <span className="inline-block text-xs bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-200 px-2 py-1 rounded-full">Safe for Braces & Gums</span>
                   </div>
-                  
-                  {/* Upsell placeholder for SoftWax */}
-                  {product.id === 4 && (
-                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-purple-600 dark:text-purple-300">
-                      <p>Coming Soon: Combo Bundle — SoftWax + 5-Pair Pack for $8.49</p>
-                    </div>
-                  )}
                 </div>
               </div>
             ))

@@ -58,4 +58,5 @@ This project is proprietary and confidential. All rights reserved.
 
 ## Contact
 
-For questions or support, please contact info@softbracestrips.com 
+For questions or support, please contact coolipod0@gmail.com
+// Future: support@SoftBraceStrips.com 
