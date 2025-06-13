@@ -35,37 +35,79 @@ export const checkLaredoShipping = async (city, state) => {
 
 // User profile functions
 export const getUserProfile = async (userId) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('id', userId)
-    .single()
-  
-  if (error && error.code !== 'PGRST116') throw error
-  return data
+  try {
+    console.log('Fetching user profile for ID:', userId)
+    
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (error) {
+      // If no profile found, return null (not an error)
+      if (error.code === 'PGRST116') {
+        console.log('No profile found for user:', userId)
+        return null
+      }
+      
+      console.error('Error fetching user profile:', error)
+      throw error
+    }
+
+    console.log('Successfully fetched user profile:', data)
+    return data
+  } catch (error) {
+    console.error('Exception in getUserProfile:', error)
+    throw error
+  }
 }
 
-export const createUserProfile = async (profile) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .insert([profile])
-    .select()
-    .single()
-  
-  if (error) throw error
-  return data
+export const createUserProfile = async (profileData) => {
+  try {
+    console.log('Creating user profile:', profileData)
+    
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .insert(profileData)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating user profile:', error)
+      throw error
+    }
+
+    console.log('Successfully created user profile:', data)
+    return data
+  } catch (error) {
+    console.error('Exception in createUserProfile:', error)
+    throw error
+  }
 }
 
 export const updateUserProfile = async (userId, updates) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-    .single()
-  
-  if (error) throw error
-  return data
+  try {
+    console.log('Updating user profile:', userId, updates)
+    
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .update(updates)
+      .eq('id', userId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating user profile:', error)
+      throw error
+    }
+
+    console.log('Successfully updated user profile:', data)
+    return data
+  } catch (error) {
+    console.error('Exception in updateUserProfile:', error)
+    throw error
+  }
 }
 
 // Address functions
@@ -122,31 +164,75 @@ export const getUserOrders = async (userId) => {
 
 // Admin functions
 export const getAllOrders = async () => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      order_items (
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
         *,
-        products (*)
-      ),
-      user_profiles (
-        email,
-        full_name
-      )
-    `)
-    .order('created_at', { ascending: false })
-  
-  if (error) throw error
-  return data
+        user_profiles (
+          full_name,
+          email
+        ),
+        order_items (
+          *,
+          products (
+            name,
+            price
+          )
+        )
+      `)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching all orders:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in getAllOrders:', error)
+    throw error
+  }
 }
 
 export const getAllUsers = async () => {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (error) throw error
-  return data
+  try {
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching all users:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in getAllUsers:', error)
+    throw error
+  }
+}
+
+// Helper function to ensure admin profile exists
+export const ensureAdminProfile = async (email, userId) => {
+  try {
+    console.log('Ensuring admin profile exists for:', email, userId)
+    
+    const { data, error } = await supabase.rpc('ensure_admin_profile', {
+      user_email: email,
+      user_id: userId
+    })
+
+    if (error) {
+      console.error('Error ensuring admin profile:', error)
+      throw error
+    }
+
+    console.log('Admin profile ensured successfully:', data)
+    return data
+  } catch (error) {
+    console.error('Exception in ensureAdminProfile:', error)
+    throw error
+  }
 } 
