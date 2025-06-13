@@ -53,15 +53,23 @@ export const AuthProvider = ({ children }) => {
       // If no profile exists, create one
       if (!userProfile) {
         const user = await supabase.auth.getUser()
+        const isAdmin = user.data.user?.email === 'luisdrod750@gmail.com'
+        
         userProfile = await createUserProfile({
           id: userId,
           email: user.data.user?.email,
-          full_name: user.data.user?.user_metadata?.full_name || '',
-          phone: user.data.user?.user_metadata?.phone || ''
+          full_name: user.data.user?.user_metadata?.full_name || (isAdmin ? 'Luis Rodriguez (Admin)' : ''),
+          phone: user.data.user?.user_metadata?.phone || '',
+          is_admin: isAdmin
         })
       }
       
       setProfile(userProfile)
+      
+      // Log admin status for debugging
+      if (userProfile?.is_admin) {
+        console.log('🔑 Admin user logged in:', userProfile.email)
+      }
     } catch (error) {
       console.error('Error loading user profile:', error)
     }
@@ -72,7 +80,10 @@ export const AuthProvider = ({ children }) => {
       email,
       password,
       options: {
-        data: metadata
+        data: {
+          ...metadata,
+          full_name: metadata.full_name || (email === 'luisdrod750@gmail.com' ? 'Luis Rodriguez (Admin)' : '')
+        }
       }
     })
     return { data, error }
@@ -109,6 +120,7 @@ export const AuthProvider = ({ children }) => {
     user,
     profile,
     loading,
+    isAdmin: profile?.is_admin || false,
     signUp,
     signIn,
     signOut,

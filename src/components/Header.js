@@ -10,7 +10,7 @@ function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const { itemCount } = useCart();
-  const { user, profile, signOut, loading } = useAuth();
+  const { user, profile, signOut, loading, isAdmin } = useAuth();
   const isHomePage = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
@@ -82,7 +82,9 @@ function Header() {
                     <li className="auth-section">
                       <div className="user-menu">
                         <span className="user-greeting">
+                          {isAdmin && <span className="admin-badge">👑 </span>}
                           Hi, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
+                          {isAdmin && <span className="admin-text"> (Admin)</span>}
                         </span>
                         <button 
                           className="sign-out-btn"

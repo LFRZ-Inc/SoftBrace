@@ -118,4 +118,35 @@ export const getUserOrders = async (userId) => {
   
   if (error) throw error
   return data
+}
+
+// Admin functions
+export const getAllOrders = async () => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
+        *,
+        products (*)
+      ),
+      user_profiles (
+        email,
+        full_name
+      )
+    `)
+    .order('created_at', { ascending: false })
+  
+  if (error) throw error
+  return data
+}
+
+export const getAllUsers = async () => {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) throw error
+  return data
 } 

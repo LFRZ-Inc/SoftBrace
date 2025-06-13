@@ -194,6 +194,16 @@
   font-weight: 500;
 }
 
+.admin-badge {
+  font-size: 1rem;
+}
+
+.admin-text {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
 .sign-in-btn,
 .sign-out-btn {
   background: var(--color-primary);
