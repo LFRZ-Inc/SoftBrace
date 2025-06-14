@@ -20,6 +20,8 @@ const VisualEditor = () => {
   const [showImageLibrary, setShowImageLibrary] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [editingElement, setEditingElement] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState('')
 
   const editorRef = useRef(null)
   const dragPreviewRef = useRef(null)
@@ -339,27 +341,47 @@ const VisualEditor = () => {
     }
   }
 
-  const savePageElements = async () => {
+  const handleSave = async () => {
+    if (!hasChanges) return
+    
+    setSaving(true)
     try {
-      await updatePageContent('home', 'structure', JSON.stringify(pageElements))
+      // Convert the page structure to a JSON string for storage
+      const contentToSave = JSON.stringify(pageElements)
+      
+      console.log('Saving page content:', {
+        page: 'visual-editor',
+        section: 'page-structure',
+        contentLength: contentToSave.length
+      })
+      
+      await updatePageContent('visual-editor', 'page-structure', contentToSave)
+      
       setHasChanges(false)
-      console.log('Page structure saved successfully')
+      setSaveMessage('Changes saved successfully!')
+      setTimeout(() => setSaveMessage(''), 3000)
     } catch (error) {
-      console.error('Error saving page elements:', error)
-      alert('Failed to save changes. Please try again.')
+      console.error('Save error:', error)
+      
+      // Provide more specific error messages
+      let errorMessage = 'Failed to save changes. '
+      
+      if (error.message?.includes('relation "page_content" does not exist')) {
+        errorMessage += 'Database table not found. Please run the database setup script first.'
+      } else if (error.message?.includes('permission denied')) {
+        errorMessage += 'Permission denied. Please check your database permissions.'
+      } else if (error.message?.includes('network')) {
+        errorMessage += 'Network error. Please check your connection and try again.'
+      } else {
+        errorMessage += `Error: ${error.message || 'Unknown error occurred'}`
+      }
+      
+      setSaveMessage(errorMessage)
+      setTimeout(() => setSaveMessage(''), 5000)
+    } finally {
+      setSaving(false)
     }
   }
-
-  // Auto-save when changes are made
-  useEffect(() => {
-    if (hasChanges) {
-      const saveTimeout = setTimeout(() => {
-        savePageElements()
-      }, 2000) // Auto-save after 2 seconds of inactivity
-
-      return () => clearTimeout(saveTimeout)
-    }
-  }, [hasChanges, pageElements])
 
   const handleComponentDragStart = (component, e) => {
     setDraggedComponent(component)
@@ -699,9 +721,19 @@ const VisualEditor = () => {
             </button>
           </div>
           
-          <button onClick={savePageElements} className="save-btn">
-            💾 Save
-          </button>
+                     <button 
+             onClick={handleSave} 
+             className="save-btn"
+             disabled={saving || !hasChanges}
+           >
+             {saving ? '💾 Saving...' : '💾 Save'}
+           </button>
+           
+           {saveMessage && (
+             <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
+               {saveMessage}
+             </div>
+           )}
         </div>
       </div>
 
