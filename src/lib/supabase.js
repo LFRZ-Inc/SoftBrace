@@ -258,19 +258,25 @@ export const ensureAdminProfile = async (email, userId) => {
 // Points System Functions
 export const getUserPoints = async (userId) => {
   try {
-    const { data, error } = await supabase.rpc('get_available_points', {
-      user_uuid: userId
-    })
+    // Calculate available points by summing all non-expired transactions
+    const { data, error } = await supabase
+      .from('points_transactions')
+      .select('points')
+      .eq('user_id', userId)
+      .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
 
     if (error) {
       console.error('Error fetching user points:', error)
       throw error
     }
 
-    return data || 0
+    // Sum up all points (positive for earned, negative for redeemed)
+    const totalPoints = data?.reduce((sum, transaction) => sum + transaction.points, 0) || 0
+    return Math.max(0, totalPoints) // Ensure points never go negative
   } catch (error) {
     console.error('Exception in getUserPoints:', error)
-    throw error
+    // Return 0 points if there's an error to prevent dashboard from hanging
+    return 0
   }
 }
 

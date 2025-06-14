@@ -160,12 +160,12 @@ const UserDashboard = () => {
             </div>
             <div className="rewards-info">
               <p className="rewards-earned">🎁 {getRewardsEarned()} Free 5-Packs Earned</p>
-              {getPointsToNextReward() > 0 ? (
+              {points >= 50 ? (
+                <p className="points-ready">🎉 You have {Math.floor(points / 50)} free 5-pack(s) available!</p>
+              ) : (
                 <p className="points-to-next">
                   {getPointsToNextReward()} points away from your next free 5-pack!
                 </p>
-              ) : (
-                <p className="points-ready">🎉 You have a free 5-pack available!</p>
               )}
             </div>
           </div>
