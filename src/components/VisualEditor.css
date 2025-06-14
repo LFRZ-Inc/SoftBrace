@@ -1329,4 +1329,346 @@
   .cta-section h2 {
     font-size: 28px;
   }
+}
+
+/* Resize Handles */
+.resize-handles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.resize-handle {
+  position: absolute;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 3px;
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 11;
+}
+
+/* Corner handles */
+.resize-handle.top-left {
+  top: -6px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  cursor: nw-resize;
+}
+
+.resize-handle.top-right {
+  top: -6px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  cursor: ne-resize;
+}
+
+.resize-handle.bottom-left {
+  bottom: -6px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  cursor: sw-resize;
+}
+
+.resize-handle.bottom-right {
+  bottom: -6px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  cursor: se-resize;
+}
+
+/* Edge handles */
+.resize-handle.left {
+  top: 50%;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  cursor: w-resize;
+}
+
+.resize-handle.right {
+  top: 50%;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  cursor: e-resize;
+}
+
+.resize-handle.top {
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%);
+  cursor: n-resize;
+}
+
+.resize-handle.bottom {
+  bottom: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%);
+  cursor: s-resize;
+}
+
+/* Enhanced Element Controls */
+.element-controls {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+  min-width: 300px;
+}
+
+.alignment-controls {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.alignment-controls button {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.alignment-controls button:hover {
+  background: #e2e8f0;
+}
+
+.alignment-controls button.active {
+  background: #3b82f6;
+  color: white;
+}
+
+.action-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.action-controls button {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.action-controls button:hover {
+  background: #f1f5f9;
+}
+
+.action-controls button:last-child:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Enhanced Page Element Selection */
+.page-element {
+  position: relative;
+  margin: 16px 0;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.page-element:hover {
+  outline: 2px dashed #94a3b8;
+  outline-offset: 4px;
+}
+
+.page-element.selected {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.page-element.selected::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.1) 50%, transparent 60%);
+  border-radius: 8px;
+  z-index: -1;
+  animation: selection-pulse 2s ease-in-out infinite;
+}
+
+@keyframes selection-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* Element Content Wrapper */
+.element-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Improved Image Element */
+.image-element {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.image-element img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.image-placeholder {
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.image-placeholder:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.image-caption {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Spacer Element */
+.spacer-element {
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(148, 163, 184, 0.1) 10px,
+    rgba(148, 163, 184, 0.1) 20px
+  );
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+  min-height: 20px;
+  position: relative;
+}
+
+.spacer-element::after {
+  content: 'Spacer';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Responsive Resize Handles */
+@media (max-width: 768px) {
+  .resize-handle {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .resize-handle.top-left,
+  .resize-handle.top-right,
+  .resize-handle.bottom-left,
+  .resize-handle.bottom-right {
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+  }
+  
+  .resize-handle.left,
+  .resize-handle.right {
+    left: -8px;
+    right: -8px;
+  }
+  
+  .resize-handle.top,
+  .resize-handle.bottom {
+    top: -8px;
+    bottom: -8px;
+  }
+  
+  .element-controls {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    min-width: auto;
+  }
+}
+
+/* Resize Cursor States */
+.page-element.resizing {
+  user-select: none;
+}
+
+.page-element.resizing * {
+  pointer-events: none;
+}
+
+/* Live Component Wrapper Enhancement */
+.live-component-wrapper {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.page-element.selected .live-component-wrapper::after {
+  content: 'Live Website Section - Click Edit to Modify';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  z-index: 10;
 } 

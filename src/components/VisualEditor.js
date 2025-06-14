@@ -22,6 +22,8 @@ const VisualEditor = () => {
   const [editingElement, setEditingElement] = useState(null)
   const [saving, setSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState('')
+  const [isResizing, setIsResizing] = useState(false)
+  const [resizeHandle, setResizeHandle] = useState(null)
 
   const editorRef = useRef(null)
   const dragPreviewRef = useRef(null)
@@ -430,55 +432,116 @@ const VisualEditor = () => {
   }
 
   const handleElementSelect = (element) => {
-    setSelectedElement(element.id)
-    setEditingElement(element)
+    setSelectedElement(element)
+    setEditingElement(null)
   }
 
   const handleElementUpdate = (elementId, updates) => {
-    const updatedElements = pageElements.map(el => 
+    setPageElements(prev => prev.map(el => 
       el.id === elementId ? { ...el, ...updates } : el
-    )
-    setPageElements(updatedElements)
+    ))
     setHasChanges(true)
   }
 
   const handleElementDelete = (elementId) => {
-    const filteredElements = pageElements.filter(el => el.id !== elementId)
-    // Update positions
-    filteredElements.forEach((el, index) => {
-      el.position = index
-    })
-    setPageElements(filteredElements)
+    setPageElements(prev => prev.filter(el => el.id !== elementId))
     setSelectedElement(null)
     setEditingElement(null)
     setHasChanges(true)
   }
 
   const handleElementMove = (elementId, direction) => {
-    const elementIndex = pageElements.findIndex(el => el.id === elementId)
-    if (elementIndex === -1) return
-
-    const newIndex = direction === 'up' ? elementIndex - 1 : elementIndex + 1
-    if (newIndex < 0 || newIndex >= pageElements.length) return
-
-    const newElements = [...pageElements]
-    const [movedElement] = newElements.splice(elementIndex, 1)
-    newElements.splice(newIndex, 0, movedElement)
-    
-    // Update positions
-    newElements.forEach((el, index) => {
-      el.position = index
+    setPageElements(prev => {
+      const currentIndex = prev.findIndex(el => el.id === elementId)
+      if (currentIndex === -1) return prev
+      
+      const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+      if (newIndex < 0 || newIndex >= prev.length) return prev
+      
+      const newElements = [...prev]
+      const [movedElement] = newElements.splice(currentIndex, 1)
+      newElements.splice(newIndex, 0, movedElement)
+      
+      // Update positions
+      return newElements.map((el, index) => ({ ...el, position: index }))
     })
-
-    setPageElements(newElements)
     setHasChanges(true)
   }
 
+  // New resize functionality
+  const handleResizeStart = (element, handle, e) => {
+    e.stopPropagation()
+    setIsResizing(true)
+    setResizeHandle(handle)
+    setSelectedElement(element)
+    
+    const startX = e.clientX
+    const startY = e.clientY
+    const startWidth = parseInt(element.content.width) || 100
+    const startHeight = parseInt(element.content.height) || 100
+
+    const handleMouseMove = (e) => {
+      const deltaX = e.clientX - startX
+      const deltaY = e.clientY - startY
+      
+      let newWidth = startWidth
+      let newHeight = startHeight
+
+      if (handle.includes('right')) {
+        newWidth = Math.max(50, startWidth + (deltaX / 2)) // Slower resize
+      }
+      if (handle.includes('left')) {
+        newWidth = Math.max(50, startWidth - (deltaX / 2))
+      }
+      if (handle.includes('bottom')) {
+        newHeight = Math.max(30, startHeight + (deltaY / 2))
+      }
+      if (handle.includes('top')) {
+        newHeight = Math.max(30, startHeight - (deltaY / 2))
+      }
+
+      // Update element with new dimensions
+      const updates = {
+        content: {
+          ...element.content,
+          width: `${Math.round(newWidth)}%`,
+          height: element.type === 'spacer' ? `${Math.round(newHeight)}px` : element.content.height
+        }
+      }
+
+      handleElementUpdate(element.id, updates)
+    }
+
+    const handleMouseUp = () => {
+      setIsResizing(false)
+      setResizeHandle(null)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+
+  // Alignment controls
+  const handleAlignmentChange = (elementId, alignment) => {
+    const element = pageElements.find(el => el.id === elementId)
+    if (element) {
+      const updates = {
+        content: {
+          ...element.content,
+          alignment: alignment
+        }
+      }
+      handleElementUpdate(elementId, updates)
+    }
+  }
+
   const renderElement = (element) => {
-    const isSelected = selectedElement === element.id
+    const isSelected = selectedElement?.id === element.id
     
     return (
-      <div
+      <div 
         key={element.id}
         className={`page-element ${isSelected ? 'selected' : ''}`}
         onClick={() => handleElementSelect(element)}
@@ -486,15 +549,91 @@ const VisualEditor = () => {
         {/* Element Controls */}
         {isSelected && (
           <div className="element-controls">
-            <button onClick={() => handleElementMove(element.id, 'up')} title="Move Up">↑</button>
-            <button onClick={() => handleElementMove(element.id, 'down')} title="Move Down">↓</button>
-            <button onClick={() => setEditingElement(element)} title="Edit">✏️</button>
-            <button onClick={() => handleElementDelete(element.id)} title="Delete">🗑️</button>
+            {/* Alignment Controls */}
+            <div className="alignment-controls">
+              <button
+                onClick={() => handleAlignmentChange(element.id, 'left')}
+                className={element.content.alignment === 'left' ? 'active' : ''}
+                title="Align Left"
+              >
+                ⬅️
+              </button>
+              <button
+                onClick={() => handleAlignmentChange(element.id, 'center')}
+                className={element.content.alignment === 'center' ? 'active' : ''}
+                title="Align Center"
+              >
+                ↔️
+              </button>
+              <button
+                onClick={() => handleAlignmentChange(element.id, 'right')}
+                className={element.content.alignment === 'right' ? 'active' : ''}
+                title="Align Right"
+              >
+                ➡️
+              </button>
+            </div>
+
+            {/* Action Controls */}
+            <div className="action-controls">
+              <button onClick={() => handleElementMove(element.id, 'up')} title="Move Up">
+                ⬆️
+              </button>
+              <button onClick={() => handleElementMove(element.id, 'down')} title="Move Down">
+                ⬇️
+              </button>
+              <button onClick={() => setEditingElement(element)} title="Edit">
+                ✏️
+              </button>
+              <button onClick={() => handleElementDelete(element.id)} title="Delete">
+                🗑️
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Render element based on type */}
-        {renderElementContent(element)}
+        {/* Resize Handles for resizable elements */}
+        {isSelected && (element.type === 'image' || element.type === 'spacer') && (
+          <div className="resize-handles">
+            <div 
+              className="resize-handle top-left"
+              onMouseDown={(e) => handleResizeStart(element, 'top-left', e)}
+            />
+            <div 
+              className="resize-handle top-right"
+              onMouseDown={(e) => handleResizeStart(element, 'top-right', e)}
+            />
+            <div 
+              className="resize-handle bottom-left"
+              onMouseDown={(e) => handleResizeStart(element, 'bottom-left', e)}
+            />
+            <div 
+              className="resize-handle bottom-right"
+              onMouseDown={(e) => handleResizeStart(element, 'bottom-right', e)}
+            />
+            <div 
+              className="resize-handle left"
+              onMouseDown={(e) => handleResizeStart(element, 'left', e)}
+            />
+            <div 
+              className="resize-handle right"
+              onMouseDown={(e) => handleResizeStart(element, 'right', e)}
+            />
+            <div 
+              className="resize-handle top"
+              onMouseDown={(e) => handleResizeStart(element, 'top', e)}
+            />
+            <div 
+              className="resize-handle bottom"
+              onMouseDown={(e) => handleResizeStart(element, 'bottom', e)}
+            />
+          </div>
+        )}
+
+        {/* Element Content */}
+        <div className="element-content">
+          {renderElementContent(element)}
+        </div>
       </div>
     )
   }
@@ -714,374 +853,4 @@ const VisualEditor = () => {
             </button>
             <button
               onClick={() => setPreviewMode('mobile')}
-              className={`view-btn ${previewMode === 'mobile' ? 'active' : ''}`}
-              title="Mobile View"
-            >
-              📱
-            </button>
-          </div>
-          
-                     <button 
-             onClick={handleSave} 
-             className="save-btn"
-             disabled={saving || !hasChanges}
-           >
-             {saving ? '💾 Saving...' : '💾 Save'}
-           </button>
-           
-           {saveMessage && (
-             <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
-               {saveMessage}
-             </div>
-           )}
-        </div>
-      </div>
-
-      <div className="editor-workspace">
-        {/* Left Sidebar - Component Library */}
-        <div className="editor-sidebar left">
-          <div className="sidebar-tabs">
-            <button
-              onClick={() => { setShowComponentLibrary(true); setShowImageLibrary(false); }}
-              className={`tab-btn ${showComponentLibrary ? 'active' : ''}`}
-            >
-              🧩 Components
-            </button>
-            <button
-              onClick={() => { setShowComponentLibrary(false); setShowImageLibrary(true); }}
-              className={`tab-btn ${showImageLibrary ? 'active' : ''}`}
-            >
-              🖼️ Images
-            </button>
-          </div>
-
-          {/* Component Library */}
-          {showComponentLibrary && (
-            <div className="component-library">
-              <div className="library-search">
-                <input type="text" placeholder="Search components..." />
-              </div>
-              
-              {['Website', 'Hero', 'Features', 'CTA', 'Content', 'Media', 'Layout'].map(category => (
-                <div key={category} className="component-category">
-                  <h3>{category}</h3>
-                  <div className="component-grid">
-                    {componentLibrary
-                      .filter(comp => comp.category === category)
-                      .map(component => (
-                        <div
-                          key={component.id}
-                          className="component-item"
-                          draggable
-                          onDragStart={(e) => handleComponentDragStart(component, e)}
-                          onDragEnd={handleComponentDragEnd}
-                        >
-                          <div className="component-preview">
-                            <span className="component-icon">{component.icon}</span>
-                          </div>
-                          <span className="component-name">{component.name}</span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Image Library */}
-          {showImageLibrary && (
-            <div className="image-library">
-              <div className="library-search">
-                <input type="text" placeholder="Search images..." />
-              </div>
-              
-              <div className="image-grid">
-                {images.map(image => (
-                  <div
-                    key={image.id}
-                    className="image-item"
-                    draggable
-                    onDragStart={(e) => {
-                      e.dataTransfer.setData('image', JSON.stringify(image))
-                    }}
-                  >
-                    <img src={image.public_url} alt={image.original_name} />
-                    <span className="image-name">{image.original_name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Main Canvas */}
-        <div className="editor-canvas">
-          <div className={`canvas-preview ${getPreviewClass()}`}>
-            <div className="page-container">
-              {/* Drop zones between elements */}
-              <div
-                className="drop-zone"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDropZoneDrop(e, 0)}
-              >
-                Drop components here
-              </div>
-
-              {pageElements.map((element, index) => (
-                <React.Fragment key={element.id}>
-                  {renderElement(element)}
-                  <div
-                    className="drop-zone"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => handleDropZoneDrop(e, index + 1)}
-                  >
-                    Drop components here
-                  </div>
-                </React.Fragment>
-              ))}
-
-              {pageElements.length === 0 && (
-                <div className="empty-canvas">
-                  <h3>Start Building Your Page</h3>
-                  <p>Drag components from the left sidebar to begin</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Sidebar - Element Properties */}
-        <div className="editor-sidebar right">
-          <div className="properties-panel">
-            {editingElement ? (
-              <ElementEditor
-                element={editingElement}
-                images={images}
-                onUpdate={(updates) => handleElementUpdate(editingElement.id, updates)}
-                onClose={() => setEditingElement(null)}
-              />
-            ) : (
-              <div className="no-selection">
-                <h3>Element Properties</h3>
-                <p>Select an element to edit its properties</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Element Editor Component
-const ElementEditor = ({ element, images, onUpdate, onClose }) => {
-  const [localContent, setLocalContent] = useState(element.content)
-
-  const handleContentChange = (field, value) => {
-    const newContent = { ...localContent, [field]: value }
-    setLocalContent(newContent)
-    onUpdate({ content: newContent })
-  }
-
-  const handleNestedContentChange = (parentField, index, field, value) => {
-    const newContent = { ...localContent }
-    newContent[parentField][index][field] = value
-    setLocalContent(newContent)
-    onUpdate({ content: newContent })
-  }
-
-  return (
-    <div className="element-editor">
-      <div className="editor-header">
-        <h3>Edit {element.type.charAt(0).toUpperCase() + element.type.slice(1)}</h3>
-        <button onClick={onClose} className="close-btn">×</button>
-      </div>
-
-      <div className="editor-content">
-        {element.type.startsWith('website-') && (
-          <div className="live-section-editor">
-            <div className="info-box">
-              <h4>🔴 Live Website Section</h4>
-              <p>This is a live section from your actual website. To edit the content, you'll need to modify the source component files.</p>
-              <div className="component-info">
-                <strong>Component:</strong> {element.type.replace('website-', '').charAt(0).toUpperCase() + element.type.replace('website-', '').slice(1)}
-              </div>
-              <div className="edit-instructions">
-                <h5>To edit this section:</h5>
-                <ol>
-                  <li>Go to the "Content Editing" tab in the admin panel</li>
-                  <li>Or modify the component files directly in the code</li>
-                  <li>Changes will appear here automatically</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {element.type === 'hero' && (
-          <>
-            <div className="form-group">
-              <label>Title</label>
-              <input
-                type="text"
-                value={localContent.title || ''}
-                onChange={(e) => handleContentChange('title', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Subtitle</label>
-              <textarea
-                value={localContent.subtitle || ''}
-                onChange={(e) => handleContentChange('subtitle', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Button Text</label>
-              <input
-                type="text"
-                value={localContent.buttonText || ''}
-                onChange={(e) => handleContentChange('buttonText', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Button Link</label>
-              <input
-                type="text"
-                value={localContent.buttonLink || ''}
-                onChange={(e) => handleContentChange('buttonLink', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Background Color</label>
-              <input
-                type="color"
-                value={localContent.backgroundColor || '#ffffff'}
-                onChange={(e) => handleContentChange('backgroundColor', e.target.value)}
-              />
-            </div>
-          </>
-        )}
-
-        {element.type === 'text' && (
-          <>
-            <div className="form-group">
-              <label>Text Content</label>
-              <textarea
-                value={localContent.text || ''}
-                onChange={(e) => handleContentChange('text', e.target.value)}
-                rows={6}
-              />
-            </div>
-            <div className="form-group">
-              <label>Alignment</label>
-              <select
-                value={localContent.alignment || 'left'}
-                onChange={(e) => handleContentChange('alignment', e.target.value)}
-              >
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Font Size</label>
-              <select
-                value={localContent.fontSize || 'medium'}
-                onChange={(e) => handleContentChange('fontSize', e.target.value)}
-              >
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
-            </div>
-          </>
-        )}
-
-        {element.type === 'image' && (
-          <>
-            <div className="form-group">
-              <label>Select Image</label>
-              <select
-                value={localContent.image || ''}
-                onChange={(e) => handleContentChange('image', e.target.value)}
-              >
-                <option value="">Select an image...</option>
-                {images.map(image => (
-                  <option key={image.id} value={image.public_url}>
-                    {image.original_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Alt Text</label>
-              <input
-                type="text"
-                value={localContent.alt || ''}
-                onChange={(e) => handleContentChange('alt', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Caption</label>
-              <input
-                type="text"
-                value={localContent.caption || ''}
-                onChange={(e) => handleContentChange('caption', e.target.value)}
-              />
-            </div>
-          </>
-        )}
-
-        {element.type === 'spacer' && (
-          <div className="form-group">
-            <label>Height</label>
-            <input
-              type="text"
-              value={localContent.height || '60px'}
-              onChange={(e) => handleContentChange('height', e.target.value)}
-              placeholder="e.g., 60px, 2rem"
-            />
-          </div>
-        )}
-
-        {element.type === 'cta' && (
-          <>
-            <div className="form-group">
-              <label>Title</label>
-              <input
-                type="text"
-                value={localContent.title || ''}
-                onChange={(e) => handleContentChange('title', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Subtitle</label>
-              <textarea
-                value={localContent.subtitle || ''}
-                onChange={(e) => handleContentChange('subtitle', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Button Text</label>
-              <input
-                type="text"
-                value={localContent.buttonText || ''}
-                onChange={(e) => handleContentChange('buttonText', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Background Color</label>
-              <input
-                type="color"
-                value={localContent.backgroundColor || '#3b82f6'}
-                onChange={(e) => handleContentChange('backgroundColor', e.target.value)}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
-export default VisualEditor 
+              className={`view-btn ${previewMode === 'mobile' ? 'active' : ''}`
