@@ -61,7 +61,7 @@ function SoftBraceUsagePage() {
           {/* Usage Example Image */}
           <div className="mb-6 text-center">
             <img 
-              src="/images/softbrace-usage-example.jpg" 
+              src="/images/softbrace-usage-example.png" 
               alt="Example of SoftBrace strips properly applied on upper braces"
               className="mx-auto rounded-lg shadow-md max-w-md w-full"
             />
