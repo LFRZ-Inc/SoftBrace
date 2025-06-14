@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DynamicContent from '../components/DynamicContent';
 import './Home.css';
 
 const Home = () => {
@@ -8,11 +9,19 @@ const Home = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1>Comfortable Joint Support</h1>
-            <p>
-              SoftBrace Strips provide flexible and comfortable support for joints,
-              helping you stay active and pain-free.
-            </p>
+            <DynamicContent
+              page="home"
+              section="hero"
+              fallbackContent={
+                <>
+                  <h1>Comfortable Joint Support</h1>
+                  <p>
+                    SoftBrace Strips provide flexible and comfortable support for joints,
+                    helping you stay active and pain-free.
+                  </p>
+                </>
+              }
+            />
             <div className="hero-buttons">
               <Link to="/products" className="btn">
                 View Products

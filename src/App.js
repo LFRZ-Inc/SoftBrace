@@ -20,6 +20,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
+import AdminPage from './pages/AdminPage';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
@@ -89,6 +90,7 @@ function App() {
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
                         <Route path="/insert-card" element={<SoftBraceUsagePage />} />
+                        <Route path="/admin" element={<AdminPage />} />
                         <Route path="*" element={<NotFoundPage />} />
                       </Routes>
                     </main>
