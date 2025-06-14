@@ -184,6 +184,13 @@
 
 .user-menu {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.user-menu-actions {
+  display: flex;
   align-items: center;
   gap: 1rem;
 }
@@ -203,6 +210,20 @@
   font-size: 0.9rem;
   font-style: italic;
   opacity: 0.7;
+}
+
+.account-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.account-link:hover {
+  background-color: var(--color-primary-light);
+  color: white;
 }
 
 .admin-text {

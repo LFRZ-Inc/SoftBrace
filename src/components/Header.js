@@ -98,12 +98,21 @@ function Header() {
                           Hi, {profile?.full_name || user.email?.split('@')[0] || 'User'}!
                           {isAdmin && <span className="admin-text"> (Admin)</span>}
                         </span>
-                        <button 
-                          className="sign-out-btn"
-                          onClick={handleSignOut}
-                        >
-                          Sign Out
-                        </button>
+                        <div className="user-menu-actions">
+                          <Link 
+                            to="/account" 
+                            className="account-link"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            My Account
+                          </Link>
+                          <button 
+                            className="sign-out-btn"
+                            onClick={handleSignOut}
+                          >
+                            Sign Out
+                          </button>
+                        </div>
                       </div>
                     </li>
                   ) : (

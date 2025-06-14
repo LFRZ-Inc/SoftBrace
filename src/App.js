@@ -21,6 +21,7 @@ import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import AdminPage from './pages/AdminPage';
+import UserDashboard from './pages/UserDashboard';
 import { CartProvider } from './contexts/CartContext';
 import { StripeProvider } from './contexts/StripeContext';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
@@ -68,6 +69,7 @@ const CustomerApp = () => {
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
                   <Route path="/insert-card" element={<SoftBraceUsagePage />} />
+                  <Route path="/account" element={<UserDashboard />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>

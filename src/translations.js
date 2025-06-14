@@ -188,7 +188,7 @@ const translations = {
         message: 'Message',
         submit: 'Send Message'
       },
-      note: '* Contact us directly at coolipod0@gmail.com or (956) 999-2944 for immediate assistance.'
+      note: '* Contact us directly at Luisdrod750@gmail.com or (956) 999-2944 for immediate assistance.'
     },
     
     // Footer
@@ -531,7 +531,7 @@ const translations = {
         message: 'Mensaje',
         submit: 'Enviar Mensaje'
       },
-      note: '* Contáctenos directamente en coolipod0@gmail.com o (956) 999-2944 para asistencia inmediata.'
+      note: '* Contáctenos directamente en Luisdrod750@gmail.com o (956) 999-2944 para asistencia inmediata.'
     },
     
     // Footer

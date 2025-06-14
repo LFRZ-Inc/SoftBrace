@@ -253,4 +253,229 @@ export const ensureAdminProfile = async (email, userId) => {
     console.error('Exception in ensureAdminProfile:', error)
     throw error
   }
+}
+
+// Points System Functions
+export const getUserPoints = async (userId) => {
+  try {
+    const { data, error } = await supabase.rpc('get_available_points', {
+      user_uuid: userId
+    })
+
+    if (error) {
+      console.error('Error fetching user points:', error)
+      throw error
+    }
+
+    return data || 0
+  } catch (error) {
+    console.error('Exception in getUserPoints:', error)
+    throw error
+  }
+}
+
+export const getPointsTransactions = async (userId) => {
+  try {
+    const { data, error } = await supabase
+      .from('points_transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching points transactions:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getPointsTransactions:', error)
+    throw error
+  }
+}
+
+export const redeemPoints = async (userId, pointsToRedeem, description = 'Points redeemed for free product') => {
+  try {
+    // Check if user has enough points
+    const availablePoints = await getUserPoints(userId)
+    if (availablePoints < pointsToRedeem) {
+      throw new Error('Insufficient points')
+    }
+
+    // Create redemption transaction
+    const { data, error } = await supabase
+      .from('points_transactions')
+      .insert({
+        user_id: userId,
+        type: 'redeemed',
+        points: -pointsToRedeem,
+        description: description
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error redeeming points:', error)
+      throw error
+    }
+
+    // Update user's points balance
+    await updateUserPointsBalance(userId)
+
+    return data
+  } catch (error) {
+    console.error('Exception in redeemPoints:', error)
+    throw error
+  }
+}
+
+export const awardPoints = async (userId, pointsToAward, orderId = null, description = 'Points earned from purchase') => {
+  try {
+    const expiryDate = new Date()
+    expiryDate.setFullYear(expiryDate.getFullYear() + 2) // 2 years from now
+
+    const { data, error } = await supabase
+      .from('points_transactions')
+      .insert({
+        user_id: userId,
+        order_id: orderId,
+        type: 'earned',
+        points: pointsToAward,
+        description: description,
+        expires_at: expiryDate.toISOString()
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error awarding points:', error)
+      throw error
+    }
+
+    // Update user's points balance and activity
+    await updateUserPointsBalance(userId)
+    await updateUserActivity(userId)
+
+    return data
+  } catch (error) {
+    console.error('Exception in awardPoints:', error)
+    throw error
+  }
+}
+
+export const updateUserPointsBalance = async (userId) => {
+  try {
+    const availablePoints = await getUserPoints(userId)
+    
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ 
+        points_balance: availablePoints,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userId)
+
+    if (error) {
+      console.error('Error updating user points balance:', error)
+      throw error
+    }
+
+    return availablePoints
+  } catch (error) {
+    console.error('Exception in updateUserPointsBalance:', error)
+    throw error
+  }
+}
+
+export const updateUserActivity = async (userId) => {
+  try {
+    const { error } = await supabase.rpc('update_user_activity', {
+      user_uuid: userId
+    })
+
+    if (error) {
+      console.error('Error updating user activity:', error)
+      throw error
+    }
+  } catch (error) {
+    console.error('Exception in updateUserActivity:', error)
+    throw error
+  }
+}
+
+// Order functions with points integration
+export const createOrderWithPoints = async (orderData) => {
+  try {
+    // Generate order number
+    const orderNumber = `SB${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-6)}`
+    
+    const orderWithNumber = {
+      ...orderData,
+      order_number: orderNumber,
+      created_at: new Date().toISOString()
+    }
+
+    const { data: order, error } = await supabase
+      .from('orders')
+      .insert(orderWithNumber)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating order:', error)
+      throw error
+    }
+
+    // Award points if user is logged in (1 point per $1 spent)
+    if (order.user_id && order.total_amount > 0) {
+      const pointsToAward = Math.floor(order.total_amount)
+      if (pointsToAward > 0) {
+        await awardPoints(
+          order.user_id, 
+          pointsToAward, 
+          order.id, 
+          `Points earned from order ${order.order_number}`
+        )
+        
+        // Update the order with points earned
+        await supabase
+          .from('orders')
+          .update({ points_earned: pointsToAward })
+          .eq('id', order.id)
+      }
+    }
+
+    return order
+  } catch (error) {
+    console.error('Exception in createOrderWithPoints:', error)
+    throw error
+  }
+}
+
+export const createOrderItems = async (orderId, items) => {
+  try {
+    const orderItems = items.map(item => ({
+      order_id: orderId,
+      product_id: item.id,
+      product_name: item.name,
+      product_price: item.price,
+      quantity: item.quantity,
+      total_price: item.price * item.quantity
+    }))
+
+    const { data, error } = await supabase
+      .from('order_items')
+      .insert(orderItems)
+      .select()
+
+    if (error) {
+      console.error('Error creating order items:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in createOrderItems:', error)
+    throw error
+  }
 } 
