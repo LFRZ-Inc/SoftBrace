@@ -1,25 +1,7 @@
 import { supabase } from './supabase'
 
-// Admin authentication
-export const adminLogin = async (password) => {
-  // Simple password check - you can change this password
-  const ADMIN_PASSWORD = 'SoftBrace2024Admin'
-  
-  if (password === ADMIN_PASSWORD) {
-    localStorage.setItem('admin_logged_in', 'true')
-    return { success: true }
-  }
-  
-  return { success: false, error: 'Invalid password' }
-}
-
-export const isAdminLoggedIn = () => {
-  return localStorage.getItem('admin_logged_in') === 'true'
-}
-
-export const adminLogout = () => {
-  localStorage.removeItem('admin_logged_in')
-}
+// Note: Admin authentication is now handled directly in AdminPage.js
+// for better separation from customer authentication
 
 // Content management functions
 export const getPageContent = async (page, section) => {

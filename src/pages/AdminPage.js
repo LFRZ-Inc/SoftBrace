@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { 
-  adminLogin, 
-  isAdminLoggedIn, 
-  adminLogout, 
   uploadImage, 
   getUploadedImages, 
   deleteImage,
@@ -10,6 +7,62 @@ import {
   getPageContent,
   updatePageContent
 } from '../lib/adminContent'
+
+// Independent admin authentication - completely separate from customer auth
+const ADMIN_PASSWORD = 'SoftBrace2024Admin'
+const ADMIN_SESSION_KEY = 'softbrace_admin_session'
+const SESSION_DURATION = 8 * 60 * 60 * 1000 // 8 hours in milliseconds
+
+// Admin authentication functions - independent of customer auth
+const adminAuth = {
+  login: (password) => {
+    if (password === ADMIN_PASSWORD) {
+      const sessionData = {
+        loggedIn: true,
+        timestamp: Date.now()
+      }
+      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData))
+      return { success: true }
+    }
+    return { success: false, error: 'Invalid admin password' }
+  },
+
+  isLoggedIn: () => {
+    try {
+      const sessionData = localStorage.getItem(ADMIN_SESSION_KEY)
+      if (!sessionData) return false
+
+      const session = JSON.parse(sessionData)
+      const now = Date.now()
+      
+      // Check if session has expired
+      if (now - session.timestamp > SESSION_DURATION) {
+        localStorage.removeItem(ADMIN_SESSION_KEY)
+        return false
+      }
+
+      return session.loggedIn === true
+    } catch (error) {
+      console.error('Error checking admin session:', error)
+      localStorage.removeItem(ADMIN_SESSION_KEY)
+      return false
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem(ADMIN_SESSION_KEY)
+  },
+
+  refreshSession: () => {
+    if (adminAuth.isLoggedIn()) {
+      const sessionData = {
+        loggedIn: true,
+        timestamp: Date.now()
+      }
+      localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData))
+    }
+  }
+}
 
 const AdminPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -30,34 +83,70 @@ const AdminPage = () => {
   const [savingContent, setSavingContent] = useState(false)
   const [contentMessage, setContentMessage] = useState('')
 
+  // Check admin session on component mount
   useEffect(() => {
-    setIsLoggedIn(isAdminLoggedIn())
-    if (isAdminLoggedIn()) {
+    console.log('AdminPage: Checking admin session...')
+    const loggedIn = adminAuth.isLoggedIn()
+    console.log('AdminPage: Admin logged in?', loggedIn)
+    setIsLoggedIn(loggedIn)
+    
+    if (loggedIn) {
+      console.log('AdminPage: Loading admin data...')
       loadImages()
+      // Refresh session timestamp
+      adminAuth.refreshSession()
     }
   }, [])
 
+  // Session refresh timer
+  useEffect(() => {
+    if (isLoggedIn) {
+      const refreshInterval = setInterval(() => {
+        if (adminAuth.isLoggedIn()) {
+          adminAuth.refreshSession()
+        } else {
+          // Session expired
+          setIsLoggedIn(false)
+          setLoginError('Admin session expired. Please login again.')
+        }
+      }, 5 * 60 * 1000) // Check every 5 minutes
+
+      return () => clearInterval(refreshInterval)
+    }
+  }, [isLoggedIn])
+
   const handleLogin = async (e) => {
     e.preventDefault()
-    const result = await adminLogin(password)
+    console.log('AdminPage: Attempting admin login...')
+    
+    const result = adminAuth.login(password)
     
     if (result.success) {
+      console.log('AdminPage: Admin login successful')
       setIsLoggedIn(true)
       setLoginError('')
+      setPassword('')
       loadImages()
     } else {
+      console.log('AdminPage: Admin login failed:', result.error)
       setLoginError(result.error)
     }
   }
 
   const handleLogout = () => {
-    adminLogout()
+    console.log('AdminPage: Admin logout')
+    adminAuth.logout()
     setIsLoggedIn(false)
     setPassword('')
+    setImages([])
+    setEditingContent('')
+    setOriginalContent('')
   }
 
   const loadImages = async () => {
+    console.log('AdminPage: Loading images...')
     const uploadedImages = await getUploadedImages()
+    console.log('AdminPage: Loaded images:', uploadedImages.length)
     setImages(uploadedImages)
   }
 
@@ -65,16 +154,19 @@ const AdminPage = () => {
     const file = e.target.files[0]
     if (!file) return
 
+    console.log('AdminPage: Uploading image:', file.name)
     setUploadingImage(true)
     setUploadMessage('Uploading image...')
 
     const result = await uploadImage(file)
     
     if (result.success) {
+      console.log('AdminPage: Image upload successful')
       setUploadMessage('Image uploaded successfully!')
       loadImages() // Refresh the image list
       e.target.value = '' // Clear the input
     } else {
+      console.error('AdminPage: Image upload failed:', result.error)
       setUploadMessage(`Error: ${result.error}`)
     }
 
@@ -85,10 +177,13 @@ const AdminPage = () => {
   const handleDeleteImage = async (imageId) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return
 
+    console.log('AdminPage: Deleting image:', imageId)
     const result = await deleteImage(imageId)
     if (result.success) {
+      console.log('AdminPage: Image deleted successfully')
       loadImages() // Refresh the image list
     } else {
+      console.error('AdminPage: Image deletion failed:', result.error)
       alert(`Error deleting image: ${result.error}`)
     }
   }
@@ -99,6 +194,7 @@ const AdminPage = () => {
   }
 
   const loadPageContent = async (page, section) => {
+    console.log('AdminPage: Loading page content:', page, section)
     const content = await getPageContent(page, section)
     if (content) {
       setEditingContent(content.content)
@@ -110,14 +206,17 @@ const AdminPage = () => {
   }
 
   const handleSaveContent = async () => {
+    console.log('AdminPage: Saving content...')
     setSavingContent(true)
     setContentMessage('Saving...')
 
     try {
       await updatePageContent(selectedPage, selectedSection, editingContent)
+      console.log('AdminPage: Content saved successfully')
       setContentMessage('Content saved successfully!')
       setOriginalContent(editingContent)
     } catch (error) {
+      console.error('AdminPage: Content save failed:', error)
       setContentMessage(`Error: ${error.message}`)
     }
 
@@ -131,34 +230,53 @@ const AdminPage = () => {
     }
   }, [selectedPage, selectedSection, isLoggedIn])
 
+  // Login screen - completely independent from customer auth
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+          <h1 className="text-2xl font-bold mb-6 text-center text-blue-600">
+            SoftBrace Admin Portal
+          </h1>
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-700">
+              <strong>Note:</strong> This is a separate admin login, independent from customer accounts.
+            </p>
+          </div>
           <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Password
+                Admin Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                placeholder="Enter admin password"
                 required
               />
             </div>
             {loginError && (
-              <div className="mb-4 text-red-500 text-sm">{loginError}</div>
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <div className="text-red-700 text-sm">{loginError}</div>
+              </div>
             )}
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
             >
-              Login
+              Login to Admin Portal
             </button>
           </form>
+          <div className="mt-4 text-center">
+            <a 
+              href="/" 
+              className="text-blue-500 hover:text-blue-700 text-sm"
+            >
+              ← Back to Main Site
+            </a>
+          </div>
         </div>
       </div>
     )
@@ -172,13 +290,26 @@ const AdminPage = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">SoftBrace Admin</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-          >
-            Logout
-          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">SoftBrace Admin Portal</h1>
+            <p className="text-sm text-gray-600">Content & Image Management System</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <a 
+              href="/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              View Main Site
+            </a>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
@@ -189,23 +320,23 @@ const AdminPage = () => {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab('images')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'images' 
                     ? 'border-blue-500 text-blue-600' 
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Image Management
+                📷 Image Management
               </button>
               <button
                 onClick={() => setActiveTab('content')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'content' 
                     ? 'border-blue-500 text-blue-600' 
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Content Editing
+                ✏️ Content Editing
               </button>
             </nav>
           </div>
@@ -352,6 +483,14 @@ const AdminPage = () => {
                   {contentMessage}
                 </div>
               )}
+
+              {/* Preview Note */}
+              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  <strong>Note:</strong> Changes will be visible immediately on the website after saving. 
+                  Open the main site in a new tab to see your changes.
+                </p>
+              </div>
             </div>
           </div>
         )}

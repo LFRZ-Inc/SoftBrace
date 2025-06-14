@@ -34,6 +34,54 @@ try {
   console.warn('Could not load the Loader component:', error);
 }
 
+// Admin wrapper that bypasses customer auth context
+const AdminWrapper = () => {
+  return (
+    <div className="admin-isolated">
+      <AdminPage />
+    </div>
+  );
+};
+
+// Customer app wrapper with all the customer context providers
+const CustomerApp = () => {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <StripeProvider>
+          <LoadingProvider>
+            <div className="App">
+              <WebsiteSchema />
+              <Header />
+              <LoaderComponent />
+              <main className="main-content">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/shop" element={<ShopPage />} />
+                  <Route path="/product/:id" element={<ProductPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/success" element={<SuccessPage />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/terms-of-service" element={<TermsPage />} />
+                  <Route path="/privacy-policy" element={<PrivacyPage />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
+                  <Route path="/insert-card" element={<SoftBraceUsagePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </main>
+              <Footer />
+              <ThemeToggle />
+              <LanguageSelector />
+            </div>
+          </LoadingProvider>
+        </StripeProvider>
+      </CartProvider>
+    </AuthProvider>
+  );
+};
+
 // Wrapper component that uses the loading context
 const LoaderComponent = () => {
   const { isLoading, hideLoader } = useLoading();
@@ -67,42 +115,15 @@ function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <CartProvider>
-            <StripeProvider>
-              <LoadingProvider>
-                <Router>
-                  <div className="App">
-                    <WebsiteSchema />
-                    <Header />
-                    <LoaderComponent />
-                    <main className="main-content">
-                      <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/shop" element={<ShopPage />} />
-                        <Route path="/product/:id" element={<ProductPage />} />
-                        <Route path="/cart" element={<CartPage />} />
-                        <Route path="/checkout" element={<CheckoutPage />} />
-                        <Route path="/success" element={<SuccessPage />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/terms-of-service" element={<TermsPage />} />
-                        <Route path="/privacy-policy" element={<PrivacyPage />} />
-                        <Route path="/blog" element={<Blog />} />
-                        <Route path="/softbrace-usage" element={<SoftBraceUsagePage />} />
-                        <Route path="/insert-card" element={<SoftBraceUsagePage />} />
-                        <Route path="/admin" element={<AdminPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
-                      </Routes>
-                    </main>
-                    <Footer />
-                    <ThemeToggle />
-                    <LanguageSelector />
-                  </div>
-                </Router>
-              </LoadingProvider>
-            </StripeProvider>
-          </CartProvider>
-        </AuthProvider>
+        <Router>
+          <Routes>
+            {/* Admin route - completely isolated from customer auth */}
+            <Route path="/admin" element={<AdminWrapper />} />
+            
+            {/* All customer routes with customer auth context */}
+            <Route path="/*" element={<CustomerApp />} />
+          </Routes>
+        </Router>
       </LanguageProvider>
     </ThemeProvider>
   );
