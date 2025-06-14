@@ -1,5 +1,43 @@
 // Vercel Serverless Function for Stripe webhooks
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
+// Helper function to generate unique order number
+function generateOrderNumber() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const timestamp = Date.now().toString().slice(-6); // Last 6 digits of timestamp
+  return `ORD-${year}${month}${day}-${timestamp}`;
+}
+
+// Helper function to resolve product ID from Stripe price ID
+async function getProductIdFromPriceId(stripePriceId) {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('id')
+      .eq('stripe_price_id', stripePriceId)
+      .single();
+    
+    if (error) {
+      console.error('Error finding product by price ID:', error);
+      return null;
+    }
+    
+    return data?.id || null;
+  } catch (error) {
+    console.error('Error in getProductIdFromPriceId:', error);
+    return null;
+  }
+}
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -29,14 +67,135 @@ module.exports = async (req, res) => {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object;
+        console.log('Processing completed checkout session:', session.id);
         
-        // Here you would:
-        // 1. Validate the payment (check if paid, etc)
-        // 2. Fulfill the order (update database, send confirmation email)
-        console.log('Payment successful for session:', session.id);
+        // Extract metadata
+        const {
+          user_id,
+          user_email,
+          points_used,
+          points_earned,
+          order_type,
+          discount_type,
+          original_total_cents,
+          final_total_cents
+        } = session.metadata;
+
+        // Skip processing for guest users (no user_id)
+        if (!user_id || user_id === 'guest') {
+          console.log('Skipping order creation for guest user');
+          break;
+        }
+
+        // Generate unique order number
+        const orderNumber = generateOrderNumber();
         
-        // Example: if you want to save order to database, process shipping, etc.
-        // await fulfillOrder(session);
+        // Calculate amounts
+        const totalAmount = parseFloat(session.amount_total) / 100; // Convert from cents
+        const pointsUsedInt = parseInt(points_used) || 0;
+        const pointsEarnedInt = parseInt(points_earned) || 0;
+
+        console.log('Order details:', {
+          orderNumber,
+          userId: user_id,
+          totalAmount,
+          pointsUsed: pointsUsedInt,
+          pointsEarned: pointsEarnedInt,
+          orderType: order_type
+        });
+
+        // 1. Create order record
+        const { data: orderData, error: orderError } = await supabase
+          .from('orders')
+          .insert({
+            user_id: user_id,
+            order_number: orderNumber,
+            total_amount: totalAmount,
+            subtotal: parseFloat(original_total_cents) / 100,
+            discount_amount: discount_type === '5_percent' ? totalAmount * 0.05 : 0,
+            points_used: pointsUsedInt,
+            points_earned: pointsEarnedInt,
+            order_status: 'completed',
+            stripe_session_id: session.id,
+            created_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+
+        if (orderError) {
+          console.error('Error creating order:', orderError);
+          throw new Error(`Failed to create order: ${orderError.message}`);
+        }
+
+        console.log('Order created successfully:', orderData);
+
+        // 2. Get line items from Stripe session
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+          expand: ['data.price.product']
+        });
+
+        console.log('Processing line items:', lineItems.data.length);
+
+        // 3. Create order_items records
+        for (const item of lineItems.data) {
+          const priceId = item.price.id;
+          const productId = await getProductIdFromPriceId(priceId);
+          
+          if (!productId) {
+            console.warn(`Could not find product for price ID: ${priceId}`);
+            continue;
+          }
+
+          const { error: itemError } = await supabase
+            .from('order_items')
+            .insert({
+              order_id: orderData.id,
+              product_id: productId,
+              quantity: item.quantity,
+              unit_price: item.price.unit_amount / 100, // Convert from cents
+              total_price: (item.price.unit_amount * item.quantity) / 100
+            });
+
+          if (itemError) {
+            console.error('Error creating order item:', itemError);
+            // Continue processing other items even if one fails
+          } else {
+            console.log(`Order item created for product ${productId}`);
+          }
+        }
+
+        // 4. Award points using Supabase function (only if points were earned)
+        if (pointsEarnedInt > 0) {
+          console.log(`Awarding ${pointsEarnedInt} points to user ${user_id}`);
+          
+          const { error: pointsError } = await supabase.rpc('award_points_for_order', {
+            user_uuid: user_id,
+            order_amount: parseFloat(original_total_cents) / 100, // Use original total for points calculation
+            order_ref: orderNumber
+          });
+
+          if (pointsError) {
+            console.error('Error awarding points:', pointsError);
+            // Don't throw error - order is still valid even if points fail
+          } else {
+            console.log('Points awarded successfully');
+          }
+        }
+
+        // 5. Update user's total points earned
+        const { error: balanceError } = await supabase.rpc('update_user_points_balance', {
+          user_uuid: user_id
+        });
+
+        if (balanceError) {
+          console.error('Error updating user points balance:', balanceError);
+        } else {
+          console.log('User points balance updated');
+        }
+
+        // 6. TODO: Send confirmation email (future enhancement)
+        console.log('Order processing completed successfully for:', orderNumber);
+        
         break;
         
       case 'payment_intent.succeeded':
@@ -56,6 +215,7 @@ module.exports = async (req, res) => {
     res.status(200).json({ received: true });
   } catch (err) {
     console.error(`Error processing webhook: ${err.message}`);
+    console.error('Full error:', err);
     res.status(500).json({ error: 'Webhook processing error' });
   }
 };

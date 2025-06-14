@@ -22,18 +22,39 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { line_items, user_id, user_email } = req.body;
+    const { 
+      line_items, 
+      user_id, 
+      user_email, 
+      points_used = 0, 
+      use_points_redemption = false,
+      use_account_discount = false 
+    } = req.body;
     
     // Calculate total amount in cents
     const totalAmount = line_items.reduce((sum, item) => {
       return sum + (item.price_data.unit_amount * item.quantity);
     }, 0);
 
-    // Apply 5% discount for registered users
-    let discounts = [];
+    // Determine if user is registered
     let isRegisteredUser = user_id && user_email;
     
-    if (isRegisteredUser) {
+    // Calculate final amount after points redemption
+    let finalAmount = totalAmount;
+    let pointsUsed = 0;
+    
+    // Handle points redemption (50 points = free 5-pack = $4.99)
+    if (use_points_redemption && points_used > 0) {
+      const pointsValue = Math.floor(points_used / 50) * 499; // 50 points = $4.99 in cents
+      pointsUsed = Math.floor(points_used / 50) * 50; // Only use complete 50-point increments
+      finalAmount = Math.max(0, totalAmount - pointsValue);
+    }
+
+    // Apply 5% discount for registered users (only if not using points)
+    let discounts = [];
+    let discountType = 'none';
+    
+    if (isRegisteredUser && use_account_discount && !use_points_redemption) {
       // Create a coupon for 5% off for registered users
       const coupon = await stripe.coupons.create({
         percent_off: 5,
@@ -48,6 +69,7 @@ module.exports = async (req, res) => {
       discounts = [{
         coupon: coupon.id
       }];
+      discountType = '5_percent';
     }
 
     // Enhanced shipping logic with proper Laredo, TX support
@@ -69,7 +91,7 @@ module.exports = async (req, res) => {
       },
     });
 
-    // Add standard shipping options based on order total
+    // Add standard shipping options based on order total (use original total for shipping calculation)
     if (totalAmount < 599) {
       // $2 shipping for orders under $5.99
       shipping_options.push({
@@ -104,10 +126,32 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Update line items if points were used (reduce the amount)
+    let updatedLineItems = line_items;
+    if (use_points_redemption && pointsUsed > 0) {
+      // If using points, we need to adjust the line items
+      // For simplicity, we'll apply the points discount to the first item
+      updatedLineItems = line_items.map((item, index) => {
+        if (index === 0 && finalAmount < totalAmount) {
+          // Apply points discount to first item
+          const discountAmount = totalAmount - finalAmount;
+          const newUnitAmount = Math.max(0, item.price_data.unit_amount - Math.floor(discountAmount / item.quantity));
+          return {
+            ...item,
+            price_data: {
+              ...item.price_data,
+              unit_amount: newUnitAmount
+            }
+          };
+        }
+        return item;
+      });
+    }
+
     // Create checkout session configuration
     const sessionConfig = {
       payment_method_types: ['card'],
-      line_items,
+      line_items: updatedLineItems,
       mode: 'payment',
       success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/cart`,
@@ -118,17 +162,22 @@ module.exports = async (req, res) => {
         allowed_countries: ['US'],
       },
       shipping_options,
-      // Add metadata
+      // Add comprehensive metadata for webhook processing
       metadata: {
         has_laredo_option: 'true',
         user_type: isRegisteredUser ? 'registered' : 'guest',
         user_id: user_id || 'guest',
-        discount_applied: isRegisteredUser ? '5_percent' : 'none',
-        order_total_cents: totalAmount.toString()
+        user_email: user_email || '',
+        points_used: pointsUsed.toString(),
+        points_earned: Math.floor(totalAmount / 100).toString(), // 1 point per $1 of original total
+        order_type: use_points_redemption ? 'points_redeemed' : 'regular',
+        discount_type: discountType,
+        original_total_cents: totalAmount.toString(),
+        final_total_cents: finalAmount.toString()
       }
     };
 
-    // Add discounts if user is registered
+    // Add discounts if user is registered and using account discount
     if (discounts.length > 0) {
       sessionConfig.discounts = discounts;
     }
@@ -143,10 +192,13 @@ module.exports = async (req, res) => {
 
     res.status(200).json({ 
       id: session.id,
-      discount_applied: isRegisteredUser,
-      discount_amount: isRegisteredUser ? '5%' : '0%',
+      discount_applied: discountType !== 'none',
+      discount_amount: discountType === '5_percent' ? '5%' : '0%',
+      points_used: pointsUsed,
+      points_discount: pointsUsed > 0 ? `$${((totalAmount - finalAmount) / 100).toFixed(2)}` : '$0.00',
       laredo_shipping_available: true,
-      order_total: (totalAmount / 100).toFixed(2)
+      original_total: (totalAmount / 100).toFixed(2),
+      final_total: (finalAmount / 100).toFixed(2)
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);

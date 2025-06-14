@@ -115,17 +115,20 @@ function CheckoutPage() {
         quantity: item.quantity
       }));
       
+      // Prepare checkout options with points and discount data
+      const checkoutOptions = {
+        pointsUsed: usePointsRedemption ? 50 : 0,
+        usePointsRedemption: usePointsRedemption,
+        useAccountDiscount: showAccountDiscount && !usePointsRedemption
+      };
+      
       // Call the redirectToCheckout function from our Stripe context
-      const result = await redirectToCheckout(lineItems);
+      const result = await redirectToCheckout(lineItems, checkoutOptions);
       
       if (result.success) {
-        // In a real implementation, this would redirect to Stripe
-        // For demo purposes, we'll simulate a successful payment
-        setPaymentSuccess(true);
-        clearCart();
-        
-        // In a real app, we wouldn't immediately clear the cart
-        // That would happen after the user completes payment on Stripe and returns
+        // Redirect to Stripe will happen automatically
+        // The cart will be cleared after successful payment via webhook
+        console.log('Checkout session created successfully:', result);
       } else {
         setError(result.message || t('checkout.errors.paymentFailed'));
       }

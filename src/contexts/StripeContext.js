@@ -17,9 +17,10 @@ export function StripeProvider({ children }) {
   const { user, profile } = useAuth();
 
   // Function to redirect to Stripe hosted checkout
-  const redirectToCheckout = async (items) => {
+  const redirectToCheckout = async (items, checkoutOptions = {}) => {
     try {
       console.log('Redirecting to Stripe checkout for items:', items);
+      console.log('Checkout options:', checkoutOptions);
       
       // Format line items for Stripe API
       const line_items = items.map(item => ({
@@ -35,11 +36,14 @@ export function StripeProvider({ children }) {
         quantity: item.quantity,
       }));
 
-      // Prepare user information for discount eligibility
+      // Prepare user information and checkout options
       const requestBody = {
         line_items,
         user_id: user?.id || null,
-        user_email: user?.email || profile?.email || null
+        user_email: user?.email || profile?.email || null,
+        points_used: checkoutOptions.pointsUsed || 0,
+        use_points_redemption: checkoutOptions.usePointsRedemption || false,
+        use_account_discount: checkoutOptions.useAccountDiscount || false
       };
       
       // Call our API endpoint to create a checkout session
@@ -58,9 +62,13 @@ export function StripeProvider({ children }) {
       
       const session = await response.json();
       
-      // Show discount notification if applicable
+      // Show discount/points notifications if applicable
       if (session.discount_applied) {
-        console.log(`🎉 5% registered user discount applied!`);
+        console.log(`🎉 Discount applied: ${session.discount_amount}`);
+      }
+      
+      if (session.points_used > 0) {
+        console.log(`🎁 Points redeemed: ${session.points_used} points (${session.points_discount})`);
       }
       
       // Redirect to Stripe checkout
@@ -80,7 +88,11 @@ export function StripeProvider({ children }) {
       return { 
         success: true,
         discount_applied: session.discount_applied,
-        discount_amount: session.discount_amount
+        discount_amount: session.discount_amount,
+        points_used: session.points_used,
+        points_discount: session.points_discount,
+        original_total: session.original_total,
+        final_total: session.final_total
       };
     } catch (error) {
       console.error('Error redirecting to checkout:', error);
