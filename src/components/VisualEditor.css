@@ -861,6 +861,33 @@
   font-size: 14px;
 }
 
+/* Live Component Wrapper */
+.live-component-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.live-component-wrapper::after {
+  content: 'Live Website Section - Click to Edit';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.page-element:hover .live-component-wrapper::after {
+  opacity: 1;
+}
+
 /* Element Styles */
 .hero-section {
   padding: 80px 20px;
@@ -1174,6 +1201,59 @@
 .form-group textarea {
   resize: vertical;
   min-height: 80px;
+}
+
+/* Live Section Editor */
+.live-section-editor {
+  padding: 16px;
+}
+
+.info-box {
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.info-box h4 {
+  margin: 0 0 8px 0;
+  color: #0c4a6e;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.info-box p {
+  margin: 0 0 12px 0;
+  color: #0c4a6e;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.component-info {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.edit-instructions h5 {
+  margin: 0 0 8px 0;
+  color: #0c4a6e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.edit-instructions ol {
+  margin: 0;
+  padding-left: 16px;
+  color: #0c4a6e;
+  font-size: 13px;
+}
+
+.edit-instructions li {
+  margin-bottom: 4px;
 }
 
 /* Responsive */

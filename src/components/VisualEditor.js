@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import { getUploadedImages, updatePageContent, getPageContent } from '../lib/adminContent'
 import './VisualEditor.css'
 
+// Import actual website components
+import Hero from './Hero'
+import Product from './Product'
+import Usage from './Usage'
+import FAQ from './FAQ'
+import Contact from './Contact'
+
 const VisualEditor = () => {
   const [images, setImages] = useState([])
   const [pageElements, setPageElements] = useState([])
@@ -19,6 +26,82 @@ const VisualEditor = () => {
 
   // Component Library - Pre-built sections
   const componentLibrary = [
+    // Live Website Components
+    {
+      id: 'website-hero',
+      name: 'Hero Section (Live)',
+      category: 'Website',
+      icon: '🏠',
+      preview: '/api/placeholder/300/200',
+      template: {
+        type: 'website-hero',
+        style: 'live',
+        content: {
+          title: 'SoftBrace Hero',
+          isLiveSection: true
+        }
+      }
+    },
+    {
+      id: 'website-product',
+      name: 'Product Section (Live)',
+      category: 'Website',
+      icon: '📦',
+      preview: '/api/placeholder/300/200',
+      template: {
+        type: 'website-product',
+        style: 'live',
+        content: {
+          title: 'Product Section',
+          isLiveSection: true
+        }
+      }
+    },
+    {
+      id: 'website-usage',
+      name: 'Usage Section (Live)',
+      category: 'Website',
+      icon: '📋',
+      preview: '/api/placeholder/300/200',
+      template: {
+        type: 'website-usage',
+        style: 'live',
+        content: {
+          title: 'How to Use',
+          isLiveSection: true
+        }
+      }
+    },
+    {
+      id: 'website-faq',
+      name: 'FAQ Section (Live)',
+      category: 'Website',
+      icon: '❓',
+      preview: '/api/placeholder/300/200',
+      template: {
+        type: 'website-faq',
+        style: 'live',
+        content: {
+          title: 'FAQ Section',
+          isLiveSection: true
+        }
+      }
+    },
+    {
+      id: 'website-contact',
+      name: 'Contact Section (Live)',
+      category: 'Website',
+      icon: '📞',
+      preview: '/api/placeholder/300/200',
+      template: {
+        type: 'website-contact',
+        style: 'live',
+        content: {
+          title: 'Contact Section',
+          isLiveSection: true
+        }
+      }
+    },
     {
       id: 'hero-1',
       name: 'Hero Section - Centered',
@@ -192,11 +275,67 @@ const VisualEditor = () => {
       const pageData = await getPageContent('home', 'structure')
       if (pageData?.content) {
         setPageElements(JSON.parse(pageData.content))
+      } else {
+        // Load default website structure if no custom structure exists
+        setPageElements([
+          {
+            id: 'hero-section',
+            type: 'website-hero',
+            position: 0,
+            content: {
+              title: 'SoftBrace',
+              subtitle: 'Comfortable, Invisible Orthodontic Solution',
+              buttonText: 'Shop Now',
+              buttonLink: '/shop',
+              isLiveSection: true
+            }
+          },
+          {
+            id: 'product-section',
+            type: 'website-product',
+            position: 1,
+            content: {
+              title: 'Our Products',
+              isLiveSection: true
+            }
+          },
+          {
+            id: 'usage-section',
+            type: 'website-usage',
+            position: 2,
+            content: {
+              title: 'How to Use',
+              isLiveSection: true
+            }
+          },
+          {
+            id: 'faq-section',
+            type: 'website-faq',
+            position: 3,
+            content: {
+              title: 'Frequently Asked Questions',
+              isLiveSection: true
+            }
+          }
+        ])
       }
     } catch (error) {
       console.error('Error loading page elements:', error)
-      // Start with empty page if no existing structure
-      setPageElements([])
+      // Load default website structure on error
+      setPageElements([
+        {
+          id: 'hero-section',
+          type: 'website-hero',
+          position: 0,
+          content: {
+            title: 'SoftBrace',
+            subtitle: 'Comfortable, Invisible Orthodontic Solution',
+            buttonText: 'Shop Now',
+            buttonLink: '/shop',
+            isLiveSection: true
+          }
+        }
+      ])
     }
   }
 
@@ -340,6 +479,16 @@ const VisualEditor = () => {
 
   const renderElementContent = (element) => {
     switch (element.type) {
+      case 'website-hero':
+        return <div className="live-component-wrapper"><Hero /></div>
+      case 'website-product':
+        return <div className="live-component-wrapper"><Product /></div>
+      case 'website-usage':
+        return <div className="live-component-wrapper"><Usage /></div>
+      case 'website-faq':
+        return <div className="live-component-wrapper"><FAQ /></div>
+      case 'website-contact':
+        return <div className="live-component-wrapper"><Contact /></div>
       case 'hero':
         return renderHeroElement(element)
       case 'features':
@@ -581,7 +730,7 @@ const VisualEditor = () => {
                 <input type="text" placeholder="Search components..." />
               </div>
               
-              {['Hero', 'Features', 'CTA', 'Content', 'Media', 'Layout'].map(category => (
+              {['Website', 'Hero', 'Features', 'CTA', 'Content', 'Media', 'Layout'].map(category => (
                 <div key={category} className="component-category">
                   <h3>{category}</h3>
                   <div className="component-grid">
@@ -717,6 +866,26 @@ const ElementEditor = ({ element, images, onUpdate, onClose }) => {
       </div>
 
       <div className="editor-content">
+        {element.type.startsWith('website-') && (
+          <div className="live-section-editor">
+            <div className="info-box">
+              <h4>🔴 Live Website Section</h4>
+              <p>This is a live section from your actual website. To edit the content, you'll need to modify the source component files.</p>
+              <div className="component-info">
+                <strong>Component:</strong> {element.type.replace('website-', '').charAt(0).toUpperCase() + element.type.replace('website-', '').slice(1)}
+              </div>
+              <div className="edit-instructions">
+                <h5>To edit this section:</h5>
+                <ol>
+                  <li>Go to the "Content Editing" tab in the admin panel</li>
+                  <li>Or modify the component files directly in the code</li>
+                  <li>Changes will appear here automatically</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
+
         {element.type === 'hero' && (
           <>
             <div className="form-group">
