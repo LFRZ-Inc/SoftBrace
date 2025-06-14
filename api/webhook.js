@@ -136,7 +136,10 @@ module.exports = async (req, res) => {
 
         console.log('Processing line items:', lineItems.data.length);
 
-        // 3. Create order_items records
+        // 3. Create order_items records and check for 100-pack bonus
+        let has100Pack = false;
+        let total100PackQuantity = 0;
+        
         for (const item of lineItems.data) {
           const priceId = item.price.id;
           const productId = await getProductIdFromPriceId(priceId);
@@ -144,6 +147,13 @@ module.exports = async (req, res) => {
           if (!productId) {
             console.warn(`Could not find product for price ID: ${priceId}`);
             continue;
+          }
+
+          // Check if this is the 100-pack (price ID: price_1RMj9ZFsjDil30gT1wiMK8Td)
+          if (priceId === 'price_1RMj9ZFsjDil30gT1wiMK8Td') {
+            has100Pack = true;
+            total100PackQuantity += item.quantity;
+            console.log(`100-Pack detected! Quantity: ${item.quantity}`);
           }
 
           const { error: itemError } = await supabase
@@ -182,7 +192,37 @@ module.exports = async (req, res) => {
           }
         }
 
-        // 5. Update user's total points earned
+        // 5. Award bonus points for 100-pack purchases (50 points per 100-pack)
+        if (has100Pack && total100PackQuantity > 0) {
+          const bonusPoints = total100PackQuantity * 50; // 50 points per 100-pack
+          console.log(`Awarding ${bonusPoints} bonus points for ${total100PackQuantity} x 100-pack(s)`);
+          
+          const { error: bonusPointsError } = await supabase
+            .from('points_transactions')
+            .insert({
+              user_id: user_id,
+              transaction_type: 'earned',
+              points_amount: bonusPoints,
+              description: `Bonus points for ${total100PackQuantity} x 100-Pack purchase (Order: ${orderNumber})`,
+              order_reference: orderNumber,
+              expires_at: new Date(Date.now() + (2 * 365 * 24 * 60 * 60 * 1000)).toISOString() // 2 years from now
+            });
+
+          if (bonusPointsError) {
+            console.error('Error awarding bonus points:', bonusPointsError);
+          } else {
+            console.log(`Bonus points awarded successfully: ${bonusPoints} points`);
+            
+            // Update the order record to reflect total points earned (including bonus)
+            const totalPointsEarned = pointsEarnedInt + bonusPoints;
+            await supabase
+              .from('orders')
+              .update({ points_earned: totalPointsEarned })
+              .eq('id', orderData.id);
+          }
+        }
+
+        // 6. Update user's total points earned
         const { error: balanceError } = await supabase.rpc('update_user_points_balance', {
           user_uuid: user_id
         });
@@ -193,7 +233,7 @@ module.exports = async (req, res) => {
           console.log('User points balance updated');
         }
 
-        // 6. TODO: Send confirmation email (future enhancement)
+        // 7. TODO: Send confirmation email (future enhancement)
         console.log('Order processing completed successfully for:', orderNumber);
         
         break;
