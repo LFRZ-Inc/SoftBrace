@@ -32,7 +32,15 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    getInitialSession()
+    // Set a timeout to ensure loading doesn't get stuck
+    const loadingTimeout = setTimeout(() => {
+      console.log('Auth loading timeout reached, setting loading to false')
+      setLoading(false)
+    }, 5000)
+
+    getInitialSession().finally(() => {
+      clearTimeout(loadingTimeout)
+    })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

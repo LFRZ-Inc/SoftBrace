@@ -70,17 +70,26 @@ export const updatePageContent = async (page, section, content) => {
 // Image management functions
 export const uploadImage = async (file, folder = 'admin-uploads') => {
   try {
+    console.log('Starting image upload:', file.name, file.size, file.type)
+    
     // Create unique filename
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`
     const filePath = `${folder}/${fileName}`
+
+    console.log('Uploading to path:', filePath)
 
     // Upload to Supabase storage
     const { data, error } = await supabase.storage
       .from('images')
       .upload(filePath, file)
 
-    if (error) throw error
+    console.log('Upload result:', { data, error })
+
+    if (error) {
+      console.error('Upload error:', error)
+      throw error
+    }
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
