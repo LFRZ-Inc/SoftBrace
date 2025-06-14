@@ -7,6 +7,15 @@ import {
   getPageContent,
   updatePageContent
 } from '../lib/adminContent'
+import { 
+  logAdminLogin, 
+  logAdminLogout, 
+  logImageUpload, 
+  logImageDelete, 
+  logContentEdit,
+  getAdminActivitySummary,
+  getAdminActivityStats
+} from '../lib/adminActivityLogger'
 import VisualEditor from '../components/VisualEditor'
 import '../components/VisualEditor.css'
 
@@ -85,6 +94,11 @@ const AdminPage = () => {
   const [savingContent, setSavingContent] = useState(false)
   const [contentMessage, setContentMessage] = useState('')
 
+  // Activity tracking state
+  const [activityLog, setActivityLog] = useState([])
+  const [activityStats, setActivityStats] = useState(null)
+  const [loadingActivity, setLoadingActivity] = useState(false)
+
   // Check admin session on component mount
   useEffect(() => {
     console.log('AdminPage: Checking admin session...')
@@ -129,6 +143,9 @@ const AdminPage = () => {
       setLoginError('')
       setPassword('')
       loadImages()
+      loadActivityData()
+      // Log the admin login
+      logAdminLogin()
     } else {
       console.log('AdminPage: Admin login failed:', result.error)
       setLoginError(result.error)
@@ -137,12 +154,16 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     console.log('AdminPage: Admin logout')
+    // Log the admin logout before clearing session
+    logAdminLogout()
     adminAuth.logout()
     setIsLoggedIn(false)
     setPassword('')
     setImages([])
     setEditingContent('')
     setOriginalContent('')
+    setActivityLog([])
+    setActivityStats(null)
   }
 
   const loadImages = async () => {
@@ -150,6 +171,21 @@ const AdminPage = () => {
     const uploadedImages = await getUploadedImages()
     console.log('AdminPage: Loaded images:', uploadedImages.length)
     setImages(uploadedImages)
+  }
+
+  const loadActivityData = async () => {
+    setLoadingActivity(true)
+    try {
+      const [recentActivity, stats] = await Promise.all([
+        getAdminActivitySummary(20),
+        getAdminActivityStats()
+      ])
+      setActivityLog(recentActivity)
+      setActivityStats(stats)
+    } catch (error) {
+      console.error('Failed to load activity data:', error)
+    }
+    setLoadingActivity(false)
   }
 
   const handleImageUpload = async (e) => {
@@ -167,6 +203,9 @@ const AdminPage = () => {
       setUploadMessage('Image uploaded successfully!')
       loadImages() // Refresh the image list
       e.target.value = '' // Clear the input
+      // Log the image upload
+      logImageUpload(result.record)
+      loadActivityData() // Refresh activity log
     } else {
       console.error('AdminPage: Image upload failed:', result.error)
       setUploadMessage(`Error: ${result.error}`)
@@ -179,11 +218,19 @@ const AdminPage = () => {
   const handleDeleteImage = async (imageId) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return
 
+    // Find the image data before deletion for logging
+    const imageToDelete = images.find(img => img.id === imageId)
+    
     console.log('AdminPage: Deleting image:', imageId)
     const result = await deleteImage(imageId)
     if (result.success) {
       console.log('AdminPage: Image deleted successfully')
       loadImages() // Refresh the image list
+      // Log the image deletion
+      if (imageToDelete) {
+        logImageDelete(imageToDelete)
+        loadActivityData() // Refresh activity log
+      }
     } else {
       console.error('AdminPage: Image deletion failed:', result.error)
       alert(`Error deleting image: ${result.error}`)
@@ -216,7 +263,10 @@ const AdminPage = () => {
       await updatePageContent(selectedPage, selectedSection, editingContent)
       console.log('AdminPage: Content saved successfully')
       setContentMessage('Content saved successfully!')
+      // Log the content edit
+      logContentEdit(selectedPage, selectedSection, originalContent, editingContent)
       setOriginalContent(editingContent)
+      loadActivityData() // Refresh activity log
     } catch (error) {
       console.error('AdminPage: Content save failed:', error)
       setContentMessage(`Error: ${error.message}`)
@@ -349,6 +399,16 @@ const AdminPage = () => {
                 }`}
               >
                 🎨 Visual Editor
+              </button>
+              <button
+                onClick={() => setActiveTab('activity')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'activity' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                📊 Activity Log
               </button>
             </nav>
           </div>
@@ -513,9 +573,136 @@ const AdminPage = () => {
             <VisualEditor />
           </div>
         )}
+
+        {/* Activity Log Tab */}
+        {activeTab === 'activity' && (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Admin Activity Log</h2>
+            
+            {/* Activity Statistics */}
+            {activityStats && (
+              <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 className="text-lg font-semibold mb-4">Activity Statistics (Last 30 Days)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{activityStats.total_actions}</div>
+                    <div className="text-sm text-gray-500">Total Actions</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {activityStats.actions_by_type.IMAGE_UPLOAD || 0}
+                    </div>
+                    <div className="text-sm text-gray-500">Images Uploaded</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-orange-600">
+                      {activityStats.actions_by_type.CONTENT_EDIT || 0}
+                    </div>
+                    <div className="text-sm text-gray-500">Content Edits</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">
+                      {activityStats.most_active_day?.actions || 0}
+                    </div>
+                    <div className="text-sm text-gray-500">Most Active Day</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Recent Activity */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Recent Activity</h3>
+                <button
+                  onClick={loadActivityData}
+                  disabled={loadingActivity}
+                  className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  {loadingActivity ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              
+              {loadingActivity ? (
+                <div className="text-center py-8 text-gray-500">Loading activity log...</div>
+              ) : activityLog.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No activity recorded yet.</div>
+              ) : (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {activityLog.map((activity) => (
+                    <div key={activity.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {getActivityIcon(activity.action_type)} {getActivityDescription(activity)}
+                          </div>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {new Date(activity.created_at).toLocaleString()}
+                          </div>
+                          {activity.details && Object.keys(activity.details).length > 0 && (
+                            <div className="text-xs text-gray-400 mt-1">
+                              {JSON.stringify(activity.details, null, 2).substring(0, 100)}...
+                            </div>
+                          )}
+                        </div>
+                        <span className={`px-2 py-1 rounded text-xs ${getActivityBadgeColor(activity.action_type)}`}>
+                          {activity.action_type.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
+
+  // Helper functions for activity display
+  const getActivityIcon = (actionType) => {
+    switch (actionType) {
+      case 'IMAGE_UPLOAD': return '📷'
+      case 'IMAGE_DELETE': return '🗑️'
+      case 'CONTENT_EDIT': return '✏️'
+      case 'VISUAL_EDITOR': return '🎨'
+      case 'ADMIN_LOGIN': return '🔐'
+      case 'ADMIN_LOGOUT': return '👋'
+      default: return '📝'
+    }
+  }
+
+  const getActivityDescription = (activity) => {
+    switch (activity.action_type) {
+      case 'IMAGE_UPLOAD':
+        return `Uploaded image: ${activity.details?.filename || 'Unknown'}`
+      case 'IMAGE_DELETE':
+        return `Deleted image: ${activity.details?.filename || 'Unknown'}`
+      case 'CONTENT_EDIT':
+        return `Edited ${activity.details?.page}/${activity.details?.section} content`
+      case 'VISUAL_EDITOR':
+        return `Visual editor action: ${activity.details?.editor_action || 'Unknown'}`
+      case 'ADMIN_LOGIN':
+        return `Admin logged in via ${activity.details?.browser || 'Unknown browser'}`
+      case 'ADMIN_LOGOUT':
+        return `Admin logged out (session: ${activity.details?.session_duration || 0}s)`
+      default:
+        return `${activity.action_type} action performed`
+    }
+  }
+
+  const getActivityBadgeColor = (actionType) => {
+    switch (actionType) {
+      case 'IMAGE_UPLOAD': return 'bg-green-100 text-green-800'
+      case 'IMAGE_DELETE': return 'bg-red-100 text-red-800'
+      case 'CONTENT_EDIT': return 'bg-blue-100 text-blue-800'
+      case 'VISUAL_EDITOR': return 'bg-purple-100 text-purple-800'
+      case 'ADMIN_LOGIN': return 'bg-gray-100 text-gray-800'
+      case 'ADMIN_LOGOUT': return 'bg-gray-100 text-gray-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
 }
 
 export default AdminPage 
