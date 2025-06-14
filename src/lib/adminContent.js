@@ -37,6 +37,8 @@ export const updatePageContent = async (page, section, content) => {
         section,
         content,
         updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'page,section'
       })
       .select()
       .single()
