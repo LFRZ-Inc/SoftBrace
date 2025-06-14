@@ -198,6 +198,13 @@
   font-size: 1rem;
 }
 
+.auth-loading {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.7;
+}
+
 .admin-text {
   color: var(--color-primary);
   font-weight: 600;

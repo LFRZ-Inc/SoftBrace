@@ -20,7 +20,19 @@ function Header() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    console.log('Header: Sign out button clicked')
+    try {
+      const result = await signOut();
+      if (result.error) {
+        console.error('Header: Sign out failed:', result.error)
+        alert('Sign out failed. Please try again.')
+      } else {
+        console.log('Header: Sign out successful')
+      }
+    } catch (error) {
+      console.error('Header: Sign out exception:', error)
+      alert('Sign out failed. Please try again.')
+    }
     setMenuOpen(false);
   };
 
@@ -76,7 +88,7 @@ function Header() {
               </li>
               
               {/* Authentication Section */}
-              {!loading && (
+              {!loading ? (
                 <>
                   {user ? (
                     <li className="auth-section">
@@ -105,6 +117,10 @@ function Header() {
                     </li>
                   )}
                 </>
+              ) : (
+                <li className="auth-section">
+                  <div className="auth-loading">Loading...</div>
+                </li>
               )}
             </ul>
           </nav>

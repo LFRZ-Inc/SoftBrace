@@ -48,15 +48,28 @@ export const AuthProvider = ({ children }) => {
         console.log('Auth state change:', event, session?.user?.email)
         
         try {
+          if (event === 'SIGNED_OUT') {
+            console.log('AuthContext: User signed out, clearing state')
+            setUser(null)
+            setProfile(null)
+            setLoading(false)
+            return
+          }
+          
           if (session?.user) {
+            console.log('AuthContext: User session found, loading profile')
             setUser(session.user)
             await loadUserProfile(session.user.id)
           } else {
+            console.log('AuthContext: No user session, clearing state')
             setUser(null)
             setProfile(null)
           }
         } catch (error) {
           console.error('Error handling auth state change:', error)
+          // Don't crash the app, just clear the state
+          setUser(null)
+          setProfile(null)
         } finally {
           setLoading(false)
         }
@@ -236,15 +249,27 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
+      console.log('AuthContext: Starting sign out process...')
+      setLoading(true)
+      
       const { error } = await supabase.auth.signOut()
-      if (!error) {
-        setUser(null)
-        setProfile(null)
+      
+      if (error) {
+        console.error('AuthContext: Sign out error:', error)
+        return { error }
       }
-      return { error }
+      
+      console.log('AuthContext: Sign out successful, clearing state...')
+      // Clear state immediately
+      setUser(null)
+      setProfile(null)
+      
+      return { error: null }
     } catch (err) {
-      console.error('Sign out error:', err)
+      console.error('AuthContext: Sign out exception:', err)
       return { error: err }
+    } finally {
+      setLoading(false)
     }
   }
 
