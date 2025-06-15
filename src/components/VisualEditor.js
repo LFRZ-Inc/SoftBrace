@@ -853,4 +853,353 @@ const VisualEditor = () => {
             </button>
             <button
               onClick={() => setPreviewMode('mobile')}
-              className={`view-btn ${previewMode === 'mobile' ? 'active' : ''}`
+              className={`view-btn ${previewMode === 'mobile' ? 'active' : ''}`}
+              title="Mobile View"
+            >
+              📱
+            </button>
+          </div>
+          
+          <button 
+            onClick={handleSave} 
+            className="save-btn"
+            disabled={saving || !hasChanges}
+          >
+            {saving ? '💾 Saving...' : '💾 Save'}
+          </button>
+          
+          {saveMessage && (
+            <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
+              {saveMessage}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="editor-workspace">
+        {/* Left Sidebar - Component Library */}
+        <div className="editor-sidebar left">
+          <div className="sidebar-tabs">
+            <button
+              onClick={() => { setShowComponentLibrary(true); setShowImageLibrary(false); }}
+              className={`tab-btn ${showComponentLibrary ? 'active' : ''}`}
+            >
+              🧩 Components
+            </button>
+            <button
+              onClick={() => { setShowComponentLibrary(false); setShowImageLibrary(true); }}
+              className={`tab-btn ${showImageLibrary ? 'active' : ''}`}
+            >
+              🖼️ Images
+            </button>
+          </div>
+
+          {/* Component Library */}
+          {showComponentLibrary && (
+            <div className="component-library">
+              <div className="library-search">
+                <input type="text" placeholder="Search components..." />
+              </div>
+              
+              {['Website', 'Hero', 'Features', 'CTA', 'Content', 'Media', 'Layout'].map(category => (
+                <div key={category} className="component-category">
+                  <h3>{category}</h3>
+                  <div className="component-grid">
+                    {componentLibrary
+                      .filter(comp => comp.category === category)
+                      .map(component => (
+                        <div
+                          key={component.id}
+                          className="component-item"
+                          draggable
+                          onDragStart={(e) => handleComponentDragStart(component, e)}
+                          onDragEnd={handleComponentDragEnd}
+                        >
+                          <div className="component-preview">
+                            <span className="component-icon">{component.icon}</span>
+                          </div>
+                          <span className="component-name">{component.name}</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Image Library */}
+          {showImageLibrary && (
+            <div className="image-library">
+              <div className="library-search">
+                <input type="text" placeholder="Search images..." />
+              </div>
+              
+              <div className="image-grid">
+                {images.map(image => (
+                  <div
+                    key={image.id}
+                    className="image-item"
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('image', JSON.stringify(image))
+                    }}
+                  >
+                    <img src={image.public_url} alt={image.original_name} />
+                    <span className="image-name">{image.original_name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Main Canvas */}
+        <div className="editor-canvas">
+          <div className={`canvas-preview ${getPreviewClass()}`}>
+            <div className="page-container">
+              {/* Drop zones between elements */}
+              <div
+                className="drop-zone"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => handleDropZoneDrop(e, 0)}
+              >
+                Drop components here
+              </div>
+
+              {pageElements.map((element, index) => (
+                <React.Fragment key={element.id}>
+                  {renderElement(element)}
+                  <div
+                    className="drop-zone"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleDropZoneDrop(e, index + 1)}
+                  >
+                    Drop components here
+                  </div>
+                </React.Fragment>
+              ))}
+
+              {pageElements.length === 0 && (
+                <div className="empty-canvas">
+                  <div className="empty-message">
+                    <h3>Start Building Your Page</h3>
+                    <p>Drag components from the sidebar to begin</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar - Properties Panel */}
+        <div className="editor-sidebar right">
+          <div className="properties-panel">
+            <h3>Properties</h3>
+            {selectedElement ? (
+              <div className="element-properties">
+                <h4>{selectedElement.type} Element</h4>
+                <p>Click "Edit" to modify this element's content and styling.</p>
+                
+                {selectedElement.content.isLiveSection && (
+                  <div className="live-section-notice">
+                    <p><strong>Live Website Section</strong></p>
+                    <p>This displays your actual website content. Use the Edit button to modify the underlying component.</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="no-selection">
+                <p>Select an element to view its properties</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Element Editor Modal */}
+      {editingElement && (
+        <ElementEditor
+          element={editingElement}
+          images={images}
+          onUpdate={(updates) => {
+            handleElementUpdate(editingElement.id, updates)
+            setEditingElement(null)
+          }}
+          onClose={() => setEditingElement(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+// Element Editor Component
+const ElementEditor = ({ element, images, onUpdate, onClose }) => {
+  const [localContent, setLocalContent] = useState(element.content)
+
+  const handleContentChange = (field, value) => {
+    setLocalContent(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleNestedContentChange = (parentField, index, field, value) => {
+    setLocalContent(prev => ({
+      ...prev,
+      [parentField]: prev[parentField].map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }))
+  }
+
+  const handleSave = () => {
+    onUpdate({ content: localContent })
+  }
+
+  return (
+    <div className="element-editor-overlay">
+      <div className="element-editor">
+        <div className="editor-header">
+          <h3>Edit {element.type} Element</h3>
+          <button onClick={onClose} className="close-btn">×</button>
+        </div>
+        
+        <div className="editor-content">
+          {element.type === 'hero' && (
+            <div className="form-group">
+              <label>Title</label>
+              <input
+                type="text"
+                value={localContent.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+              />
+              
+              <label>Subtitle</label>
+              <textarea
+                value={localContent.subtitle || ''}
+                onChange={(e) => handleContentChange('subtitle', e.target.value)}
+              />
+              
+              <label>Button Text</label>
+              <input
+                type="text"
+                value={localContent.buttonText || ''}
+                onChange={(e) => handleContentChange('buttonText', e.target.value)}
+              />
+              
+              <label>Button Link</label>
+              <input
+                type="text"
+                value={localContent.buttonLink || ''}
+                onChange={(e) => handleContentChange('buttonLink', e.target.value)}
+              />
+              
+              <label>Background Color</label>
+              <input
+                type="color"
+                value={localContent.backgroundColor || '#ffffff'}
+                onChange={(e) => handleContentChange('backgroundColor', e.target.value)}
+              />
+            </div>
+          )}
+
+          {element.type === 'text' && (
+            <div className="form-group">
+              <label>Text Content</label>
+              <textarea
+                value={localContent.text || ''}
+                onChange={(e) => handleContentChange('text', e.target.value)}
+                rows={6}
+              />
+              
+              <label>Font Size</label>
+              <select
+                value={localContent.fontSize || 'medium'}
+                onChange={(e) => handleContentChange('fontSize', e.target.value)}
+              >
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+              
+              <label>Alignment</label>
+              <select
+                value={localContent.alignment || 'left'}
+                onChange={(e) => handleContentChange('alignment', e.target.value)}
+              >
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+          )}
+
+          {element.type === 'image' && (
+            <div className="form-group">
+              <label>Image</label>
+              <select
+                value={localContent.image || ''}
+                onChange={(e) => handleContentChange('image', e.target.value)}
+              >
+                <option value="">Select an image</option>
+                {images.map(image => (
+                  <option key={image.id} value={image.public_url}>
+                    {image.original_name}
+                  </option>
+                ))}
+              </select>
+              
+              <label>Alt Text</label>
+              <input
+                type="text"
+                value={localContent.alt || ''}
+                onChange={(e) => handleContentChange('alt', e.target.value)}
+              />
+              
+              <label>Caption</label>
+              <input
+                type="text"
+                value={localContent.caption || ''}
+                onChange={(e) => handleContentChange('caption', e.target.value)}
+              />
+              
+              <label>Width</label>
+              <input
+                type="text"
+                value={localContent.width || '100%'}
+                onChange={(e) => handleContentChange('width', e.target.value)}
+                placeholder="e.g., 100%, 300px"
+              />
+              
+              <label>Alignment</label>
+              <select
+                value={localContent.alignment || 'center'}
+                onChange={(e) => handleContentChange('alignment', e.target.value)}
+              >
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+          )}
+
+          {element.type === 'spacer' && (
+            <div className="form-group">
+              <label>Height</label>
+              <input
+                type="text"
+                value={localContent.height || '50px'}
+                onChange={(e) => handleContentChange('height', e.target.value)}
+                placeholder="e.g., 50px, 2rem"
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="editor-footer">
+          <button onClick={onClose} className="cancel-btn">Cancel</button>
+          <button onClick={handleSave} className="save-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default VisualEditor
