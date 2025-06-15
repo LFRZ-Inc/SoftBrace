@@ -30,7 +30,8 @@ const adminAuth = {
     if (password === ADMIN_PASSWORD) {
       const sessionData = {
         loggedIn: true,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        sessionId: 'admin-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9)
       }
       localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData))
       return { success: true }
@@ -66,9 +67,11 @@ const adminAuth = {
 
   refreshSession: () => {
     if (adminAuth.isLoggedIn()) {
+      const existingSession = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY) || '{}')
       const sessionData = {
         loggedIn: true,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        sessionId: existingSession.sessionId || 'admin-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9)
       }
       localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(sessionData))
     }

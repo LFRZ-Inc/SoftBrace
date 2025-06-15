@@ -276,8 +276,8 @@ const VisualEditor = () => {
 
   const loadPageElements = async () => {
     try {
-      // Load existing page structure
-      const pageData = await getPageContent('home', 'structure')
+      // Load existing page structure - MUST match the save location
+      const pageData = await getPageContent('visual-editor', 'page-structure')
       if (pageData?.content) {
         setPageElements(JSON.parse(pageData.content))
       } else {
