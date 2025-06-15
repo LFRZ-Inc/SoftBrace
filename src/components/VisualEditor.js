@@ -784,6 +784,10 @@ const VisualEditor = () => {
   const renderImageElement = (element) => {
     const { content } = element
     
+    const handleImagePlaceholderClick = () => {
+      setEditingElement(element)
+    }
+    
     return (
       <div className="image-element" style={{ textAlign: content.alignment }}>
         {content.image ? (
@@ -791,9 +795,14 @@ const VisualEditor = () => {
             src={content.image} 
             alt={content.alt}
             style={{ width: content.width }}
+            onClick={handleImagePlaceholderClick}
           />
         ) : (
-          <div className="image-placeholder" style={{ width: content.width }}>
+          <div 
+            className="image-placeholder" 
+            style={{ width: content.width }}
+            onClick={handleImagePlaceholderClick}
+          >
             Click to add image
           </div>
         )}
