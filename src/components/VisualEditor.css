@@ -1671,4 +1671,66 @@
   font-weight: 500;
   text-align: center;
   z-index: 10;
+}
+
+/* Live Editing Styles */
+.live-editable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.live-editable:hover {
+  outline: 2px dashed #3b82f6;
+  outline-offset: 2px;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.live-editable:hover::before {
+  content: '✏️ Click to edit';
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background: #3b82f6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Specific live editing styles */
+.text-element.live-editable:hover::before {
+  content: '✏️ Click to edit text';
+}
+
+.image-element.live-editable:hover::before {
+  content: '🖼️ Click to edit image';
+}
+
+.hero-section.live-editable:hover::before {
+  content: '🏠 Click to edit hero';
+}
+
+.live-component-wrapper.live-editable:hover::before {
+  content: '🌐 Click to edit section';
+}
+
+/* Enhanced image placeholder */
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.image-placeholder:hover {
+  background: #f1f5f9 !important;
+  border-color: #3b82f6 !important;
+  color: #3b82f6;
 } 

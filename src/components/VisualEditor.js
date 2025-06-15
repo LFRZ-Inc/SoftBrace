@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { getUploadedImages, updatePageContent, getPageContent } from '../lib/adminContent'
+import { logVisualEditorAction } from '../lib/adminActivityLogger'
 import './VisualEditor.css'
 
 // Import actual website components
@@ -359,11 +360,24 @@ const VisualEditor = () => {
       
       await updatePageContent('visual-editor', 'page-structure', contentToSave)
       
+      // Log the visual editor save action
+      await logVisualEditorAction('SAVE_PAGE_STRUCTURE', {
+        elements_count: pageElements.length,
+        content_length: contentToSave.length,
+        elements_types: pageElements.map(el => el.type)
+      })
+      
       setHasChanges(false)
       setSaveMessage('Changes saved successfully!')
       setTimeout(() => setSaveMessage(''), 3000)
     } catch (error) {
       console.error('Save error:', error)
+      
+      // Log the save error
+      await logVisualEditorAction('SAVE_ERROR', {
+        error_message: error.message,
+        elements_count: pageElements.length
+      })
       
       // Provide more specific error messages
       let errorMessage = 'Failed to save changes. '
@@ -428,6 +442,15 @@ const VisualEditor = () => {
 
     setPageElements(newElements)
     setHasChanges(true)
+    
+    // Log the element addition
+    logVisualEditorAction('ADD_ELEMENT', {
+      element_type: newElement.type,
+      element_id: newElement.id,
+      position: insertIndex,
+      total_elements: newElements.length
+    })
+    
     handleComponentDragEnd()
   }
 
@@ -437,17 +460,36 @@ const VisualEditor = () => {
   }
 
   const handleElementUpdate = (elementId, updates) => {
+    const oldElement = pageElements.find(el => el.id === elementId)
+    
     setPageElements(prev => prev.map(el => 
       el.id === elementId ? { ...el, ...updates } : el
     ))
     setHasChanges(true)
+    
+    // Log the element update
+    logVisualEditorAction('UPDATE_ELEMENT', {
+      element_id: elementId,
+      element_type: oldElement?.type,
+      updated_fields: Object.keys(updates),
+      live_edit: true // This indicates it was edited via live editing
+    })
   }
 
   const handleElementDelete = (elementId) => {
+    const elementToDelete = pageElements.find(el => el.id === elementId)
+    
     setPageElements(prev => prev.filter(el => el.id !== elementId))
     setSelectedElement(null)
     setEditingElement(null)
     setHasChanges(true)
+    
+    // Log the element deletion
+    logVisualEditorAction('DELETE_ELEMENT', {
+      element_id: elementId,
+      element_type: elementToDelete?.type,
+      remaining_elements: pageElements.length - 1
+    })
   }
 
   const handleElementMove = (elementId, direction) => {
@@ -639,17 +681,62 @@ const VisualEditor = () => {
   }
 
   const renderElementContent = (element) => {
+    const handleLiveComponentClick = (e) => {
+      e.stopPropagation()
+      setEditingElement(element)
+    }
+    
     switch (element.type) {
       case 'website-hero':
-        return <div className="live-component-wrapper"><Hero /></div>
+        return (
+          <div 
+            className="live-component-wrapper live-editable" 
+            onClick={handleLiveComponentClick}
+            title="Click to edit hero section"
+          >
+            <Hero />
+          </div>
+        )
       case 'website-product':
-        return <div className="live-component-wrapper"><Product /></div>
+        return (
+          <div 
+            className="live-component-wrapper live-editable" 
+            onClick={handleLiveComponentClick}
+            title="Click to edit product section"
+          >
+            <Product />
+          </div>
+        )
       case 'website-usage':
-        return <div className="live-component-wrapper"><Usage /></div>
+        return (
+          <div 
+            className="live-component-wrapper live-editable" 
+            onClick={handleLiveComponentClick}
+            title="Click to edit usage section"
+          >
+            <Usage />
+          </div>
+        )
       case 'website-faq':
-        return <div className="live-component-wrapper"><FAQ /></div>
+        return (
+          <div 
+            className="live-component-wrapper live-editable" 
+            onClick={handleLiveComponentClick}
+            title="Click to edit FAQ section"
+          >
+            <FAQ />
+          </div>
+        )
       case 'website-contact':
-        return <div className="live-component-wrapper"><Contact /></div>
+        return (
+          <div 
+            className="live-component-wrapper live-editable" 
+            onClick={handleLiveComponentClick}
+            title="Click to edit contact section"
+          >
+            <Contact />
+          </div>
+        )
       case 'hero':
         return renderHeroElement(element)
       case 'features':
@@ -670,9 +757,19 @@ const VisualEditor = () => {
   const renderHeroElement = (element) => {
     const { content, style } = element
     
+    const handleHeroClick = (e) => {
+      e.stopPropagation()
+      setEditingElement(element)
+    }
+    
     if (style === 'centered') {
       return (
-        <section className="hero-section centered" style={{ backgroundColor: content.backgroundColor }}>
+        <section 
+          className="hero-section centered live-editable" 
+          style={{ backgroundColor: content.backgroundColor }}
+          onClick={handleHeroClick}
+          title="Click to edit hero section"
+        >
           <div className="hero-content">
             <h1>{content.title}</h1>
             <p>{content.subtitle}</p>
@@ -682,7 +779,12 @@ const VisualEditor = () => {
       )
     } else if (style === 'split') {
       return (
-        <section className="hero-section split" style={{ backgroundColor: content.backgroundColor }}>
+        <section 
+          className="hero-section split live-editable" 
+          style={{ backgroundColor: content.backgroundColor }}
+          onClick={handleHeroClick}
+          title="Click to edit hero section"
+        >
           <div className="hero-content">
             <div className="hero-text">
               <h1>{content.title}</h1>
@@ -768,13 +870,20 @@ const VisualEditor = () => {
   const renderTextElement = (element) => {
     const { content } = element
     
+    const handleTextClick = (e) => {
+      e.stopPropagation()
+      setEditingElement(element)
+    }
+    
     return (
       <div 
-        className="text-element" 
+        className="text-element live-editable" 
         style={{ 
           textAlign: content.alignment,
           fontSize: content.fontSize === 'small' ? '14px' : content.fontSize === 'large' ? '18px' : '16px'
         }}
+        onClick={handleTextClick}
+        title="Click to edit text"
       >
         <div dangerouslySetInnerHTML={{ __html: content.text }} />
       </div>
@@ -784,29 +893,40 @@ const VisualEditor = () => {
   const renderImageElement = (element) => {
     const { content } = element
     
-    const handleImagePlaceholderClick = () => {
+    const handleImageClick = (e) => {
+      e.stopPropagation()
       setEditingElement(element)
     }
     
     return (
-      <div className="image-element" style={{ textAlign: content.alignment }}>
+      <div className="image-element live-editable" style={{ textAlign: content.alignment }}>
         {content.image ? (
           <img 
             src={content.image} 
             alt={content.alt}
             style={{ width: content.width }}
-            onClick={handleImagePlaceholderClick}
+            onClick={handleImageClick}
+            title="Click to edit image"
           />
         ) : (
           <div 
             className="image-placeholder" 
             style={{ width: content.width }}
-            onClick={handleImagePlaceholderClick}
+            onClick={handleImageClick}
+            title="Click to add image"
           >
-            Click to add image
+            📷 Click to add image
           </div>
         )}
-        {content.caption && <p className="image-caption">{content.caption}</p>}
+        {content.caption && (
+          <p 
+            className="image-caption" 
+            onClick={handleImageClick}
+            title="Click to edit caption"
+          >
+            {content.caption}
+          </p>
+        )}
       </div>
     )
   }
@@ -1059,7 +1179,14 @@ const ElementEditor = ({ element, images, onUpdate, onClose }) => {
   }
 
   const handleSave = () => {
+    console.log('ElementEditor saving:', {
+      elementId: element.id,
+      elementType: element.type,
+      originalContent: element.content,
+      newContent: localContent
+    })
     onUpdate({ content: localContent })
+    onClose()
   }
 
   return (
@@ -1142,10 +1269,13 @@ const ElementEditor = ({ element, images, onUpdate, onClose }) => {
 
           {element.type === 'image' && (
             <div className="form-group">
-              <label>Image</label>
+              <label>Image ({images.length} available)</label>
               <select
                 value={localContent.image || ''}
-                onChange={(e) => handleContentChange('image', e.target.value)}
+                onChange={(e) => {
+                  console.log('Image selected:', e.target.value)
+                  handleContentChange('image', e.target.value)
+                }}
               >
                 <option value="">Select an image</option>
                 {images.map(image => (
@@ -1155,18 +1285,30 @@ const ElementEditor = ({ element, images, onUpdate, onClose }) => {
                 ))}
               </select>
               
+              {localContent.image && (
+                <div className="image-preview">
+                  <img 
+                    src={localContent.image} 
+                    alt="Preview" 
+                    style={{ maxWidth: '200px', maxHeight: '150px', marginTop: '10px' }}
+                  />
+                </div>
+              )}
+              
               <label>Alt Text</label>
               <input
                 type="text"
                 value={localContent.alt || ''}
                 onChange={(e) => handleContentChange('alt', e.target.value)}
+                placeholder="Describe the image for accessibility"
               />
               
-              <label>Caption</label>
+              <label>Caption (optional)</label>
               <input
                 type="text"
                 value={localContent.caption || ''}
                 onChange={(e) => handleContentChange('caption', e.target.value)}
+                placeholder="Caption text that appears below the image"
               />
               
               <label>Width</label>
@@ -1174,7 +1316,7 @@ const ElementEditor = ({ element, images, onUpdate, onClose }) => {
                 type="text"
                 value={localContent.width || '100%'}
                 onChange={(e) => handleContentChange('width', e.target.value)}
-                placeholder="e.g., 100%, 300px"
+                placeholder="e.g., 100%, 300px, 50%"
               />
               
               <label>Alignment</label>
