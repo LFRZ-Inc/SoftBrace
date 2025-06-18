@@ -28,12 +28,18 @@ module.exports = async (req, res) => {
       user_email, 
       points_used = 0, 
       use_points_redemption = false,
-      use_account_discount = false 
+      use_account_discount = false,
+      shipping_preference = null // New field for shipping preferences
     } = req.body;
     
     // Calculate total amount in cents
     const totalAmount = line_items.reduce((sum, item) => {
       return sum + (item.price_data.unit_amount * item.quantity);
+    }, 0);
+
+    // Calculate total quantity for shipping metadata
+    const totalQuantity = line_items.reduce((sum, item) => {
+      return sum + item.quantity;
     }, 0);
 
     // Determine if user is registered
@@ -72,7 +78,7 @@ module.exports = async (req, res) => {
       discountType = '5_percent';
     }
 
-    // Enhanced shipping logic with proper Laredo, TX support
+    // Enhanced shipping logic with proper Laredo, TX support and metadata
     let shipping_options = [];
 
     // ALWAYS add Laredo, TX local delivery option (free for all orders)
@@ -88,6 +94,13 @@ module.exports = async (req, res) => {
           minimum: { unit: 'business_day', value: 1 },
           maximum: { unit: 'business_day', value: 2 },
         },
+        metadata: {
+          shipping_type: 'local_delivery',
+          service_area: 'laredo_tx',
+          delivery_method: 'local_courier',
+          cost_type: 'free',
+          tracking_available: 'yes'
+        }
       },
     });
 
@@ -106,6 +119,14 @@ module.exports = async (req, res) => {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 5 },
           },
+          metadata: {
+            shipping_type: 'standard',
+            service_area: 'us_nationwide',
+            delivery_method: 'usps_ground',
+            cost_type: 'paid',
+            tracking_available: 'yes',
+            shipping_cost_cents: '200'
+          }
         },
       });
     } else {
@@ -122,6 +143,15 @@ module.exports = async (req, res) => {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 5 },
           },
+          metadata: {
+            shipping_type: 'standard_free',
+            service_area: 'us_nationwide',
+            delivery_method: 'usps_ground',
+            cost_type: 'free_threshold',
+            tracking_available: 'yes',
+            free_threshold_met: 'true',
+            shipping_cost_cents: '0'
+          }
         },
       });
     }
@@ -148,6 +178,13 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Create comprehensive product summary for metadata
+    const productSummary = line_items.map(item => ({
+      name: item.price_data.product_data.name,
+      quantity: item.quantity,
+      unit_price: item.price_data.unit_amount
+    }));
+
     // Create checkout session configuration
     const sessionConfig = {
       payment_method_types: ['card'],
@@ -162,18 +199,47 @@ module.exports = async (req, res) => {
         allowed_countries: ['US'],
       },
       shipping_options,
-      // Add comprehensive metadata for webhook processing
+      // Add comprehensive metadata for webhook processing and order management
       metadata: {
-        has_laredo_option: 'true',
+        // Order identification
+        order_timestamp: new Date().toISOString(),
+        session_created_at: Math.floor(Date.now() / 1000).toString(),
+        
+        // User information
         user_type: isRegisteredUser ? 'registered' : 'guest',
         user_id: user_id || 'guest',
         user_email: user_email || '',
+        
+        // Product information
+        total_items: totalQuantity.toString(),
+        product_summary: JSON.stringify(productSummary),
+        
+        // Pricing information
+        original_total_cents: totalAmount.toString(),
+        final_total_cents: finalAmount.toString(),
+        
+        // Points and discounts
         points_used: pointsUsed.toString(),
         points_earned: Math.floor(totalAmount / 100).toString(), // 1 point per $1 of original total
         order_type: use_points_redemption ? 'points_redeemed' : 'regular',
         discount_type: discountType,
-        original_total_cents: totalAmount.toString(),
-        final_total_cents: finalAmount.toString()
+        discount_applied: (discountType !== 'none').toString(),
+        
+        // Shipping information
+        has_laredo_option: 'true',
+        shipping_preference: shipping_preference || 'not_specified',
+        free_shipping_eligible: (totalAmount >= 599).toString(),
+        shipping_threshold_amount: '599',
+        
+        // Order fulfillment flags
+        requires_processing: 'true',
+        fulfillment_status: 'pending',
+        notification_required: 'true',
+        
+        // Business logic flags
+        is_soft_launch: 'true',
+        platform: 'web',
+        checkout_version: '2024.1'
       }
     };
 
@@ -197,8 +263,14 @@ module.exports = async (req, res) => {
       points_used: pointsUsed,
       points_discount: pointsUsed > 0 ? `$${((totalAmount - finalAmount) / 100).toFixed(2)}` : '$0.00',
       laredo_shipping_available: true,
+      free_shipping_eligible: totalAmount >= 599,
+      shipping_options_count: shipping_options.length,
       original_total: (totalAmount / 100).toFixed(2),
-      final_total: (finalAmount / 100).toFixed(2)
+      final_total: (finalAmount / 100).toFixed(2),
+      metadata: {
+        total_items: totalQuantity,
+        session_timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);

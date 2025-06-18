@@ -10,6 +10,11 @@ import {
   createOrderWithPoints, 
   createOrderItems 
 } from '../lib/supabase';
+import { 
+  getShippingOptions, 
+  calculateCartShipping, 
+  getShippingExplanation 
+} from '../utils/shippingLogic';
 
 function CheckoutPage() {
   const { t } = useTranslation();
@@ -25,6 +30,8 @@ function CheckoutPage() {
   const [usePointsRedemption, setUsePointsRedemption] = useState(false);
   const [pointsDiscount, setPointsDiscount] = useState(0);
   const [showAccountDiscount, setShowAccountDiscount] = useState(false);
+  const [selectedShippingOptions, setSelectedShippingOptions] = useState({});
+  const [shippingCalculation, setShippingCalculation] = useState(null);
   
   // Redirect to cart if there are no items
   useEffect(() => {
@@ -51,14 +58,21 @@ function CheckoutPage() {
 
     loadUserPoints();
   }, [user]);
+
+  // Calculate shipping when items or shipping options change
+  useEffect(() => {
+    if (items.length > 0) {
+      const calculation = calculateCartShipping(items, selectedShippingOptions);
+      setShippingCalculation(calculation);
+    }
+  }, [items, selectedShippingOptions]);
   
   const calculateTax = () => {
     return total * 0.08; // 8% tax
   };
   
   const calculateShipping = () => {
-    // $2 shipping for orders under $5.99, free shipping for orders $5.99+
-    return total < 5.99 ? 2.00 : 0.00;
+    return shippingCalculation ? shippingCalculation.totalShipping : 0.00;
   };
   
   const calculateAccountDiscount = () => {
@@ -100,6 +114,13 @@ function CheckoutPage() {
     } else {
       setShowAccountDiscount(user ? true : false);
     }
+  };
+
+  const handleShippingOptionChange = (productId, shippingType) => {
+    setSelectedShippingOptions(prev => ({
+      ...prev,
+      [productId]: shippingType
+    }));
   };
   
   const handleCheckout = async () => {
@@ -193,11 +214,86 @@ function CheckoutPage() {
             </div>
           </div>
           
-          {/* Shipping Policy Announcement */}
-          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg">
-            <p className="text-center font-medium">
-              🚚 Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!
-            </p>
+          {/* Shipping Options Section */}
+          <div className="mb-6">
+            <h3 className="font-bold mb-3">📦 Shipping Options</h3>
+            
+            {/* Shipping explanation */}
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg text-sm">
+              <p className="mb-1">{getShippingExplanation().trackingInfo}</p>
+              <p>{getShippingExplanation().freeShippingThreshold}</p>
+            </div>
+
+            {items.map(item => {
+              const productId = item.id.toString();
+              const shippingOptions = getShippingOptions(productId, total);
+              const selectedOption = selectedShippingOptions[productId] || (shippingOptions[0]?.type);
+
+              return (
+                <div key={item.id} className="mb-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium">{item.name}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Qty: {item.quantity}</p>
+                    </div>
+                  </div>
+
+                  {shippingOptions.length > 1 ? (
+                    <div className="space-y-2">
+                      {shippingOptions.map(option => (
+                        <label key={option.type} className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`shipping-${productId}`}
+                            value={option.type}
+                            checked={selectedOption === option.type}
+                            onChange={(e) => handleShippingOptionChange(productId, e.target.value)}
+                            className="mt-1 w-4 h-4 text-primary"
+                          />
+                          <div className="flex-1">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium">{option.name}</span>
+                              <span className="font-bold">
+                                {option.price === 0 ? 'FREE' : `$${option.price.toFixed(2)}`}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{option.description}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500">
+                              ⏱️ {option.estimated_days} • {option.trackable ? '📦 Trackable' : '📮 No tracking'}
+                            </p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-medium">{shippingOptions[0]?.name}</span>
+                        <span className="font-bold">
+                          {shippingOptions[0]?.price === 0 ? 'FREE' : `$${shippingOptions[0]?.price.toFixed(2)}`}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{shippingOptions[0]?.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                        ⏱️ {shippingOptions[0]?.estimated_days} • 📦 Trackable
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {shippingCalculation && (
+              <div className="mt-4 p-3 bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-lg">
+                <p className="font-medium">
+                  {shippingCalculation.allTrackable ? '✅ All items include tracking' : '⚠️ Some items without tracking'}
+                </p>
+                <p className="text-sm">Total shipping: ${shippingCalculation.totalShipping.toFixed(2)}</p>
+              </div>
+            )}
           </div>
 
           {/* Points Redemption Section */}

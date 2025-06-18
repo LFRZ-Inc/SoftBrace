@@ -41,7 +41,7 @@ const Contact = () => {
       );
       
       // Open default email client
-      window.location.href = `mailto:Luisdrod750@gmail.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:support@softbracestrips.com?subject=${subject}&body=${body}`;
       
       // Reset form after submission
       setFormData({
@@ -75,7 +75,7 @@ const Contact = () => {
           <div className="contact-info">
             <div className="info-item">
               <h3>Email Us</h3>
-              <p>Luisdrod750@gmail.com</p>
+              <p>support@softbracestrips.com</p>
               {/* Future: <p>support@SoftBraceStrips.com</p> */}
             </div>
             <div className="info-item">
@@ -86,7 +86,7 @@ const Contact = () => {
             </div>
             <div className="info-item">
               <h3>Contact Info</h3>
-              <p>Email: Luisdrod750@gmail.com</p>
+              <p>Email: support@softbracestrips.com</p>
               <p>Phone: (956) 999-2944</p>
               <p>Based in Laredo, TX</p>
             </div>
@@ -113,7 +113,7 @@ const Contact = () => {
                   marginBottom: '20px',
                   border: '1px solid #c3e6cb'
                 }}>
-                  ✅ Thank you for your message! Your default email client should open to send the message to Luisdrod750@gmail.com.
+                  ✅ Thank you for your message! Your default email client should open to send the message to support@softbracestrips.com.
                 </div>
               )}
               
@@ -126,7 +126,7 @@ const Contact = () => {
                   marginBottom: '20px',
                   border: '1px solid #f5c6cb'
                 }}>
-                  ❌ There was an error submitting your message. Please try again or email us directly at Luisdrod750@gmail.com.
+                  ❌ There was an error submitting your message. Please try again or email us directly at support@softbracestrips.com.
                 </div>
               )}
               

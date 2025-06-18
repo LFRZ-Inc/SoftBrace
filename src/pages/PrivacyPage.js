@@ -70,7 +70,7 @@ function PrivacyPage() {
         
         <h2 className="text-xl font-bold mt-6 mb-3">9. Contact Us</h2>
         <p>
-          If you have any questions about this Privacy Policy, please contact us at Luisdrod750@gmail.com or call (956) 999-2944.
+          If you have any questions about this Privacy Policy, please contact us at support@softbracestrips.com or call (956) 999-2944.
         </p>
       </div>
     </div>

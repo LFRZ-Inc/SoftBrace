@@ -16,7 +16,7 @@ function WebsiteSchema() {
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer support",
-      "email": "Luisdrod750@gmail.com",
+      "email": "support@softbracestrips.com",
       "telephone": "+1-956-999-2944"
       // Future: "email": "support@SoftBraceStrips.com"
     }

@@ -4,6 +4,7 @@ import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
 import ProductSchema from '../components/ProductSchema';
+import ProductReviews from '../components/ProductReviews';
 import { shouldShowProduct, isReleaseDay, getReleaseDate } from '../utils/releaseSchedule';
 // Import images directly
 import smallPackImage from '../assets/5-pack.png';
@@ -339,6 +340,12 @@ function ProductPage() {
             </div>
           </div>
         </div>
+        
+        {/* Product Reviews Section */}
+        <ProductReviews 
+          productId={product.id.toString()} 
+          productName={product.name} 
+        />
       </div>
     </>
   );

@@ -417,7 +417,7 @@ const UserDashboard = () => {
                 <div className="support-card">
                   <h3>📧 Email Support</h3>
                   <p>Get help with your orders, account, or products.</p>
-                  <a href="mailto:Luisdrod750@gmail.com" className="support-button">
+                  <a href="mailto:support@softbracestrips.com" className="support-button">
                     Email Us
                   </a>
                 </div>

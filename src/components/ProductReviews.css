@@ -1,0 +1,129 @@
+.product-reviews {
+  font-family: inherit;
+}
+
+.reviews-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dark .reviews-header {
+  border-bottom-color: #374151;
+}
+
+.review-form {
+  border: 2px dashed #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.dark .review-form {
+  border-color: #4b5563;
+}
+
+.review-form:hover {
+  border-color: #9ca3af;
+}
+
+.dark .review-form:hover {
+  border-color: #6b7280;
+}
+
+.review-item {
+  transition: all 0.2s ease;
+}
+
+.review-item:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.dark .review-item:hover {
+  background-color: #1f2937;
+  border-color: #4b5563;
+}
+
+.star-rating button {
+  transition: all 0.2s ease;
+  padding: 0.125rem;
+  border: none;
+  background: transparent;
+}
+
+.star-rating button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.star-rating button:hover {
+  transform: scale(1.1);
+}
+
+/* Star animations */
+@keyframes starPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.star-rating button.selected {
+  animation: starPulse 0.3s ease;
+}
+
+/* Review submission success animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.review-submitted {
+  animation: slideIn 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .reviews-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .reviews-header button {
+    align-self: flex-end;
+  }
+}
+
+/* Form styling improvements */
+.review-form input,
+.review-form textarea {
+  transition: all 0.2s ease;
+}
+
+.review-form input:focus,
+.review-form textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Loading states */
+.submitting {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Empty state styling */
+.no-reviews {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border: 2px dashed #d1d5db;
+}
+
+.dark .no-reviews {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  border-color: #4b5563;
+} 

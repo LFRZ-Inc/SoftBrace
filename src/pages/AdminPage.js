@@ -7,6 +7,13 @@ import {
   getPageContent,
   updatePageContent
 } from '../lib/adminContent'
+import {
+  getAllReviews,
+  approveReview,
+  deleteReview,
+  getAllSupportMessages,
+  updateSupportMessageStatus
+} from '../lib/supabase'
 import { 
   logAdminLogin, 
   logAdminLogout, 
@@ -102,6 +109,14 @@ const AdminPage = () => {
   const [activityStats, setActivityStats] = useState(null)
   const [loadingActivity, setLoadingActivity] = useState(false)
 
+  // Reviews management state
+  const [reviews, setReviews] = useState([])
+  const [loadingReviews, setLoadingReviews] = useState(false)
+
+  // Support messages state
+  const [supportMessages, setSupportMessages] = useState([])
+  const [loadingSupportMessages, setLoadingSupportMessages] = useState(false)
+
   // Check admin session on component mount
   useEffect(() => {
     console.log('AdminPage: Checking admin session...')
@@ -191,6 +206,28 @@ const AdminPage = () => {
     setLoadingActivity(false)
   }
 
+  const loadReviews = async () => {
+    setLoadingReviews(true)
+    try {
+      const reviewsData = await getAllReviews()
+      setReviews(reviewsData)
+    } catch (error) {
+      console.error('Failed to load reviews:', error)
+    }
+    setLoadingReviews(false)
+  }
+
+  const loadSupportMessages = async () => {
+    setLoadingSupportMessages(true)
+    try {
+      const messagesData = await getAllSupportMessages()
+      setSupportMessages(messagesData)
+    } catch (error) {
+      console.error('Failed to load support messages:', error)
+    }
+    setLoadingSupportMessages(false)
+  }
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -254,6 +291,41 @@ const AdminPage = () => {
     } else {
       setEditingContent('')
       setOriginalContent('')
+    }
+  }
+
+  const handleApproveReview = async (reviewId) => {
+    try {
+      await approveReview(reviewId)
+      await loadReviews() // Reload reviews
+      alert('Review approved successfully!')
+    } catch (error) {
+      console.error('Failed to approve review:', error)
+      alert('Failed to approve review')
+    }
+  }
+
+  const handleDeleteReview = async (reviewId) => {
+    if (confirm('Are you sure you want to delete this review?')) {
+      try {
+        await deleteReview(reviewId)
+        await loadReviews() // Reload reviews
+        alert('Review deleted successfully!')
+      } catch (error) {
+        console.error('Failed to delete review:', error)
+        alert('Failed to delete review')
+      }
+    }
+  }
+
+  const handleUpdateSupportStatus = async (messageId, newStatus) => {
+    try {
+      await updateSupportMessageStatus(messageId, newStatus)
+      await loadSupportMessages() // Reload messages
+      alert('Support message status updated!')
+    } catch (error) {
+      console.error('Failed to update support message status:', error)
+      alert('Failed to update status')
     }
   }
 
@@ -402,6 +474,26 @@ const AdminPage = () => {
                 }`}
               >
                 🎨 Visual Editor
+              </button>
+              <button
+                onClick={() => { setActiveTab('reviews'); loadReviews(); }}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'reviews' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                ⭐ Reviews
+              </button>
+              <button
+                onClick={() => { setActiveTab('support'); loadSupportMessages(); }}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'support' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                💬 Support
               </button>
               <button
                 onClick={() => setActiveTab('activity')}
@@ -574,6 +666,156 @@ const AdminPage = () => {
         {activeTab === 'visual' && (
           <div className="visual-editor-container">
             <VisualEditor />
+          </div>
+        )}
+
+        {/* Reviews Management Tab */}
+        {activeTab === 'reviews' && (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Product Reviews Management</h2>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">All Reviews</h3>
+                <button
+                  onClick={loadReviews}
+                  disabled={loadingReviews}
+                  className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  {loadingReviews ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              
+              {loadingReviews ? (
+                <div className="text-center py-8 text-gray-500">Loading reviews...</div>
+              ) : reviews.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No reviews submitted yet.</div>
+              ) : (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {reviews.map((review) => (
+                    <div key={review.id} className={`border rounded-lg p-4 ${review.is_approved ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}`}>
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <span key={star} className={`text-lg ${star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                                  ★
+                                </span>
+                              ))}
+                            </div>
+                            <span className="font-medium">{review.user_name}</span>
+                            <span className={`px-2 py-1 rounded text-xs ${review.is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                              {review.is_approved ? 'Approved' : 'Pending'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2">Product ID: {review.product_id}</p>
+                          <p className="text-sm text-gray-600 mb-2">Email: {review.user_email}</p>
+                          {review.review_text && (
+                            <p className="text-gray-800 mb-2">{review.review_text}</p>
+                          )}
+                          <p className="text-xs text-gray-500">
+                            Submitted: {new Date(review.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-2 ml-4">
+                          {!review.is_approved && (
+                            <button
+                              onClick={() => handleApproveReview(review.id)}
+                              className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                            >
+                              ✅ Approve
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDeleteReview(review.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Support Messages Tab */}
+        {activeTab === 'support' && (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Support Messages Management</h2>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">All Support Messages</h3>
+                <button
+                  onClick={loadSupportMessages}
+                  disabled={loadingSupportMessages}
+                  className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  {loadingSupportMessages ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              
+              {loadingSupportMessages ? (
+                <div className="text-center py-8 text-gray-500">Loading support messages...</div>
+              ) : supportMessages.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No support messages yet.</div>
+              ) : (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {supportMessages.map((message) => (
+                    <div key={message.id} className={`border rounded-lg p-4 ${
+                      message.status === 'resolved' ? 'border-green-200 bg-green-50' : 
+                      message.status === 'in_progress' ? 'border-blue-200 bg-blue-50' : 
+                      'border-yellow-200 bg-yellow-50'
+                    }`}>
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-medium">{message.name}</span>
+                            <span className="text-sm text-gray-600">({message.email})</span>
+                            <span className={`px-2 py-1 rounded text-xs ${
+                              message.status === 'resolved' ? 'bg-green-100 text-green-800' :
+                              message.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {message.status.replace('_', ' ').toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2">
+                            Type: {message.inquiry_type} • Subject: {message.subject || 'No subject'}
+                          </p>
+                          <p className="text-gray-800 mb-2">{message.message}</p>
+                          <p className="text-xs text-gray-500">
+                            Submitted: {new Date(message.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-2 ml-4">
+                          <select
+                            value={message.status}
+                            onChange={(e) => handleUpdateSupportStatus(message.id, e.target.value)}
+                            className="text-xs border rounded px-2 py-1"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                          </select>
+                          <a
+                            href={`mailto:${message.email}?subject=Re: ${message.subject || 'Support Request'}&body=Hi ${message.name},%0D%0A%0D%0AThanks for reaching out to SoftBrace!%0D%0A%0D%0A`}
+                            className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 text-center"
+                          >
+                            📧 Reply
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 

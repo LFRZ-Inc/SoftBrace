@@ -484,4 +484,242 @@ export const createOrderItems = async (orderId, items) => {
     console.error('Exception in createOrderItems:', error)
     throw error
   }
+}
+
+// ===== PRODUCT REVIEWS FUNCTIONS =====
+
+// Submit a new product review
+export const submitProductReview = async (reviewData) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .insert({
+        product_id: reviewData.product_id,
+        rating: reviewData.rating,
+        review_text: reviewData.review_text || null,
+        user_email: reviewData.user_email,
+        user_name: reviewData.user_name,
+        is_approved: false // Reviews require approval
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error submitting review:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in submitProductReview:', error)
+    throw error
+  }
+}
+
+// Get approved reviews for a specific product
+export const getProductReviews = async (productId) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .select('*')
+      .eq('product_id', productId)
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching product reviews:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getProductReviews:', error)
+    throw error
+  }
+}
+
+// Get review statistics for a product (average rating, count)
+export const getProductReviewStats = async (productId) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .select('rating')
+      .eq('product_id', productId)
+      .eq('is_approved', true)
+
+    if (error) {
+      console.error('Error fetching review stats:', error)
+      throw error
+    }
+
+    const reviews = data || []
+    const totalReviews = reviews.length
+    const averageRating = totalReviews > 0 
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
+      : 0
+
+    return {
+      totalReviews,
+      averageRating: Math.round(averageRating * 10) / 10 // Round to 1 decimal
+    }
+  } catch (error) {
+    console.error('Exception in getProductReviewStats:', error)
+    throw error
+  }
+}
+
+// Admin: Get all reviews (pending and approved)
+export const getAllReviews = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching all reviews:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getAllReviews:', error)
+    throw error
+  }
+}
+
+// Admin: Approve a review
+export const approveReview = async (reviewId) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .update({ is_approved: true })
+      .eq('id', reviewId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error approving review:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in approveReview:', error)
+    throw error
+  }
+}
+
+// Admin: Delete a review
+export const deleteReview = async (reviewId) => {
+  try {
+    const { error } = await supabase
+      .from('product_reviews')
+      .delete()
+      .eq('id', reviewId)
+
+    if (error) {
+      console.error('Error deleting review:', error)
+      throw error
+    }
+
+    return true
+  } catch (error) {
+    console.error('Exception in deleteReview:', error)
+    throw error
+  }
+}
+
+// ===== SUPPORT MESSAGES FUNCTIONS =====
+
+// Submit a support message
+export const submitSupportMessage = async (messageData) => {
+  try {
+    const { data, error } = await supabase
+      .from('support_messages')
+      .insert({
+        user_id: messageData.user_id || null,
+        email: messageData.email,
+        name: messageData.name,
+        inquiry_type: messageData.inquiry_type || 'general',
+        subject: messageData.subject || messageData.inquiry_type || 'General Inquiry',
+        message: messageData.message,
+        status: 'pending'
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error submitting support message:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in submitSupportMessage:', error)
+    throw error
+  }
+}
+
+// Get user's support messages
+export const getUserSupportMessages = async (userId) => {
+  try {
+    const { data, error } = await supabase
+      .from('support_messages')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching user support messages:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getUserSupportMessages:', error)
+    throw error
+  }
+}
+
+// Admin: Get all support messages
+export const getAllSupportMessages = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('support_messages')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching all support messages:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getAllSupportMessages:', error)
+    throw error
+  }
+}
+
+// Admin: Update support message status
+export const updateSupportMessageStatus = async (messageId, status) => {
+  try {
+    const { data, error } = await supabase
+      .from('support_messages')
+      .update({ status })
+      .eq('id', messageId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating support message status:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in updateSupportMessageStatus:', error)
+    throw error
+  }
 } 
