@@ -306,7 +306,7 @@ const AdminPage = () => {
   }
 
   const handleDeleteReview = async (reviewId) => {
-    if (confirm('Are you sure you want to delete this review?')) {
+    if (window.confirm('Are you sure you want to delete this review?')) {
       try {
         await deleteReview(reviewId)
         await loadReviews() // Reload reviews
