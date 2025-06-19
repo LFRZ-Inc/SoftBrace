@@ -7,9 +7,8 @@
 **Updated shipping options with product-specific logic:**
 
 - **5-Pair Pack ($4.99):**
-  - $2 Flat Mail Shipping (non-trackable) 
-  - $3 Tracked Shipping (+$1 for tracking)
-  - Users can choose between options
+  - $2 Standard Shipping (non-trackable for orders under $5.99)
+  - Tracking included for orders $5.99 and above
 
 - **SoftWax ($3.99):**
   - Always $2 tracked shipping (required due to package thickness)
@@ -137,3 +136,8 @@ All features are production-ready and include:
 
 **Implementation Date:** December 2024
 **Status:** ✅ Complete and Ready for Production 
+
+## Shipping Options Available:
+- Free Local Delivery (Laredo, TX area)
+- $2.00 Standard Shipping (orders under $5.99)
+- Free Standard Shipping (orders $5.99+) 

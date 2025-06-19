@@ -23,22 +23,14 @@ export const getShippingOptions = (productId, cartTotal = 0) => {
 
   switch (productId) {
     case PRODUCT_TYPES.FIVE_PACK:
-      // 5-Pair Pack: $2 flat mail OR $3 tracked
+      // 5-Pair Pack: $2 standard shipping (no tracking for orders under $5.99)
       options.push({
         type: SHIPPING_TYPES.FLAT_MAIL,
-        name: 'Standard Shipping (Non-Trackable)',
+        name: 'Standard Shipping',
         price: 2.00,
-        description: '$2 flat mail shipping (no tracking)',
+        description: '$2 standard shipping',
         trackable: false,
         estimated_days: '5-7 business days'
-      });
-      options.push({
-        type: SHIPPING_TYPES.TRACKED_MAIL,
-        name: 'Tracked Shipping (+$1)',
-        price: 3.00,
-        description: '$3 total shipping with tracking included',
-        trackable: true,
-        estimated_days: '3-5 business days'
       });
       break;
 
@@ -153,7 +145,7 @@ export const calculateCartShipping = (cartItems, selectedShippingOptions = {}) =
 // Generate shipping explanation text for checkout
 export const getShippingExplanation = () => {
   return {
-    trackingInfo: "Need tracking? Add $1 at checkout. Standard shipping is $2 and does not include tracking.",
+    trackingInfo: "Orders $5.99 and above include tracking. Standard shipping is $2 for orders under $5.99.",
     freeShippingThreshold: "Free shipping on orders $5.99 and up!",
     softWaxNote: "SoftWax items always include tracking due to package thickness."
   };
