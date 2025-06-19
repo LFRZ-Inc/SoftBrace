@@ -1,5 +1,5 @@
 // Shipping Logic for SoftBraceStrips.com
-// Updated pricing and tracking options per product type
+// Simple shipping options without tracking complexity
 
 export const PRODUCT_TYPES = {
   FIVE_PACK: '1',      // 5-Pair Pack
@@ -11,89 +11,31 @@ export const PRODUCT_TYPES = {
 };
 
 export const SHIPPING_TYPES = {
-  FLAT_MAIL: 'flat_mailer',      // $2 non-trackable
-  TRACKED_MAIL: 'tracked_mailer', // $3 trackable for 5-pack
-  TRACKED_STANDARD: 'tracked_standard', // $2 tracked for SoftWax
-  FREE_SHIPPING: 'free_shipping'  // Free for orders $5.99+
+  STANDARD: 'standard_shipping',
+  FREE_SHIPPING: 'free_shipping'
 };
 
 // Calculate shipping options for a product
 export const getShippingOptions = (productId, cartTotal = 0) => {
   const options = [];
 
-  switch (productId) {
-    case PRODUCT_TYPES.FIVE_PACK:
-      // 5-Pair Pack: $2 standard shipping (no tracking for orders under $5.99)
-      options.push({
-        type: SHIPPING_TYPES.FLAT_MAIL,
-        name: 'Standard Shipping',
-        price: 2.00,
-        description: '$2 standard shipping',
-        trackable: false,
-        estimated_days: '5-7 business days'
-      });
-      break;
-
-    case PRODUCT_TYPES.SOFTWAX:
-      // SoftWax: Always $2 tracked (too thick for flat mail)
-      options.push({
-        type: SHIPPING_TYPES.TRACKED_STANDARD,
-        name: 'Tracked Shipping (Included)',
-        price: 2.00,
-        description: 'First-Class shipping with tracking',
-        trackable: true,
-        estimated_days: '3-5 business days',
-        required: true
-      });
-      break;
-
-    case PRODUCT_TYPES.FIFTEEN_PACK:
-    case PRODUCT_TYPES.THIRTY_ONE_PACK:
-    case PRODUCT_TYPES.BULK_PACK:
-    case PRODUCT_TYPES.BUNDLE:
-      // Larger packs: Free shipping if $5.99+, otherwise $2 tracked
-      if (cartTotal >= 5.99) {
-        options.push({
-          type: SHIPPING_TYPES.FREE_SHIPPING,
-          name: 'Free Shipping',
-          price: 0.00,
-          description: 'Free tracked shipping on orders $5.99+',
-          trackable: true,
-          estimated_days: '3-5 business days'
-        });
-      } else {
-        options.push({
-          type: SHIPPING_TYPES.TRACKED_STANDARD,
-          name: 'Tracked Shipping',
-          price: 2.00,
-          description: 'Tracked shipping (free on orders $5.99+)',
-          trackable: true,
-          estimated_days: '3-5 business days'
-        });
-      }
-      break;
-
-    default:
-      // Default case: standard shipping logic
-      if (cartTotal >= 5.99) {
-        options.push({
-          type: SHIPPING_TYPES.FREE_SHIPPING,
-          name: 'Free Shipping',
-          price: 0.00,
-          description: 'Free shipping on orders $5.99+',
-          trackable: true,
-          estimated_days: '3-5 business days'
-        });
-      } else {
-        options.push({
-          type: SHIPPING_TYPES.TRACKED_STANDARD,
-          name: 'Standard Shipping',
-          price: 2.00,
-          description: '$2 shipping (free on orders $5.99+)',
-          trackable: true,
-          estimated_days: '3-5 business days'
-        });
-      }
+  // Simple shipping logic for all products
+  if (cartTotal >= 5.99) {
+    options.push({
+      type: SHIPPING_TYPES.FREE_SHIPPING,
+      name: 'Free Shipping',
+      price: 0.00,
+      description: 'Free shipping on orders $5.99+',
+      estimated_days: '3-5 business days'
+    });
+  } else {
+    options.push({
+      type: SHIPPING_TYPES.STANDARD,
+      name: 'Standard Shipping',
+      price: 2.00,
+      description: '$2.00 shipping (free on orders $5.99+)',
+      estimated_days: '3-5 business days'
+    });
   }
 
   return options;
@@ -103,7 +45,6 @@ export const getShippingOptions = (productId, cartTotal = 0) => {
 export const calculateCartShipping = (cartItems, selectedShippingOptions = {}) => {
   let totalShipping = 0;
   let shippingBreakdown = [];
-  let allTrackable = true;
 
   // Calculate cart total for free shipping threshold
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -127,17 +68,12 @@ export const calculateCartShipping = (cartItems, selectedShippingOptions = {}) =
         shippingOption: selectedOption,
         cost: itemShipping
       });
-
-      if (!selectedOption.trackable) {
-        allTrackable = false;
-      }
     }
   });
 
   return {
     totalShipping,
     shippingBreakdown,
-    allTrackable,
     cartTotal
   };
 };
@@ -145,9 +81,8 @@ export const calculateCartShipping = (cartItems, selectedShippingOptions = {}) =
 // Generate shipping explanation text for checkout
 export const getShippingExplanation = () => {
   return {
-    trackingInfo: "Orders $5.99 and above include tracking. Standard shipping is $2 for orders under $5.99.",
-    freeShippingThreshold: "Free shipping on orders $5.99 and up!",
-    softWaxNote: "SoftWax items always include tracking due to package thickness."
+    shippingInfo: "Standard shipping is $2.00 for orders under $5.99.",
+    freeShippingThreshold: "Free shipping on orders $5.99 and up!"
   };
 };
 

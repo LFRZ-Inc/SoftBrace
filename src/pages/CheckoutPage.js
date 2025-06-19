@@ -220,7 +220,7 @@ function CheckoutPage() {
             
             {/* Shipping explanation */}
             <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg text-sm">
-              <p className="mb-1">{getShippingExplanation().trackingInfo}</p>
+              <p className="mb-1">{getShippingExplanation().shippingInfo}</p>
               <p>{getShippingExplanation().freeShippingThreshold}</p>
             </div>
 
@@ -262,7 +262,7 @@ function CheckoutPage() {
                             </div>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{option.description}</p>
                             <p className="text-xs text-gray-500 dark:text-gray-500">
-                              ⏱️ {option.estimated_days} • {option.trackable ? '📦 Trackable' : '📮 No tracking'}
+                              ⏱️ {option.estimated_days}
                             </p>
                           </div>
                         </label>
@@ -278,7 +278,7 @@ function CheckoutPage() {
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{shippingOptions[0]?.description}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-500">
-                        ⏱️ {shippingOptions[0]?.estimated_days} • 📦 Trackable
+                        ⏱️ {shippingOptions[0]?.estimated_days}
                       </p>
                     </div>
                   )}
@@ -288,10 +288,7 @@ function CheckoutPage() {
 
             {shippingCalculation && (
               <div className="mt-4 p-3 bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-lg">
-                <p className="font-medium">
-                  {shippingCalculation.allTrackable ? '✅ All items include tracking' : '⚠️ Some items without tracking'}
-                </p>
-                <p className="text-sm">Total shipping: ${shippingCalculation.totalShipping.toFixed(2)}</p>
+                <p className="font-medium">Total shipping: ${shippingCalculation.totalShipping.toFixed(2)}</p>
               </div>
             )}
           </div>

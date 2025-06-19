@@ -39,16 +39,6 @@ function TermsPage() {
         </ul>
         
         <p>
-          <strong>Tracking Information:</strong>
-        </p>
-        <ul className="list-disc pl-6 mb-4">
-          <li>Orders $5.99 and above include tracking information</li>
-          <li>Orders under $5.99 are shipped via standard mail without tracking to keep costs low</li>
-          <li>SoftWax products always include tracking due to package thickness requirements</li>
-          <li>Local delivery orders in Laredo, TX include tracking and confirmation</li>
-        </ul>
-        
-        <p>
           <strong>Delivery and Verification:</strong>
         </p>
         <ul className="list-disc pl-6 mb-4">

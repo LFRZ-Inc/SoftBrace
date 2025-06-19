@@ -451,8 +451,13 @@ const UserDashboard = () => {
                   <p>Points expire 2 years after they're earned. Points also reduce by 50% if your account is inactive for 1+ years.</p>
                 </div>
                 <div className="faq-item">
-                  <h4>How do I track my order?</h4>
-                  <p>Check your order status in the "Order History" tab. You'll receive email updates when your order ships.</p>
+                  <h4>How do I check my order status?</h4>
+                  <p>
+                    You can view your order history and status in your dashboard. 
+                    For any questions about your order, please contact our support team at 
+                    <a href="mailto:support@softbracestrips.com" className="text-primary"> support@softbracestrips.com</a> 
+                    or call (956) 999-2944.
+                  </p>
                 </div>
               </div>
             </div>

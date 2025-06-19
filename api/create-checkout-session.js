@@ -129,8 +129,7 @@ module.exports = async (req, res) => {
           shipping_type: 'local_delivery',
           service_area: 'laredo_tx',
           delivery_method: 'local_courier',
-          cost_type: 'free',
-          tracking_available: 'yes'
+          cost_type: 'free'
         }
       },
     });
@@ -151,8 +150,7 @@ module.exports = async (req, res) => {
           },
           metadata: {
             shipping_type: 'standard',
-            cost_type: 'paid',
-            tracking_available: 'yes'
+            cost_type: 'paid'
           }
         },
       });
@@ -171,8 +169,7 @@ module.exports = async (req, res) => {
           },
           metadata: {
             shipping_type: 'standard',
-            cost_type: 'free',
-            tracking_available: 'yes'
+            cost_type: 'free'
           }
         },
       });

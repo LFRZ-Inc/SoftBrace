@@ -164,7 +164,7 @@ const Auth = ({ isOpen, onClose }) => {
             <h3>Benefits of Creating an Account:</h3>
             <ul>
               <li>🎯 <strong>5% Automatic Discount</strong> on all orders</li>
-              <li>📦 Order tracking and history</li>
+              <li>📦 Order history and status</li>
               <li>⚡ Faster checkout process</li>
               <li>📧 Exclusive offers and updates</li>
               <li>🔒 Secure account management</li>

@@ -190,9 +190,9 @@ module.exports = async (req, res) => {
         
         // Check conditions that require manual review
         if (hasFivePack && totalAmount < 5.99) {
-          // 5-pack under free shipping threshold - needs tracking verification
+          // 5-pack under free shipping threshold - verify shipping method
           orderNeedsReview = true;
-          reviewReasons.push('5-pack order under $5.99 - verify non-trackable shipping');
+          reviewReasons.push('5-pack order under $5.99 - verify standard shipping');
           verificationStatus = 'needs_review';
         }
         
