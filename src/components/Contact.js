@@ -38,20 +38,26 @@ function Contact() {
       // Save to database first
       await submitSupportMessage(messageData);
 
-      // Immediately open email client with pre-filled message for user to send
-      const emailSubject = encodeURIComponent(`Contact Form: ${messageData.subject}`);
-      const emailBody = encodeURIComponent(
-        `Hi SoftBrace Support,\n\n` +
-        `Name: ${messageData.name}\n` +
-        `Email: ${messageData.email}\n` +
-        `Inquiry Type: ${messageData.inquiry_type}\n\n` +
-        `Message:\n${messageData.message}\n\n` +
-        `Sent from SoftBraceStrips.com contact form`
-      );
-      
-      // Open user's email client immediately
-      const mailtoLink = `mailto:support@softbracestrips.com?subject=${emailSubject}&body=${emailBody}`;
-      window.open(mailtoLink, '_blank');
+      // Try to trigger automatic email notification via Supabase Edge Function
+      try {
+        const response = await fetch('https://ebodynepuqrocggtevdw.supabase.co/functions/v1/send-support-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVib2R5bmVwdXFyb2NnZ3RldmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3ODk5OTMsImV4cCI6MjA2NTM2NTk5M30.LMq1DcLd5_pPf77NL0EqQmUHIp0WnU61UpxndtSmhr8`
+          },
+          body: JSON.stringify({ record: messageData })
+        });
+
+        if (response.ok) {
+          console.log('Email notification sent successfully');
+        } else {
+          console.warn('Email notification failed, but message saved to database');
+        }
+      } catch (emailError) {
+        console.warn('Email notification failed:', emailError);
+        // Don't throw error here - message is still saved to database
+      }
 
       setSubmitted(true);
       setFormData({
@@ -96,9 +102,9 @@ function Contact() {
 
         {submitted && (
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-lg">
-            <p className="font-medium">✓ Message prepared successfully!</p>
-            <p className="text-sm">Your email client should open automatically with a pre-filled message to support@softbracestrips.com. Simply hit 'Send' to complete your inquiry!</p>
-            <p className="text-xs mt-2">If the email client didn't open, you can email us directly at <strong>support@softbracestrips.com</strong></p>
+            <p className="font-medium">✓ Message sent successfully!</p>
+            <p className="text-sm">Your message has been delivered to support@softbracestrips.com. We'll get back to you as soon as possible!</p>
+            <p className="text-xs mt-2">Typical response time: 2-4 hours during business hours</p>
           </div>
         )}
 

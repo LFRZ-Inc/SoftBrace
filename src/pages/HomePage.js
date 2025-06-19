@@ -151,6 +151,7 @@ function HomePage() {
               return null;
             }
           })}
+        <Contact />
         <LegalNotice />
       </div>
     );
