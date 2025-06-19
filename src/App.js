@@ -18,6 +18,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import Contact from './components/Contact';
+import ReviewsPage from './pages/ReviewsPage';
 import Blog from './pages/Blog';
 import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import AdminPage from './pages/AdminPage';
@@ -64,6 +65,7 @@ const CustomerApp = () => {
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/success" element={<SuccessPage />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/reviews" element={<ReviewsPage />} />
                   <Route path="/terms-of-service" element={<TermsPage />} />
                   <Route path="/privacy-policy" element={<PrivacyPage />} />
                   <Route path="/blog" element={<Blog />} />

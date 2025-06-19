@@ -72,9 +72,13 @@ function Header() {
                 </>
               ) : (
                 // Other pages use router links
-                <li><Link to="/">{t('nav.home')}</Link></li>
+                <>
+                  <li><Link to="/">{t('nav.home')}</Link></li>
+                  <li><Link to="/contact">{t('nav.contact')}</Link></li>
+                </>
               )}
               <li><Link to="/shop">{t('nav.shop')}</Link></li>
+              <li><Link to="/reviews">Reviews</Link></li>
               <li><Link to="/blog">{t('nav.blog')}</Link></li>
               <li>
                 <Link to="/cart" className="cart-link">
