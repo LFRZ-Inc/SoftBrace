@@ -310,4 +310,4 @@ module.exports = async (req, res) => {
     console.error('Error creating checkout session:', error);
     res.status(500).json({ error: error.message });
   }
-} 
+}

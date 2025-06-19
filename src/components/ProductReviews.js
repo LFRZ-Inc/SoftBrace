@@ -278,4 +278,4 @@ const ProductReviews = ({ productId, productName }) => {
   );
 };
 
-export default ProductReviews; 
+export default ProductReviews;

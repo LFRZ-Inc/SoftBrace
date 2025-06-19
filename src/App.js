@@ -86,51 +86,55 @@ const CustomerApp = () => {
   );
 };
 
-// Wrapper component that uses the loading context
+// Loader component wrapper
 const LoaderComponent = () => {
-  const { isLoading, hideLoader } = useLoading();
-  const [forceHide, setForceHide] = useState(false);
+  const { isLoading } = useLoading();
   
-  useEffect(() => {
-    if (isLoading) {
-      // Reset force hide when loading starts
-      setForceHide(false);
-      
-      // Force hide the loader after 3 seconds no matter what
-      const timer = setTimeout(() => {
-        console.log('Force hiding loader after timeout');
-        setForceHide(true);
-        hideLoader(); // Also call the context's hideLoader
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading, hideLoader]);
-  
-  // Don't render if force hidden or not loading
-  if (forceHide || !isLoading || !Loader) {
+  if (!Loader) {
     return null;
   }
   
-  return <Loader />;
+  return <Loader isLoading={isLoading} />;
 };
 
 function App() {
+  const [currentUrl, setCurrentUrl] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentUrl(window.location.pathname);
+    };
+
+    // Listen for browser back/forward buttons
+    window.addEventListener('popstate', handleLocationChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
+
+  // Route to admin in isolation or customer app
+  if (currentUrl === '/admin') {
+    return (
+      <ThemeProvider>
+        <LanguageProvider>
+          <Router>
+            <AdminWrapper />
+          </Router>
+        </LanguageProvider>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider>
       <LanguageProvider>
         <Router>
-          <Routes>
-            {/* Admin route - completely isolated from customer auth */}
-            <Route path="/admin" element={<AdminWrapper />} />
-            
-            {/* All customer routes with customer auth context */}
-            <Route path="/*" element={<CustomerApp />} />
-          </Routes>
+          <CustomerApp />
         </Router>
       </LanguageProvider>
     </ThemeProvider>
   );
 }
 
-export default App; 
+export default App;
