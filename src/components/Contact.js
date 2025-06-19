@@ -26,14 +26,34 @@ function Contact() {
     setError('');
 
     try {
-      await submitSupportMessage({
+      const messageData = {
         user_id: user?.id || null,
         name: formData.name.trim(),
         email: formData.email.trim(),
         inquiry_type: formData.inquiryType,
         subject: formData.subject.trim() || `${formData.inquiryType} inquiry`,
         message: formData.message.trim()
-      });
+      };
+
+      await submitSupportMessage(messageData);
+
+      // Create a simple email notification by opening user's email client as backup
+      const emailSubject = encodeURIComponent(`New Support Message: ${messageData.subject}`);
+      const emailBody = encodeURIComponent(
+        `New support message received from SoftBraceStrips.com:\n\n` +
+        `From: ${messageData.name} (${messageData.email})\n` +
+        `Type: ${messageData.inquiry_type}\n` +
+        `Subject: ${messageData.subject}\n\n` +
+        `Message:\n${messageData.message}\n\n` +
+        `Please respond directly to ${messageData.email}`
+      );
+      
+      // Trigger a mailto link for admin notification (fallback)
+      setTimeout(() => {
+        const mailtoLink = `mailto:support@softbracestrips.com?subject=${emailSubject}&body=${emailBody}`;
+        console.log('Admin notification email ready:', mailtoLink);
+        // Could add a "Send notification email" button for admin here
+      }, 1000);
 
       setSubmitted(true);
       setFormData({

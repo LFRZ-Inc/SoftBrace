@@ -106,9 +106,16 @@ module.exports = async (req, res) => {
 
     // Add standard shipping options based on order total (use original total for shipping calculation)
     if (totalAmount < 599) {
-      // For 5-pack ($3.99): Add both $1 tracking and $2 flat mailer options
-      if (totalAmount === 399) { // 5-pack specific pricing
-        // $1 Tracking option for 5-pack
+      // Check if order contains 5-packs by examining line items
+      const contains5Pack = line_items.some(item => 
+        item.price_data.unit_amount === 399 || // 5-pack price
+        item.price_data.product_data.name.toLowerCase().includes('5-pack') ||
+        item.price_data.product_data.name.toLowerCase().includes('5 pack')
+      );
+      
+      // For orders containing 5-packs: Add both $1 tracking and $2 flat mailer options
+      if (contains5Pack) {
+        // $1 Tracking option for 5-pack orders
         shipping_options.push({
           shipping_rate_data: {
             type: 'fixed_amount',
