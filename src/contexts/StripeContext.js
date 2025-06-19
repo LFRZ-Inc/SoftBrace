@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from './AuthContext';
+import { getProducts } from '../lib/supabase';
 
 // Create a context for Stripe functions
 const StripeContext = createContext(null);
@@ -22,19 +23,26 @@ export function StripeProvider({ children }) {
       console.log('Redirecting to Stripe checkout for items:', items);
       console.log('Checkout options:', checkoutOptions);
       
-      // Format line items for Stripe API
-      const line_items = items.map(item => ({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.name,
-            // Add images if available
-            images: item.image ? [item.image] : [],
-          },
-          unit_amount: Math.round(item.price * 100), // Convert to cents
-        },
-        quantity: item.quantity,
-      }));
+      // Get products from database to get Stripe price IDs
+      const products = await getProducts();
+      console.log('Available products with Stripe price IDs:', products);
+
+      // Format line items using actual Stripe price IDs instead of dynamic prices
+      const line_items = items.map(item => {
+        // Find the corresponding product in the database
+        const product = products.find(p => p.id === item.id || p.name === item.name);
+        
+        if (!product || !product.stripe_price_id) {
+          throw new Error(`Product "${item.name}" does not have a configured Stripe price ID. Please configure Stripe products first.`);
+        }
+        
+        console.log(`Using Stripe price ID "${product.stripe_price_id}" for product "${product.name}"`);
+        
+        return {
+          price: product.stripe_price_id, // Use the actual Stripe price ID
+          quantity: item.quantity,
+        };
+      });
 
       // Prepare user information and checkout options
       const requestBody = {
@@ -45,6 +53,8 @@ export function StripeProvider({ children }) {
         use_points_redemption: checkoutOptions.usePointsRedemption || false,
         use_account_discount: checkoutOptions.useAccountDiscount || false
       };
+      
+      console.log('Sending checkout request with Stripe price IDs:', requestBody);
       
       // Call our API endpoint to create a checkout session
       const response = await fetch('/api/create-checkout-session', {
@@ -57,10 +67,12 @@ export function StripeProvider({ children }) {
       
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Checkout API error:', errorData);
         throw new Error(errorData.error || 'Error creating checkout session');
       }
       
       const session = await response.json();
+      console.log('Checkout session created successfully:', session);
       
       // Show discount/points notifications if applicable
       if (session.discount_applied) {
@@ -82,6 +94,7 @@ export function StripeProvider({ children }) {
       });
       
       if (error) {
+        console.error('Stripe redirect error:', error);
         throw new Error(error.message);
       }
       

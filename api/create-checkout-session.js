@@ -29,18 +29,47 @@ module.exports = async (req, res) => {
       points_used = 0, 
       use_points_redemption = false,
       use_account_discount = false,
-      shipping_preference = null // New field for shipping preferences
+      shipping_preference = null 
     } = req.body;
     
-    // Calculate total amount in cents
-    const totalAmount = line_items.reduce((sum, item) => {
-      return sum + (item.price_data.unit_amount * item.quantity);
-    }, 0);
+    console.log('Creating checkout session with line items:', line_items);
+    console.log('User info:', { user_id, user_email, points_used, use_points_redemption, use_account_discount });
+    
+    // Validate that line_items are using Stripe price IDs
+    for (const item of line_items) {
+      if (!item.price || !item.price.startsWith('price_')) {
+        throw new Error(`Invalid Stripe price ID: ${item.price}. All items must use configured Stripe price IDs.`);
+      }
+    }
+    
+    // Calculate total amount by fetching prices from Stripe
+    let totalAmount = 0;
+    let totalQuantity = 0;
+    const productSummary = [];
 
-    // Calculate total quantity for shipping metadata
-    const totalQuantity = line_items.reduce((sum, item) => {
-      return sum + item.quantity;
-    }, 0);
+    for (const item of line_items) {
+      try {
+        const price = await stripe.prices.retrieve(item.price);
+        const itemTotal = price.unit_amount * item.quantity;
+        totalAmount += itemTotal;
+        totalQuantity += item.quantity;
+        
+        productSummary.push({
+          name: price.nickname || price.product.name || 'Product',
+          price_id: item.price,
+          unit_amount: price.unit_amount,
+          quantity: item.quantity,
+          total: itemTotal
+        });
+        
+        console.log(`Product: ${price.nickname || 'Unknown'}, Price: $${price.unit_amount/100}, Qty: ${item.quantity}`);
+      } catch (priceError) {
+        console.error(`Error fetching price ${item.price}:`, priceError);
+        throw new Error(`Invalid or inactive Stripe price ID: ${item.price}`);
+      }
+    }
+
+    console.log(`Total amount: $${totalAmount/100}, Total quantity: ${totalQuantity}`);
 
     // Determine if user is registered
     let isRegisteredUser = user_id && user_email;
@@ -54,6 +83,7 @@ module.exports = async (req, res) => {
       const pointsValue = Math.floor(points_used / 50) * 499; // 50 points = $4.99 in cents
       pointsUsed = Math.floor(points_used / 50) * 50; // Only use complete 50-point increments
       finalAmount = Math.max(0, totalAmount - pointsValue);
+      console.log(`Points redemption: ${pointsUsed} points = $${pointsValue/100} discount`);
     }
 
     // Apply 5% discount for registered users (only if not using points)
@@ -76,6 +106,7 @@ module.exports = async (req, res) => {
         coupon: coupon.id
       }];
       discountType = '5_percent';
+      console.log('Applied 5% registered user discount');
     }
 
     // Enhanced shipping logic with proper Laredo, TX support and metadata
@@ -104,48 +135,13 @@ module.exports = async (req, res) => {
       },
     });
 
-    // Add standard shipping options based on order total (use original total for shipping calculation)
-    if (totalAmount < 599) {
-      // Check if order contains 5-packs by examining line items
-      const contains5Pack = line_items.some(item => 
-        item.price_data.unit_amount === 399 || // 5-pack price
-        item.price_data.product_data.name.toLowerCase().includes('5-pack') ||
-        item.price_data.product_data.name.toLowerCase().includes('5 pack')
-      );
-      
-      // For orders containing 5-packs: Add both $1 tracking and $2 flat mailer options
-      if (contains5Pack) {
-        // $1 Tracking option for 5-pack orders
-        shipping_options.push({
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 100, // $1 in cents
-              currency: 'usd',
-            },
-            display_name: 'Tracked Shipping (+$1.00)',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 2 },
-              maximum: { unit: 'business_day', value: 4 },
-            },
-            metadata: {
-              shipping_type: 'tracked',
-              service_area: 'us_nationwide',
-              delivery_method: 'usps_tracked',
-              cost_type: 'tracked_premium',
-              tracking_available: 'yes',
-              shipping_cost_cents: '100'
-            }
-          },
-        });
-      }
-      
-      // $2 shipping for orders under $5.99 (flat mailer)
+    // Add standard shipping options based on order total
+    if (totalAmount < 599) { // Less than $5.99
       shipping_options.push({
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: {
-            amount: 200, // $2 in cents
+            amount: 200, // $2.00 in cents
             currency: 'usd',
           },
           display_name: 'Standard Shipping ($2.00)',
@@ -155,16 +151,12 @@ module.exports = async (req, res) => {
           },
           metadata: {
             shipping_type: 'standard',
-            service_area: 'us_nationwide',
-            delivery_method: 'usps_ground',
             cost_type: 'paid',
-            tracking_available: 'yes',
-            shipping_cost_cents: '200'
+            tracking_available: 'yes'
           }
         },
       });
-    } else {
-      // Free shipping for $5.99 or more
+    } else { // $5.99 or more
       shipping_options.push({
         shipping_rate_data: {
           type: 'fixed_amount',
@@ -172,57 +164,26 @@ module.exports = async (req, res) => {
             amount: 0,
             currency: 'usd',
           },
-          display_name: 'Free Shipping',
+          display_name: 'Free Standard Shipping',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
-            maximum: { unit: 'business_day', value: 5 },
+            maximum: { unit: 'business_day', value: 7 },
           },
           metadata: {
-            shipping_type: 'standard_free',
-            service_area: 'us_nationwide',
-            delivery_method: 'usps_ground',
-            cost_type: 'free_threshold',
-            tracking_available: 'yes',
-            free_threshold_met: 'true',
-            shipping_cost_cents: '0'
+            shipping_type: 'standard',
+            cost_type: 'free',
+            tracking_available: 'yes'
           }
         },
       });
     }
 
-    // Update line items if points were used (reduce the amount)
-    let updatedLineItems = line_items;
-    if (use_points_redemption && pointsUsed > 0) {
-      // If using points, we need to adjust the line items
-      // For simplicity, we'll apply the points discount to the first item
-      updatedLineItems = line_items.map((item, index) => {
-        if (index === 0 && finalAmount < totalAmount) {
-          // Apply points discount to first item
-          const discountAmount = totalAmount - finalAmount;
-          const newUnitAmount = Math.max(0, item.price_data.unit_amount - Math.floor(discountAmount / item.quantity));
-          return {
-            ...item,
-            price_data: {
-              ...item.price_data,
-              unit_amount: newUnitAmount
-            }
-          };
-        }
-        return item;
-      });
-    }
-
-    // Create comprehensive product summary for metadata
-    const productSummary = line_items.map(item => ({
-      name: item.price_data.product_data.name,
-      quantity: item.quantity,
-      unit_price: item.price_data.unit_amount
-    }));
+    console.log(`Shipping options configured: ${shipping_options.length} options`);
 
     // Create checkout session configuration
     const sessionConfig = {
       payment_method_types: ['card'],
-      line_items: updatedLineItems,
+      line_items: line_items, // Use the line_items directly with Stripe price IDs
       mode: 'payment',
       success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/cart`,
@@ -273,7 +234,7 @@ module.exports = async (req, res) => {
         // Business logic flags
         is_soft_launch: 'true',
         platform: 'web',
-        checkout_version: '2024.1'
+        checkout_version: '2024.2'
       }
     };
 
@@ -287,8 +248,12 @@ module.exports = async (req, res) => {
       sessionConfig.customer_email = user_email;
     }
 
+    console.log('Creating Stripe checkout session...');
+
     // Create a checkout session with Stripe
     const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    console.log(`Checkout session created successfully: ${session.id}`);
 
     res.status(200).json({ 
       id: session.id,
@@ -303,11 +268,15 @@ module.exports = async (req, res) => {
       final_total: (finalAmount / 100).toFixed(2),
       metadata: {
         total_items: totalQuantity,
-        session_timestamp: new Date().toISOString()
+        session_timestamp: new Date().toISOString(),
+        price_ids_used: line_items.map(item => item.price)
       }
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      details: 'Failed to create checkout session. Please check your product configuration and try again.'
+    });
   }
-}
+};
