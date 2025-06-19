@@ -50,13 +50,24 @@ const ProductReviews = ({ productId, productName }) => {
     setSubmittingReview(true);
 
     try {
-      await submitProductReview({
+      console.log('=== Component: Starting review submission ===');
+      console.log('Product ID:', productId);
+      console.log('Form data:', reviewForm);
+      
+      const reviewData = {
         product_id: productId,
         rating: reviewForm.rating,
         review_text: reviewForm.review_text.trim(),
         user_name: reviewForm.user_name.trim(),
         user_email: reviewForm.user_email.trim()
-      });
+      };
+      
+      console.log('Submitting review data:', reviewData);
+      
+      const result = await submitProductReview(reviewData);
+      
+      console.log('=== Component: Review submission successful ===');
+      console.log('Result:', result);
 
       setReviewSubmitted(true);
       setShowReviewForm(false);
@@ -70,8 +81,11 @@ const ProductReviews = ({ productId, productName }) => {
       // Show success message for a few seconds
       setTimeout(() => setReviewSubmitted(false), 5000);
     } catch (error) {
-      console.error('Error submitting review:', error);
-      alert('Failed to submit review. Please try again.');
+      console.error('=== Component: Error submitting review ===');
+      console.error('Error details:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      alert(`Failed to submit review. Error: ${error.message || 'Unknown error'}`);
     } finally {
       setSubmittingReview(false);
     }

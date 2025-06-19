@@ -491,27 +491,49 @@ export const createOrderItems = async (orderId, items) => {
 // Submit a new product review
 export const submitProductReview = async (reviewData) => {
   try {
+    console.log('=== Starting review submission ===')
+    console.log('Review data:', reviewData)
+    console.log('Supabase client configured:', !!supabase)
+    
+    const insertData = {
+      product_id: reviewData.product_id,
+      rating: reviewData.rating,
+      review_text: reviewData.review_text || null,
+      user_email: reviewData.user_email,
+      user_name: reviewData.user_name,
+      is_approved: false // Reviews require approval
+    }
+    
+    console.log('Data to insert:', insertData)
+    
     const { data, error } = await supabase
       .from('product_reviews')
-      .insert({
-        product_id: reviewData.product_id,
-        rating: reviewData.rating,
-        review_text: reviewData.review_text || null,
-        user_email: reviewData.user_email,
-        user_name: reviewData.user_name,
-        is_approved: false // Reviews require approval
-      })
+      .insert(insertData)
       .select()
       .single()
 
+    console.log('Supabase response:', { data, error })
+
     if (error) {
-      console.error('Error submitting review:', error)
+      console.error('=== Supabase Error Details ===')
+      console.error('Error code:', error.code)
+      console.error('Error message:', error.message)
+      console.error('Error details:', error.details)
+      console.error('Error hint:', error.hint)
+      console.error('Full error object:', error)
       throw error
     }
 
+    console.log('=== Review submitted successfully ===')
+    console.log('Inserted review:', data)
     return data
   } catch (error) {
-    console.error('Exception in submitProductReview:', error)
+    console.error('=== Exception in submitProductReview ===')
+    console.error('Error type:', typeof error)
+    console.error('Error constructor:', error.constructor.name)
+    console.error('Error message:', error.message)
+    console.error('Error stack:', error.stack)
+    console.error('Full error:', error)
     throw error
   }
 }
