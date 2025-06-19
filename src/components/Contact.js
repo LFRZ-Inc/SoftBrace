@@ -12,6 +12,7 @@ function Contact() {
     name: '',
     email: '',
     inquiryType: 'general',
+    subject: '',
     message: ''
   });
 
@@ -30,6 +31,7 @@ function Contact() {
         name: formData.name.trim(),
         email: formData.email.trim(),
         inquiry_type: formData.inquiryType,
+        subject: formData.subject.trim() || `${formData.inquiryType} inquiry`,
         message: formData.message.trim()
       });
 
@@ -38,6 +40,7 @@ function Contact() {
         name: '',
         email: '',
         inquiryType: 'general',
+        subject: '',
         message: ''
       });
 
@@ -128,6 +131,18 @@ function Contact() {
           </div>
 
           <div className="form-group">
+            <label htmlFor="subject">Subject</label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              placeholder={`${formData.inquiryType} inquiry`}
+            />
+          </div>
+
+          <div className="form-group">
             <label htmlFor="message">{t('contact.form.message')}</label>
             <textarea
               id="message"
@@ -155,4 +170,4 @@ function Contact() {
   );
 }
 
-export default Contact; 
+export default Contact;

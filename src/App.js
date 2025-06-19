@@ -17,7 +17,7 @@ import SuccessPage from './pages/SuccessPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
-import Contact from './pages/Contact';
+import Contact from './components/Contact';
 import Blog from './pages/Blog';
 import SoftBraceUsagePage from './pages/SoftBraceUsagePage';
 import AdminPage from './pages/AdminPage';
@@ -131,4 +131,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
