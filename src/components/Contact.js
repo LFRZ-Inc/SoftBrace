@@ -35,25 +35,23 @@ function Contact() {
         message: formData.message.trim()
       };
 
+      // Save to database first
       await submitSupportMessage(messageData);
 
-      // Create a simple email notification by opening user's email client as backup
-      const emailSubject = encodeURIComponent(`New Support Message: ${messageData.subject}`);
+      // Immediately open email client with pre-filled message for user to send
+      const emailSubject = encodeURIComponent(`Contact Form: ${messageData.subject}`);
       const emailBody = encodeURIComponent(
-        `New support message received from SoftBraceStrips.com:\n\n` +
-        `From: ${messageData.name} (${messageData.email})\n` +
-        `Type: ${messageData.inquiry_type}\n` +
-        `Subject: ${messageData.subject}\n\n` +
+        `Hi SoftBrace Support,\n\n` +
+        `Name: ${messageData.name}\n` +
+        `Email: ${messageData.email}\n` +
+        `Inquiry Type: ${messageData.inquiry_type}\n\n` +
         `Message:\n${messageData.message}\n\n` +
-        `Please respond directly to ${messageData.email}`
+        `Sent from SoftBraceStrips.com contact form`
       );
       
-      // Trigger a mailto link for admin notification (fallback)
-      setTimeout(() => {
-        const mailtoLink = `mailto:support@softbracestrips.com?subject=${emailSubject}&body=${emailBody}`;
-        console.log('Admin notification email ready:', mailtoLink);
-        // Could add a "Send notification email" button for admin here
-      }, 1000);
+      // Open user's email client immediately
+      const mailtoLink = `mailto:support@softbracestrips.com?subject=${emailSubject}&body=${emailBody}`;
+      window.open(mailtoLink, '_blank');
 
       setSubmitted(true);
       setFormData({
@@ -98,8 +96,9 @@ function Contact() {
 
         {submitted && (
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-lg">
-            <p className="font-medium">✓ Message sent successfully!</p>
-            <p className="text-sm">Thanks for reaching out to SoftBrace! We'll get back to you as soon as possible.</p>
+            <p className="font-medium">✓ Message prepared successfully!</p>
+            <p className="text-sm">Your email client should open automatically with a pre-filled message to support@softbracestrips.com. Simply hit 'Send' to complete your inquiry!</p>
+            <p className="text-xs mt-2">If the email client didn't open, you can email us directly at <strong>support@softbracestrips.com</strong></p>
           </div>
         )}
 
