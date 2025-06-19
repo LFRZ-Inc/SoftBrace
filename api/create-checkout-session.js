@@ -106,7 +106,34 @@ module.exports = async (req, res) => {
 
     // Add standard shipping options based on order total (use original total for shipping calculation)
     if (totalAmount < 599) {
-      // $2 shipping for orders under $5.99
+      // For 5-pack ($3.99): Add both $1 tracking and $2 flat mailer options
+      if (totalAmount === 399) { // 5-pack specific pricing
+        // $1 Tracking option for 5-pack
+        shipping_options.push({
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 100, // $1 in cents
+              currency: 'usd',
+            },
+            display_name: 'Tracked Shipping (+$1.00)',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 2 },
+              maximum: { unit: 'business_day', value: 4 },
+            },
+            metadata: {
+              shipping_type: 'tracked',
+              service_area: 'us_nationwide',
+              delivery_method: 'usps_tracked',
+              cost_type: 'tracked_premium',
+              tracking_available: 'yes',
+              shipping_cost_cents: '100'
+            }
+          },
+        });
+      }
+      
+      // $2 shipping for orders under $5.99 (flat mailer)
       shipping_options.push({
         shipping_rate_data: {
           type: 'fixed_amount',
