@@ -25,6 +25,8 @@ import {
 } from '../lib/adminActivityLogger'
 import VisualEditor from '../components/VisualEditor'
 import '../components/VisualEditor.css'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
 // Independent admin authentication - completely separate from customer auth
 const ADMIN_PASSWORD = 'SoftBrace2024Admin'
@@ -86,6 +88,7 @@ const adminAuth = {
 }
 
 const AdminPage = () => {
+  const { user } = useAuth()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
@@ -116,6 +119,12 @@ const AdminPage = () => {
   // Support messages state
   const [supportMessages, setSupportMessages] = useState([])
   const [loadingSupportMessages, setLoadingSupportMessages] = useState(false)
+
+  // Orders management state
+  const [adminContent, setAdminContent] = useState([])
+  const [pendingOrders, setPendingOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   // Check admin session on component mount
   useEffect(() => {
@@ -148,6 +157,13 @@ const AdminPage = () => {
       return () => clearInterval(refreshInterval)
     }
   }, [isLoggedIn])
+
+  useEffect(() => {
+    if (user) {
+      fetchAdminContent()
+      fetchPendingOrders()
+    }
+  }, [user])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -356,6 +372,61 @@ const AdminPage = () => {
       loadPageContent(selectedPage, selectedSection)
     }
   }, [selectedPage, selectedSection, isLoggedIn])
+
+  const fetchAdminContent = async () => {
+    // ... existing admin content code ...
+  }
+
+  const fetchPendingOrders = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select(`
+          id,
+          order_number,
+          total_amount,
+          verification_status,
+          fulfillment_status,
+          requires_manual_review,
+          review_reason,
+          created_at,
+          user_id,
+          profiles (first_name, last_name, email)
+        `)
+        .eq('requires_manual_review', true)
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+      if (error) throw error
+      setPendingOrders(data || [])
+    } catch (err) {
+      console.error('Error fetching pending orders:', err)
+    }
+  }
+
+  const updateOrderStatus = async (orderId, verificationStatus, fulfillmentStatus) => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          verification_status: verificationStatus,
+          fulfillment_status: fulfillmentStatus,
+          requires_manual_review: verificationStatus === 'verified' ? false : true,
+          verified_by: user.id,
+          verified_at: new Date().toISOString()
+        })
+        .eq('id', orderId)
+
+      if (error) throw error
+      
+      // Refresh pending orders
+      fetchPendingOrders()
+      alert('Order status updated successfully!')
+    } catch (err) {
+      console.error('Error updating order status:', err)
+      alert('Failed to update order status')
+    }
+  }
 
   // Login screen - completely independent from customer auth
   if (!isLoggedIn) {
@@ -901,6 +972,62 @@ const AdminPage = () => {
             </div>
           </div>
         )}
+
+        {/* Orders Requiring Review Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">📋 Orders Requiring Review</h2>
+          
+          {pendingOrders.length === 0 ? (
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <p className="text-green-800 dark:text-green-200">✅ No orders currently require review</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {pendingOrders.map((order) => (
+                <div key={order.id} className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-bold text-lg">{order.order_number}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Customer: {order.profiles?.first_name} {order.profiles?.last_name} ({order.profiles?.email})
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">${order.total_amount}</p>
+                      <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">Review Reason:</p>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300">{order.review_reason}</p>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => updateOrderStatus(order.id, 'verified', 'processing')}
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm"
+                    >
+                      ✅ Approve & Process
+                    </button>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, 'rejected', 'cancelled')}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm"
+                    >
+                      ❌ Reject Order
+                    </button>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, 'needs_review', 'pending')}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm"
+                    >
+                      🔄 Keep in Review
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

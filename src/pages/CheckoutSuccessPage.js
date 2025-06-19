@@ -44,6 +44,17 @@ function CheckoutSuccessPage() {
           </>
         )}
         
+        {/* Shipping Information Notice */}
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+          <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">📦 Shipping Information</h3>
+          <div className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+            <p>• Orders $5.99+ include tracking information</p>
+            <p>• Orders under $5.99 ship via standard mail (no tracking)</p>
+            <p>• Local Laredo, TX orders include tracking & confirmation</p>
+            <p>• All orders are verified before shipping (1-2 business days)</p>
+          </div>
+        </div>
+        
         <div className="flex flex-col space-y-3">
           <Link
             to="/"

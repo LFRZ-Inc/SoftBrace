@@ -139,6 +139,10 @@ module.exports = async (req, res) => {
         // 3. Create order_items records and check for 100-pack bonus
         let has100Pack = false;
         let total100PackQuantity = 0;
+        let hasFivePack = false;
+        let fivePackQuantity = 0;
+        let orderNeedsReview = false;
+        let reviewReasons = [];
         
         for (const item of lineItems.data) {
           const priceId = item.price.id;
@@ -154,6 +158,13 @@ module.exports = async (req, res) => {
             has100Pack = true;
             total100PackQuantity += item.quantity;
             console.log(`100-Pack detected! Quantity: ${item.quantity}`);
+          }
+
+          // Check if this is a 5-pack (price ID: price_1RLy6LFsjDil30gTU9kEFoTt)
+          if (priceId === 'price_1RLy6LFsjDil30gTU9kEFoTt') {
+            hasFivePack = true;
+            fivePackQuantity += item.quantity;
+            console.log(`5-Pack detected! Quantity: ${item.quantity}`);
           }
 
           const { error: itemError } = await supabase
@@ -172,6 +183,48 @@ module.exports = async (req, res) => {
           } else {
             console.log(`Order item created for product ${productId}`);
           }
+        }
+
+        // Determine verification status and review requirements
+        let verificationStatus = 'verified'; // Default to verified
+        
+        // Check conditions that require manual review
+        if (hasFivePack && totalAmount < 5.99) {
+          // 5-pack under free shipping threshold - needs tracking verification
+          orderNeedsReview = true;
+          reviewReasons.push('5-pack order under $5.99 - verify non-trackable shipping');
+          verificationStatus = 'needs_review';
+        }
+        
+        if (totalAmount > 100) {
+          // Large orders - verify for bulk discounts or wholesale
+          orderNeedsReview = true;
+          reviewReasons.push('Large order value - verify customer intent');
+          verificationStatus = 'needs_review';
+        }
+        
+        if (pointsUsedInt > 100) {
+          // High points usage - verify account legitimacy
+          orderNeedsReview = true;
+          reviewReasons.push('High points usage - verify account legitimacy');
+          verificationStatus = 'needs_review';
+        }
+        
+        // Update order with verification information
+        const { error: verificationError } = await supabase
+          .from('orders')
+          .update({
+            verification_status: verificationStatus,
+            fulfillment_status: orderNeedsReview ? 'pending' : 'processing',
+            requires_manual_review: orderNeedsReview,
+            review_reason: reviewReasons.join('; ') || null
+          })
+          .eq('id', orderData.id);
+
+        if (verificationError) {
+          console.error('Error updating order verification:', verificationError);
+        } else {
+          console.log(`Order verification updated: ${verificationStatus}, Review needed: ${orderNeedsReview}`);
         }
 
         // 4. Award points using Supabase function (only if points were earned)

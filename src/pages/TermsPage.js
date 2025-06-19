@@ -30,8 +30,33 @@ function TermsPage() {
         
         <h2 className="text-xl font-bold mt-6 mb-3">5. Shipping and Delivery</h2>
         <p>
-          Orders under $5.99 are subject to a $2.00 shipping fee. Orders of $5.99 or more qualify for free shipping. Delivery times are estimates and not guaranteed.
+          <strong>Shipping Rates:</strong>
         </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Orders under $5.99: $2.00 standard shipping fee</li>
+          <li>Orders of $5.99 or more: Free standard shipping</li>
+          <li>Laredo, TX area: Free local delivery (1-2 business days)</li>
+        </ul>
+        
+        <p>
+          <strong>Tracking Information:</strong>
+        </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Orders $5.99 and above include tracking information</li>
+          <li>Orders under $5.99 are shipped via standard mail without tracking to keep costs low</li>
+          <li>SoftWax products always include tracking due to package thickness requirements</li>
+          <li>Local delivery orders in Laredo, TX include tracking and confirmation</li>
+        </ul>
+        
+        <p>
+          <strong>Delivery and Verification:</strong>
+        </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Delivery times are estimates and not guaranteed</li>
+          <li>All orders are subject to verification and approval before shipping</li>
+          <li>We reserve the right to cancel orders that cannot be verified or fulfilled</li>
+          <li>Customers will be notified of any shipping delays or issues</li>
+        </ul>
         
         <h2 className="text-xl font-bold mt-6 mb-3">6. Returns and Refunds</h2>
         <p>
