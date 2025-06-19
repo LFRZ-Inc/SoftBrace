@@ -112,10 +112,10 @@ const ProductReviews = ({ productId, productName }) => {
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3);
 
   return (
-    <div className="product-reviews mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className="product-reviews mt-12 mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <div className="reviews-header flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-bold mb-2">Customer Reviews</h3>
+          <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Customer Reviews</h3>
           {reviewStats.totalReviews > 0 ? (
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -273,4 +273,4 @@ const ProductReviews = ({ productId, productName }) => {
   );
 };
 
-export default ProductReviews; 
+export default ProductReviews;
