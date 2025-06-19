@@ -112,34 +112,39 @@ const ProductReviews = ({ productId, productName }) => {
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3);
 
   return (
-    <div className="product-reviews mt-12 mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-      <div className="reviews-header flex items-center justify-between mb-6">
+    <div className="product-reviews mt-16 mb-12 p-8 bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 rounded-xl shadow-xl border-2 border-blue-200 dark:border-blue-700">
+      <div className="reviews-header flex items-center justify-between mb-8 pb-4 border-b-2 border-blue-200 dark:border-blue-700">
         <div>
-          <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Customer Reviews</h3>
+          <h3 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white flex items-center">
+            <span className="text-blue-500 mr-3">⭐</span>
+            Customer Reviews
+          </h3>
           {reviewStats.totalReviews > 0 ? (
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 {renderStars(reviewStats.averageRating, false, 'large')}
-                <span className="text-xl font-semibold">
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {reviewStats.averageRating.toFixed(1)}
                 </span>
               </div>
-              <span className="text-gray-600 dark:text-gray-400">
+              <span className="text-lg text-gray-600 dark:text-gray-300 font-medium">
                 ({reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? 's' : ''})
               </span>
             </div>
           ) : (
-            <p className="text-gray-600 dark:text-gray-400">
-              No reviews yet. Be the first to review {productName}!
-            </p>
+            <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+              <p className="text-blue-800 dark:text-blue-200 text-lg font-medium">
+                🌟 No reviews yet. Be the first to review {productName}!
+              </p>
+            </div>
           )}
         </div>
         
         <button
           onClick={() => setShowReviewForm(!showReviewForm)}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors"
+          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg font-semibold"
         >
-          Leave a Review
+          ✍️ Leave a Review
         </button>
       </div>
 
