@@ -93,10 +93,15 @@ const ProductReviews = ({ productId, productName }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setReviewForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    console.log('Input change:', { name, value, length: value.length });
+    setReviewForm(prev => {
+      const newForm = {
+        ...prev,
+        [name]: value
+      };
+      console.log('Updated form state:', newForm);
+      return newForm;
+    });
   };
 
   const renderStars = (rating, interactive = false, size = 'medium') => {
@@ -218,11 +223,18 @@ const ProductReviews = ({ productId, productName }) => {
               <textarea
                 id="review_text"
                 name="review_text"
-                value={reviewForm.review_text}
+                value={reviewForm.review_text || ''}
                 onChange={handleInputChange}
+                onFocus={() => console.log('Textarea focused')}
+                onInput={(e) => console.log('Textarea input:', e.target.value)}
                 rows={4}
                 placeholder="Tell us about your experience with this product..."
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800"
+                className="w-full p-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-blue-500"
+                style={{ 
+                  minHeight: '100px',
+                  fontSize: '16px',
+                  lineHeight: '1.5'
+                }}
               />
             </div>
 
