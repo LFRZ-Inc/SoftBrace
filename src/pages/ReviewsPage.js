@@ -380,8 +380,4 @@ function ReviewsPage() {
   );
 }
 
-<<<<<<< HEAD
-export default ReviewsPage; 
-=======
 export default ReviewsPage;
->>>>>>> 15f8a23cbb1012b72ab433ddcbefda22d4b36348
