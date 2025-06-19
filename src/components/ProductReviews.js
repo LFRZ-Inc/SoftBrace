@@ -148,6 +148,7 @@ const ProductReviews = ({ productId, productName }) => {
         </button>
       </div>
 
+      {/* Review Submission Success Message */}
       {reviewSubmitted && (
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-lg">
           <p className="font-medium">✓ Review submitted successfully!</p>

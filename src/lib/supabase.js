@@ -613,19 +613,141 @@ export const approveReview = async (reviewId) => {
 // Admin: Delete a review
 export const deleteReview = async (reviewId) => {
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('product_reviews')
       .delete()
       .eq('id', reviewId)
+      .select()
+      .single()
 
     if (error) {
       console.error('Error deleting review:', error)
       throw error
     }
 
-    return true
+    return data
   } catch (error) {
     console.error('Exception in deleteReview:', error)
+    throw error
+  }
+}
+
+// Admin: Toggle spotlight status for a review
+export const toggleReviewSpotlight = async (reviewId, isSpotlight) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .update({ is_spotlight: isSpotlight })
+      .eq('id', reviewId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error toggling review spotlight:', error)
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Exception in toggleReviewSpotlight:', error)
+    throw error
+  }
+}
+
+// Get spotlight reviews (for homepage or featured sections)
+export const getSpotlightReviews = async (limit = 6) => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .select(`
+        *,
+        products (name, price)
+      `)
+      .eq('is_approved', true)
+      .eq('is_spotlight', true)
+      .order('created_at', { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      console.error('Error fetching spotlight reviews:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getSpotlightReviews:', error)
+    throw error
+  }
+}
+
+// Get reviews filtered by star rating
+export const getReviewsByRating = async (rating, productId = null) => {
+  try {
+    let query = supabase
+      .from('product_reviews')
+      .select(`
+        *,
+        products (name, price)
+      `)
+      .eq('is_approved', true)
+      .eq('rating', rating)
+      .order('created_at', { ascending: false })
+
+    if (productId) {
+      query = query.eq('product_id', productId)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching reviews by rating:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getReviewsByRating:', error)
+    throw error
+  }
+}
+
+// Get review statistics by rating breakdown
+export const getReviewRatingBreakdown = async (productId = null) => {
+  try {
+    let query = supabase
+      .from('product_reviews')
+      .select('rating')
+      .eq('is_approved', true)
+
+    if (productId) {
+      query = query.eq('product_id', productId)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching rating breakdown:', error)
+      throw error
+    }
+
+    const reviews = data || []
+    const breakdown = {
+      5: 0, 4: 0, 3: 0, 2: 0, 1: 0,
+      total: reviews.length,
+      average: 0
+    }
+
+    reviews.forEach(review => {
+      breakdown[review.rating]++
+    })
+
+    if (reviews.length > 0) {
+      breakdown.average = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    }
+
+    return breakdown
+  } catch (error) {
+    console.error('Exception in getReviewRatingBreakdown:', error)
     throw error
   }
 }

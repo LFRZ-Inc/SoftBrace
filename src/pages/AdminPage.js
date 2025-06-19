@@ -11,6 +11,9 @@ import {
   getAllReviews,
   approveReview,
   deleteReview,
+  toggleReviewSpotlight,
+  getReviewsByRating,
+  getReviewRatingBreakdown,
   getAllSupportMessages,
   updateSupportMessageStatus
 } from '../lib/supabase'
@@ -115,6 +118,8 @@ const AdminPage = () => {
   // Reviews management state
   const [reviews, setReviews] = useState([])
   const [loadingReviews, setLoadingReviews] = useState(false)
+  const [reviewFilter, setReviewFilter] = useState('all') // 'all', 'pending', 'approved', 'spotlight', '1', '2', '3', '4', '5'
+  const [reviewStats, setReviewStats] = useState(null)
 
   // Support messages state
   const [supportMessages, setSupportMessages] = useState([])
@@ -227,10 +232,15 @@ const AdminPage = () => {
     try {
       const reviewsData = await getAllReviews()
       setReviews(reviewsData)
+      
+      // Load review statistics
+      const stats = await getReviewRatingBreakdown()
+      setReviewStats(stats)
     } catch (error) {
-      console.error('Failed to load reviews:', error)
+      console.error('Error loading reviews:', error)
+    } finally {
+      setLoadingReviews(false)
     }
-    setLoadingReviews(false)
   }
 
   const loadSupportMessages = async () => {
@@ -425,6 +435,16 @@ const AdminPage = () => {
     } catch (err) {
       console.error('Error updating order status:', err)
       alert('Failed to update order status')
+    }
+  }
+
+  const handleToggleSpotlight = async (reviewId, currentSpotlight) => {
+    try {
+      await toggleReviewSpotlight(reviewId, !currentSpotlight)
+      loadReviews() // Refresh the list
+    } catch (error) {
+      console.error('Error toggling spotlight:', error)
+      alert('Failed to toggle spotlight status')
     }
   }
 
@@ -743,11 +763,70 @@ const AdminPage = () => {
         {/* Reviews Management Tab */}
         {activeTab === 'reviews' && (
           <div>
-            <h2 className="text-xl font-bold mb-4">Product Reviews Management</h2>
+            <h2 className="text-xl font-bold mb-4">📋 Product Reviews Management</h2>
+            
+            {/* Review Statistics */}
+            {reviewStats && (
+              <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 className="text-lg font-semibold mb-4">Review Statistics</h3>
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{reviewStats.total}</div>
+                    <div className="text-sm text-gray-500">Total Reviews</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-500">{reviewStats.average.toFixed(1)}⭐</div>
+                    <div className="text-sm text-gray-500">Average Rating</div>
+                  </div>
+                  {[5, 4, 3, 2, 1].map(rating => (
+                    <div key={rating} className="text-center">
+                      <div className="text-xl font-bold text-gray-700">{reviewStats[rating]}</div>
+                      <div className="text-xs text-gray-500">{rating} Star{rating !== 1 ? 's' : ''}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Filter Controls */}
+            <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+              <h3 className="text-md font-semibold mb-3">Filter Reviews</h3>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: 'all', label: 'All Reviews', icon: '📋' },
+                  { value: 'pending', label: 'Pending Approval', icon: '⏳' },
+                  { value: 'approved', label: 'Approved', icon: '✅' },
+                  { value: 'spotlight', label: 'Spotlight', icon: '⭐' },
+                  { value: '5', label: '5 Stars', icon: '⭐⭐⭐⭐⭐' },
+                  { value: '4', label: '4 Stars', icon: '⭐⭐⭐⭐' },
+                  { value: '3', label: '3 Stars', icon: '⭐⭐⭐' },
+                  { value: '2', label: '2 Stars', icon: '⭐⭐' },
+                  { value: '1', label: '1 Star', icon: '⭐' }
+                ].map(filter => (
+                  <button
+                    key={filter.value}
+                    onClick={() => setReviewFilter(filter.value)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      reviewFilter === filter.value
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {filter.icon} {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">All Reviews</h3>
+                <h3 className="text-lg font-semibold">
+                  {reviewFilter === 'all' ? 'All Reviews' :
+                   reviewFilter === 'pending' ? 'Pending Reviews' :
+                   reviewFilter === 'approved' ? 'Approved Reviews' :
+                   reviewFilter === 'spotlight' ? 'Spotlight Reviews' :
+                   `${reviewFilter} Star Reviews`}
+                </h3>
                 <button
                   onClick={loadReviews}
                   disabled={loadingReviews}
@@ -759,57 +838,93 @@ const AdminPage = () => {
               
               {loadingReviews ? (
                 <div className="text-center py-8 text-gray-500">Loading reviews...</div>
-              ) : reviews.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">No reviews submitted yet.</div>
-              ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {reviews.map((review) => (
-                    <div key={review.id} className={`border rounded-lg p-4 ${review.is_approved ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}`}>
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="flex">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <span key={star} className={`text-lg ${star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
-                                  ★
+              ) : (() => {
+                // Filter reviews based on current filter
+                let filteredReviews = reviews;
+                if (reviewFilter === 'pending') filteredReviews = reviews.filter(r => !r.is_approved);
+                else if (reviewFilter === 'approved') filteredReviews = reviews.filter(r => r.is_approved);
+                else if (reviewFilter === 'spotlight') filteredReviews = reviews.filter(r => r.is_spotlight);
+                else if (['1', '2', '3', '4', '5'].includes(reviewFilter)) {
+                  filteredReviews = reviews.filter(r => r.rating.toString() === reviewFilter);
+                }
+                
+                return filteredReviews.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No reviews found for the current filter.
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                    {filteredReviews.map((review) => (
+                      <div key={review.id} className={`border rounded-lg p-4 ${
+                        review.is_spotlight ? 'border-yellow-300 bg-yellow-50' :
+                        review.is_approved ? 'border-green-200 bg-green-50' : 
+                        'border-yellow-200 bg-yellow-50'
+                      }`}>
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="flex">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span key={star} className={`text-lg ${star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+                              <span className="font-medium">{review.user_name}</span>
+                              <span className={`px-2 py-1 rounded text-xs ${
+                                review.is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {review.is_approved ? 'Approved' : 'Pending'}
+                              </span>
+                              {review.is_spotlight && (
+                                <span className="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800">
+                                  ⭐ Spotlight
                                 </span>
-                              ))}
+                              )}
                             </div>
-                            <span className="font-medium">{review.user_name}</span>
-                            <span className={`px-2 py-1 rounded text-xs ${review.is_approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                              {review.is_approved ? 'Approved' : 'Pending'}
-                            </span>
+                            <p className="text-sm text-gray-600 mb-2">Product ID: {review.product_id}</p>
+                            <p className="text-sm text-gray-600 mb-2">Email: {review.user_email}</p>
+                            {review.review_text && (
+                              <p className="text-gray-800 mb-2">"{review.review_text}"</p>
+                            )}
+                            <p className="text-xs text-gray-500">
+                              Submitted: {new Date(review.created_at).toLocaleString()}
+                            </p>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">Product ID: {review.product_id}</p>
-                          <p className="text-sm text-gray-600 mb-2">Email: {review.user_email}</p>
-                          {review.review_text && (
-                            <p className="text-gray-800 mb-2">{review.review_text}</p>
-                          )}
-                          <p className="text-xs text-gray-500">
-                            Submitted: {new Date(review.created_at).toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="flex flex-col gap-2 ml-4">
-                          {!review.is_approved && (
+                          <div className="flex flex-col gap-2 ml-4">
+                            {!review.is_approved && (
+                              <button
+                                onClick={() => handleApproveReview(review.id)}
+                                className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                              >
+                                ✅ Approve
+                              </button>
+                            )}
+                            {review.is_approved && (
+                              <button
+                                onClick={() => handleToggleSpotlight(review.id, review.is_spotlight)}
+                                className={`px-3 py-1 rounded text-sm transition-colors ${
+                                  review.is_spotlight 
+                                    ? 'bg-yellow-500 text-white hover:bg-yellow-600' 
+                                    : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                                }`}
+                              >
+                                {review.is_spotlight ? '⭐ Remove Spotlight' : '⭐ Add Spotlight'}
+                              </button>
+                            )}
                             <button
-                              onClick={() => handleApproveReview(review.id)}
-                              className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                              onClick={() => handleDeleteReview(review.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                             >
-                              ✅ Approve
+                              🗑️ Delete
                             </button>
-                          )}
-                          <button
-                            onClick={() => handleDeleteReview(review.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-                          >
-                            🗑️ Delete
-                          </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}
