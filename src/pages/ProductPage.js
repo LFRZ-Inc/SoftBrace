@@ -270,7 +270,7 @@ function ProductPage() {
               </div>
               
               <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">{product.quantity}</p>
+              <p className="text-xl text-gray-800 dark:text-gray-100 mb-4 font-medium">{product.quantity}</p>
               
               <div className="text-3xl font-bold mb-6">${product.price}</div>
               

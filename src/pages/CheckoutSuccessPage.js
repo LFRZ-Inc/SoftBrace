@@ -33,12 +33,12 @@ function CheckoutSuccessPage() {
             
             {orderNumber && (
               <div className="bg-gray-50 dark:bg-gray-700 rounded p-4 mb-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('checkout.orderNumber')}</p>
+                <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">{t('checkout.orderNumber')}</p>
                 <p className="font-bold text-lg">{orderNumber}</p>
               </div>
             )}
             
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-sm text-gray-800 dark:text-gray-100 mb-6 font-medium">
               {t('checkout.emailConfirmation')}
             </p>
           </>

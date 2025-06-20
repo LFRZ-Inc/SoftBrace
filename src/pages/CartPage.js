@@ -88,7 +88,7 @@ function CartPage() {
                         
                         <div className="flex flex-wrap justify-between items-end mt-4">
                           <div className="mb-4 md:mb-0">
-                            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                            <label className="block text-sm text-gray-800 dark:text-gray-100 mb-1 font-medium">
                               {t('cart.quantity')}
                             </label>
                             <div className="flex items-center">
@@ -202,7 +202,7 @@ function CartPage() {
                   </Link>
                   
                   {!isUserLoggedIn && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
+                    <p className="text-xs text-gray-700 dark:text-gray-200 text-center mt-2 font-medium">
                       No account required • Sign up during checkout to save 5%
                     </p>
                   )}

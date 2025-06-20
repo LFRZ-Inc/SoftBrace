@@ -131,11 +131,11 @@ function ReviewsPage() {
     <div className="reviews-page">
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
-            ⭐ Customer Reviews
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Customer Reviews
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-            See what our customers are saying about SoftBrace products
+          <p className="text-xl text-gray-800 dark:text-gray-100 mb-8 font-medium">
+            See what our customers say about SoftBrace strips
           </p>
           
           {/* Add Review Button */}
@@ -249,7 +249,7 @@ function ReviewsPage() {
                     className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                     placeholder="Enter your email"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Your email will not be displayed publicly</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-200 mt-1 font-medium">Your email will not be displayed publicly</p>
                 </div>
               </div>
 
@@ -292,7 +292,7 @@ function ReviewsPage() {
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🌟</div>
             <h2 className="text-2xl font-bold mb-4">No Reviews Yet</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
+            <p className="text-gray-800 dark:text-gray-200 mb-8 font-medium">
               Be the first to share your experience with SoftBrace!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -331,17 +331,13 @@ function ReviewsPage() {
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                     {review.user_name}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(review.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                  <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">
+                    {new Date(review.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 
                 {review.review_text && (
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-gray-800 dark:text-gray-200 leading-relaxed">
                     "{review.review_text}"
                   </p>
                 )}
@@ -354,7 +350,7 @@ function ReviewsPage() {
           <div className="text-center py-16">
             <div className="text-4xl mb-4">🔍</div>
             <h2 className="text-xl font-bold mb-2">No reviews for this product yet</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-800 dark:text-gray-200 mb-6 font-medium">
               Try selecting a different product or view all reviews.
             </p>
             <button
@@ -373,6 +369,15 @@ function ReviewsPage() {
           >
             Shop SoftBrace Products
           </Link>
+        </div>
+
+        <div className="text-center py-8">
+          <p className="text-gray-800 dark:text-gray-200 mb-8 font-medium">
+            No reviews yet. Be the first to share your experience!
+          </p>
+          <p className="text-gray-800 dark:text-gray-200 mb-6 font-medium">
+            Submit your own review above and help others make informed decisions.
+          </p>
         </div>
       </div>
     </div>

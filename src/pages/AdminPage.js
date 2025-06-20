@@ -532,7 +532,7 @@ const AdminPage = () => {
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">SoftBrace Admin Portal</h1>
-            <p className="text-sm text-gray-600">Content & Image Management System</p>
+                            <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">Content & Image Management System</p>
           </div>
           <div className="flex items-center space-x-4">
             <a 
@@ -563,7 +563,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'images' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 📷 Image Management
@@ -573,7 +573,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'content' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 ✏️ Content Editing
@@ -583,7 +583,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'visual' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 🎨 Visual Editor
@@ -593,7 +593,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'reviews' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 ⭐ Reviews
@@ -603,7 +603,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'support' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 💬 Support
@@ -613,7 +613,7 @@ const AdminPage = () => {
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'activity' 
                     ? 'border-blue-500 text-blue-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
                 📊 Activity Log
@@ -653,7 +653,7 @@ const AdminPage = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Uploaded Images</h3>
               {images.length === 0 ? (
-                <p className="text-gray-500">No images uploaded yet.</p>
+                <p className="text-gray-700 font-medium">No images uploaded yet.</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {images.map((image) => (
@@ -664,7 +664,7 @@ const AdminPage = () => {
                         className="w-full h-48 object-cover rounded-lg mb-2"
                       />
                       <p className="text-sm font-medium truncate">{image.original_name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-700 font-medium">
                         {new Date(image.created_at).toLocaleDateString()}
                       </p>
                       <div className="mt-2 flex space-x-2">
@@ -738,7 +738,7 @@ const AdminPage = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 font-mono text-sm"
                   placeholder="Enter your content here. You can use HTML tags for formatting."
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-700 mt-1 font-medium">
                   You can use HTML tags like &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;img&gt;, etc.
                 </p>
               </div>

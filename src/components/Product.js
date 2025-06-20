@@ -39,52 +39,52 @@ function Product() {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pack</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contents</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ideal For</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price per Pair</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Pack</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Contents</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Ideal For</th>
+                  <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Price per Pair</th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">5-Pair</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">10 strips</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">First-time users</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.99</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">5-Pair</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">10 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">First-time users</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">$0.99</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">15-Pair</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">30 strips</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Regular users</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.73</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">15-Pair</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">30 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Regular users</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">$0.73</td>
                 </tr>
                 {showLargePack && (
                   <tr>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">31-Pair</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">62 strips</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Long-term users</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.55</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">31-Pair</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">62 strips</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Long-term users</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">$0.55</td>
                   </tr>
                 )}
                 {showBulkPack && (
                   <tr>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">100-Pair Bulk</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">200 strips</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Clinics/Wholesale</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.50</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">100-Pair Bulk</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">200 strips</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Clinics/Wholesale</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">$0.50</td>
                   </tr>
                 )}
                 <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">SoftWax</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 2 strips</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Spot relief</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">—</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">SoftWax</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">1 wax + 2 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Spot relief</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">—</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Bundle</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">1 wax + 10 strips</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Best starter combo</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">$0.90</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Bundle</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">1 wax + 10 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">Best starter combo</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">$0.90</td>
                 </tr>
               </tbody>
             </table>

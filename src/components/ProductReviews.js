@@ -213,7 +213,7 @@ const ProductReviews = ({ productId, productName }) => {
                 required
                 className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800"
               />
-              <p className="text-xs text-gray-500 mt-1">Your email will not be displayed publicly</p>
+              <p className="text-xs text-gray-700 dark:text-gray-200 mt-1 font-medium">Your email will not be displayed publicly</p>
             </div>
 
             <div className="mb-4">
@@ -271,7 +271,7 @@ const ProductReviews = ({ productId, productName }) => {
                       {renderStars(review.rating, false, 'small')}
                       <span className="text-sm font-medium">{review.user_name}</span>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                       {new Date(review.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -297,8 +297,8 @@ const ProductReviews = ({ productId, productName }) => {
       )}
 
       {reviews.length === 0 && reviewStats.totalReviews === 0 && (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-          <p>No reviews yet for this product.</p>
+        <div className="text-center py-8 text-gray-800 dark:text-gray-200 font-medium">
+          Loading reviews...
         </div>
       )}
     </div>

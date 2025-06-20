@@ -167,8 +167,7 @@ function CheckoutPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-md mx-auto">
           <div className="text-green-500 text-5xl mb-4">✓</div>
           <h1 className="text-2xl font-bold mb-4">{t('checkout.paymentSuccess')}</h1>
-          <p className="mb-2">{t('checkout.paymentSuccessMessage')}</p>
-          <p className="mb-6 text-gray-600 dark:text-gray-400">A receipt has been sent to your email address.</p>
+          <p className="mb-6 text-gray-800 dark:text-gray-100 font-medium">A receipt has been sent to your email address.</p>
           <Link
             to="/"
             className="bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-lg inline-block"
@@ -204,7 +203,7 @@ function CheckoutPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium">{item.name}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">
                       {t('checkout.quantity')}: {item.quantity}
                     </p>
                     <p className="font-bold mt-1">${(item.price * item.quantity).toFixed(2)}</p>
@@ -237,7 +236,7 @@ function CheckoutPage() {
                     </div>
                     <div>
                       <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Qty: {item.quantity}</p>
+                      <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">Qty: {item.quantity}</p>
                     </div>
                   </div>
 
@@ -260,8 +259,8 @@ function CheckoutPage() {
                                 {option.price === 0 ? 'FREE' : `$${option.price.toFixed(2)}`}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{option.description}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-500">
+                            <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">{option.description}</p>
+                            <p className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                               ⏱️ {option.estimated_days}
                             </p>
                           </div>
@@ -276,8 +275,8 @@ function CheckoutPage() {
                           {shippingOptions[0]?.price === 0 ? 'FREE' : `$${shippingOptions[0]?.price.toFixed(2)}`}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{shippingOptions[0]?.description}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                      <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">{shippingOptions[0]?.description}</p>
+                      <p className="text-xs text-gray-700 dark:text-gray-200 font-medium">
                         ⏱️ {shippingOptions[0]?.estimated_days}
                       </p>
                     </div>
