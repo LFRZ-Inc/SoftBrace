@@ -15,6 +15,7 @@ const UserDashboard = () => {
   const { user, profile, loadUserProfile } = useAuth()
   const [activeTab, setActiveTab] = useState('orders')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [orders, setOrders] = useState([])
   const [points, setPoints] = useState(0)
   const [pointsTransactions, setPointsTransactions] = useState([])
@@ -44,6 +45,9 @@ const UserDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true)
+      setError(null)
+      
+      console.log('Loading dashboard data for user:', user?.id)
       
       // Load all dashboard data in parallel
       const [ordersData, pointsData, transactionsData, addressesData] = await Promise.all([
@@ -53,13 +57,15 @@ const UserDashboard = () => {
         getUserAddresses(user.id)
       ])
 
+      console.log('Dashboard data loaded:', { ordersData, pointsData, transactionsData, addressesData })
+
       setOrders(ordersData || [])
       setPoints(pointsData || 0)
       setPointsTransactions(transactionsData || [])
       setAddresses(addressesData || [])
     } catch (error) {
       console.error('Error loading dashboard data:', error)
-      setMessage('Error loading dashboard data. Please refresh the page.')
+      setError(`Failed to load dashboard: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -131,6 +137,30 @@ const UserDashboard = () => {
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
         <p>Loading your dashboard...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="text-red-500 mb-4">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold mb-2">Error Loading Dashboard</h2>
+          <p className="mb-4">{error}</p>
+          <button 
+            onClick={loadDashboardData}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg mr-4"
+          >
+            Try Again
+          </button>
+          <Link 
+            to="/" 
+            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg"
+          >
+            Go Home
+          </Link>
+        </div>
       </div>
     )
   }

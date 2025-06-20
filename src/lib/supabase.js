@@ -130,14 +130,40 @@ export const updateUserProfile = async (userId, updates) => {
 
 // Address functions
 export const getUserAddresses = async (userId) => {
-  const { data, error } = await supabase
-    .from('addresses')
-    .select('*')
-    .eq('user_id', userId)
-    .order('is_default', { ascending: false })
-  
-  if (error) throw error
-  return data
+  try {
+    console.log('Fetching addresses for user:', userId);
+    
+    const { data, error } = await supabase
+      .from('addresses')
+      .select('*')
+      .eq('user_id', userId)
+      .order('is_default', { ascending: false })
+    
+    if (error) {
+      console.error('Supabase error fetching user addresses:', error)
+      
+      // Handle common RLS/permissions issues  
+      if (error.code === '42501' || error.code === '42P01') {
+        console.log('Address table access issue, returning empty array')
+        return []
+      }
+      
+      throw error
+    }
+
+    console.log('Successfully fetched user addresses:', data?.length || 0, 'addresses')
+    return data || []
+  } catch (error) {
+    console.error('Exception in getUserAddresses:', error)
+    
+    // Return empty array for table/permission issues
+    if (error.message.includes('table') || error.message.includes('relation') || error.message.includes('permission')) {
+      console.log('Database access issue, returning empty addresses array')
+      return []
+    }
+    
+    return [] // Return empty array instead of throwing
+  }
 }
 
 export const createAddress = async (address) => {
@@ -164,20 +190,46 @@ export const createOrder = async (order) => {
 }
 
 export const getUserOrders = async (userId) => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      order_items (
+  try {
+    console.log('Fetching orders for user:', userId);
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
         *,
-        products (*)
-      )
-    `)
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-  
-  if (error) throw error
-  return data
+        order_items (
+          *,
+          products (*)
+        )
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    
+    if (error) {
+      console.error('Supabase error fetching user orders:', error)
+      
+      // Handle common RLS/permissions issues
+      if (error.code === '42501') {
+        console.log('RLS policy issue, returning empty orders array')
+        return []
+      }
+      
+      throw error
+    }
+
+    console.log('Successfully fetched user orders:', data?.length || 0, 'orders')
+    return data || []
+  } catch (error) {
+    console.error('Exception in getUserOrders:', error)
+    
+    // Return empty array for table/permission issues
+    if (error.message.includes('table') || error.message.includes('relation') || error.message.includes('permission')) {
+      console.log('Database access issue, returning empty orders array')
+      return []
+    }
+    
+    throw error
+  }
 }
 
 // Admin functions
@@ -282,6 +334,8 @@ export const getUserPoints = async (userId) => {
 
 export const getPointsTransactions = async (userId) => {
   try {
+    console.log('Fetching points transactions for user:', userId);
+    
     const { data, error } = await supabase
       .from('points_transactions')
       .select('*')
@@ -289,14 +343,29 @@ export const getPointsTransactions = async (userId) => {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching points transactions:', error)
+      console.error('Supabase error fetching points transactions:', error)
+      
+      // Handle common RLS/permissions issues
+      if (error.code === '42501' || error.code === '42P01') {
+        console.log('Points transactions table access issue, returning empty array')
+        return []
+      }
+      
       throw error
     }
 
+    console.log('Successfully fetched points transactions:', data?.length || 0, 'transactions')
     return data || []
   } catch (error) {
     console.error('Exception in getPointsTransactions:', error)
-    throw error
+    
+    // Return empty array for table/permission issues
+    if (error.message.includes('table') || error.message.includes('relation') || error.message.includes('permission')) {
+      console.log('Database access issue, returning empty transactions array')
+      return []
+    }
+    
+    return [] // Return empty array instead of throwing
   }
 }
 
@@ -613,6 +682,8 @@ export const getAllReviews = async () => {
 // Public: Get all approved reviews for the reviews page
 export const getAllApprovedReviews = async () => {
   try {
+    console.log('Fetching all approved reviews...');
+    
     const { data, error } = await supabase
       .from('product_reviews')
       .select('*')
@@ -620,13 +691,31 @@ export const getAllApprovedReviews = async () => {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching approved reviews:', error)
+      console.error('Supabase error fetching approved reviews:', error)
+      
+      // Check if table doesn't exist or access denied
+      if (error.code === '42P01') {
+        throw new Error('Reviews table not found. Please contact support.')
+      }
+      if (error.code === '42501') {
+        console.log('RLS policy blocking access, returning empty array for public access')
+        return []
+      }
+      
       throw error
     }
 
+    console.log('Successfully fetched approved reviews:', data?.length || 0, 'reviews')
     return data || []
   } catch (error) {
     console.error('Exception in getAllApprovedReviews:', error)
+    
+    // For now, return empty array instead of throwing to prevent page crashes
+    if (error.message.includes('table') || error.message.includes('relation')) {
+      console.log('Database table issue, returning empty reviews array')
+      return []
+    }
+    
     throw error
   }
 }

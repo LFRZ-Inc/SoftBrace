@@ -6,6 +6,7 @@ import './ReviewsPage.css';
 function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [submittingReview, setSubmittingReview] = useState(false);
@@ -25,10 +26,17 @@ function ReviewsPage() {
 
   const loadReviews = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      console.log('Loading reviews...');
+      
       const reviewsData = await getAllApprovedReviews();
-      setReviews(reviewsData);
+      console.log('Reviews loaded:', reviewsData);
+      
+      setReviews(reviewsData || []);
     } catch (error) {
       console.error('Error loading reviews:', error);
+      setError(`Failed to load reviews: ${error.message}`);
       setReviews([]); // Set empty array on error
     } finally {
       setLoading(false);
@@ -122,7 +130,26 @@ function ReviewsPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
         <div className="text-xl">Loading reviews...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="text-red-500 mb-4">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold mb-2">Error Loading Reviews</h2>
+          <p className="mb-4">{error}</p>
+          <button 
+            onClick={loadReviews}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
