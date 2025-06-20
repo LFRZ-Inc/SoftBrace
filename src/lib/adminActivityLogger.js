@@ -7,18 +7,17 @@ export const logAdminActivity = async (action, details = {}) => {
   try {
     const logEntry = {
       action_type: action,
-      details: details,
-      timestamp: new Date().toISOString(),
+      action_details: details,
       user_agent: navigator.userAgent,
       ip_address: null, // Will be populated by database trigger if needed
-      session_id: getAdminSessionId()
+      admin_email: 'luisdrod750@gmail.com' // Admin email for tracking
     }
 
     console.log('Admin Activity:', logEntry)
 
     // Insert into database
     const { data, error } = await supabase
-      .from('admin_activity_log')
+      .from('admin_activity_logs')
       .insert([logEntry])
 
     if (error) {
@@ -99,6 +98,32 @@ export const logAdminLogout = async () => {
   })
 }
 
+export const logReviewApproval = async (reviewId, reviewData) => {
+  return await logAdminActivity('REVIEW_APPROVED', {
+    review_id: reviewId,
+    user_name: reviewData.user_name,
+    rating: reviewData.rating,
+    product_id: reviewData.product_id
+  })
+}
+
+export const logReviewDeletion = async (reviewId, reviewData) => {
+  return await logAdminActivity('REVIEW_DELETED', {
+    review_id: reviewId,
+    user_name: reviewData.user_name,
+    rating: reviewData.rating,
+    product_id: reviewData.product_id,
+    review_text_preview: reviewData.review_text?.substring(0, 50) + '...'
+  })
+}
+
+export const logReviewSpotlight = async (reviewId, isSpotlight) => {
+  return await logAdminActivity('REVIEW_SPOTLIGHT', {
+    review_id: reviewId,
+    spotlight_status: isSpotlight ? 'enabled' : 'disabled'
+  })
+}
+
 // Helper functions
 const getBrowserInfo = () => {
   const ua = navigator.userAgent
@@ -131,7 +156,7 @@ const getSessionDuration = () => {
 export const getAdminActivitySummary = async (limit = 50) => {
   try {
     const { data, error } = await supabase
-      .from('admin_activity_log')
+      .from('admin_activity_logs')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(limit)
@@ -148,7 +173,7 @@ export const getAdminActivitySummary = async (limit = 50) => {
 export const getAdminActivityByDateRange = async (startDate, endDate) => {
   try {
     const { data, error } = await supabase
-      .from('admin_activity_log')
+      .from('admin_activity_logs')
       .select('*')
       .gte('created_at', startDate)
       .lte('created_at', endDate)
@@ -166,7 +191,7 @@ export const getAdminActivityByDateRange = async (startDate, endDate) => {
 export const getAdminActivityStats = async () => {
   try {
     const { data, error } = await supabase
-      .from('admin_activity_log')
+      .from('admin_activity_logs')
       .select('action_type, created_at')
       .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) // Last 30 days
 

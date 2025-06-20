@@ -23,6 +23,9 @@ import {
   logImageUpload, 
   logImageDelete, 
   logContentEdit,
+  logReviewApproval,
+  logReviewDeletion,
+  logReviewSpotlight,
   getAdminActivitySummary,
   getAdminActivityStats
 } from '../lib/adminActivityLogger'
@@ -141,6 +144,9 @@ const AdminPage = () => {
     if (loggedIn) {
       console.log('AdminPage: Loading admin data...')
       loadImages()
+      loadReviews()
+      loadSupportMessages()
+      loadActivityData()
       // Refresh session timestamp
       adminAuth.refreshSession()
     }
@@ -182,6 +188,8 @@ const AdminPage = () => {
       setLoginError('')
       setPassword('')
       loadImages()
+      loadReviews()
+      loadSupportMessages()
       loadActivityData()
       // Log the admin login
       logAdminLogin()
@@ -322,8 +330,13 @@ const AdminPage = () => {
 
   const handleApproveReview = async (reviewId) => {
     try {
+      const reviewData = reviews.find(r => r.id === reviewId)
       await approveReview(reviewId)
+      if (reviewData) {
+        logReviewApproval(reviewId, reviewData)
+      }
       await loadReviews() // Reload reviews
+      await loadActivityData() // Refresh activity log
       alert('Review approved successfully!')
     } catch (error) {
       console.error('Failed to approve review:', error)
@@ -334,8 +347,13 @@ const AdminPage = () => {
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm('Are you sure you want to delete this review?')) {
       try {
+        const reviewData = reviews.find(r => r.id === reviewId)
         await deleteReview(reviewId)
+        if (reviewData) {
+          logReviewDeletion(reviewId, reviewData)
+        }
         await loadReviews() // Reload reviews
+        await loadActivityData() // Refresh activity log
         alert('Review deleted successfully!')
       } catch (error) {
         console.error('Failed to delete review:', error)
@@ -440,8 +458,12 @@ const AdminPage = () => {
 
   const handleToggleSpotlight = async (reviewId, currentSpotlight) => {
     try {
-      await toggleReviewSpotlight(reviewId, !currentSpotlight)
+      const newSpotlightStatus = !currentSpotlight
+      await toggleReviewSpotlight(reviewId, newSpotlightStatus)
+      logReviewSpotlight(reviewId, newSpotlightStatus)
       loadReviews() // Refresh the list
+      loadActivityData() // Refresh activity log
+      alert(`Review ${newSpotlightStatus ? 'added to' : 'removed from'} spotlight!`)
     } catch (error) {
       console.error('Error toggling spotlight:', error)
       alert('Failed to toggle spotlight status')
