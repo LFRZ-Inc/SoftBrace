@@ -610,6 +610,27 @@ export const getAllReviews = async () => {
   }
 }
 
+// Public: Get all approved reviews for the reviews page
+export const getAllApprovedReviews = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('product_reviews')
+      .select('*')
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching approved reviews:', error)
+      throw error
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Exception in getAllApprovedReviews:', error)
+    throw error
+  }
+}
+
 // Admin: Approve a review
 export const approveReview = async (reviewId) => {
   try {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllReviews, submitProductReview } from '../lib/supabase';
+import { getAllApprovedReviews, submitProductReview } from '../lib/supabase';
 import './ReviewsPage.css';
 
 function ReviewsPage() {
@@ -25,12 +25,11 @@ function ReviewsPage() {
 
   const loadReviews = async () => {
     try {
-      const reviewsData = await getAllReviews();
-      // Only show approved reviews on public page
-      const approvedReviews = reviewsData.filter(review => review.is_approved);
-      setReviews(approvedReviews);
+      const reviewsData = await getAllApprovedReviews();
+      setReviews(reviewsData);
     } catch (error) {
       console.error('Error loading reviews:', error);
+      setReviews([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
