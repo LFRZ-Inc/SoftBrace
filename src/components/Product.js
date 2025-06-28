@@ -5,10 +5,10 @@ import useTranslation from '../hooks/useTranslation';
 import { shouldShowProduct, shouldShowAllProducts, getReleaseDate, getDaysUntilRelease, isReleaseDay } from '../utils/releaseSchedule';
 // Import images
 import singleStripImage from '../assets/single-strip.png';
-import smallPackImage from '../assets/5-pack.png';
-import mediumPackImage from '../assets/15-pack.png';
+import smallPackImage from '../assets/5-pack.jpg';
+import mediumPackImage from '../assets/15-pack.jpg';
 import largePackImage from '../assets/31-pack.png';
-import softWaxImage from '../assets/SoftWax.png';
+import softWaxImage from '../assets/SoftWax.jpg';
 
 function Product() {
   const { t } = useTranslation();

@@ -7,10 +7,10 @@ import ProductSchema from '../components/ProductSchema';
 import ProductReviews from '../components/ProductReviews';
 import { shouldShowProduct, isReleaseDay, getReleaseDate } from '../utils/releaseSchedule';
 // Import images directly
-import smallPackImage from '../assets/5-pack.png';
-import mediumPackImage from '../assets/15-pack.png';
+import smallPackImage from '../assets/5-pack.jpg';
+import mediumPackImage from '../assets/15-pack.jpg';
 import largePackImage from '../assets/31-pack.png';
-import softWaxImage from '../assets/SoftWax.png'; // New SoftWax image
+import softWaxImage from '../assets/SoftWax.jpg'; // New SoftWax image
 
 function ProductPage() {
   const { id } = useParams();
