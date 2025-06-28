@@ -313,7 +313,7 @@ export const getUserPoints = async (userId) => {
     // Calculate available points by summing all non-expired transactions
     const { data, error } = await supabase
       .from('points_transactions')
-      .select('points')
+      .select('points_amount')
       .eq('user_id', userId)
       .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
 
@@ -323,7 +323,7 @@ export const getUserPoints = async (userId) => {
     }
 
     // Sum up all points (positive for earned, negative for redeemed)
-    const totalPoints = data?.reduce((sum, transaction) => sum + transaction.points, 0) || 0
+    const totalPoints = data?.reduce((sum, transaction) => sum + transaction.points_amount, 0) || 0
     return Math.max(0, totalPoints) // Ensure points never go negative
   } catch (error) {
     console.error('Exception in getUserPoints:', error)
@@ -382,8 +382,8 @@ export const redeemPoints = async (userId, pointsToRedeem, description = 'Points
       .from('points_transactions')
       .insert({
         user_id: userId,
-        type: 'redeemed',
-        points: -pointsToRedeem,
+        transaction_type: 'redeemed',
+        points_amount: -pointsToRedeem,
         description: description
       })
       .select()
@@ -414,8 +414,8 @@ export const awardPoints = async (userId, pointsToAward, orderId = null, descrip
       .insert({
         user_id: userId,
         order_id: orderId,
-        type: 'earned',
-        points: pointsToAward,
+        transaction_type: 'earned',
+        points_amount: pointsToAward,
         description: description,
         expires_at: expiryDate.toISOString()
       })
