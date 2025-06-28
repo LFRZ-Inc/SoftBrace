@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 function CheckoutSuccessPage() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const location = useLocation();
   const [sessionId, setSessionId] = useState(null);
-  const [orderNumber, setOrderNumber] = useState(null);
+  const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
     // Get the session_id from the URL parameters
@@ -15,11 +20,63 @@ function CheckoutSuccessPage() {
     
     if (session) {
       setSessionId(session);
-      // Generate a simple order number based on the session and current time
-      // In a real app, you would get this from your backend
-      setOrderNumber(`SBS-${Math.floor(Math.random() * 10000)}-${new Date().getFullYear()}`);
+      fetchOrderData(session);
+    } else {
+      setError('No session ID found');
+      setLoading(false);
     }
   }, [location]);
+
+  const fetchOrderData = async (sessionId) => {
+    try {
+      setLoading(true);
+      
+      // Try to fetch order data from Supabase using the Stripe session ID
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          order_items (
+            *,
+            product_name
+          )
+        `)
+        .eq('stripe_session_id', sessionId)
+        .single();
+
+      if (orderError) {
+        console.log('Order not found in database yet, showing generic success message');
+        // If order not found, show generic success message (webhook might still be processing)
+        setOrderData(null);
+      } else {
+        console.log('Order found:', order);
+        setOrderData(order);
+      }
+    } catch (err) {
+      console.error('Error fetching order data:', err);
+      setOrderData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-md mx-auto">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading order details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get current date for display
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
   return (
     <div className="container mx-auto px-4 py-16 text-center">
@@ -31,15 +88,44 @@ function CheckoutSuccessPage() {
           <>
             <p className="mb-6">{t('checkout.paymentSuccessMessage')}</p>
             
-            {orderNumber && (
+            {orderData ? (
               <div className="bg-gray-50 dark:bg-gray-700 rounded p-4 mb-6">
                 <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">{t('checkout.orderNumber')}</p>
-                <p className="font-bold text-lg">{orderNumber}</p>
+                <p className="font-bold text-lg">{orderData.order_number}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Order Date: {new Date(orderData.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+                {orderData.points_earned > 0 && (
+                  <div className="mt-3 p-2 bg-purple-100 dark:bg-purple-900/20 rounded">
+                    <p className="text-purple-800 dark:text-purple-200 font-medium text-sm">
+                      🎉 You earned {orderData.points_earned} points!
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-gray-50 dark:bg-gray-700 rounded p-4 mb-6">
+                <p className="text-sm text-gray-800 dark:text-gray-100 font-medium">
+                  🎉 Payment Successful!
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Purchase Date: {currentDate}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Your order has been received and is being processed. Order details will be available in your dashboard shortly.
+                </p>
               </div>
             )}
             
             <p className="text-sm text-gray-800 dark:text-gray-100 mb-6 font-medium">
-              {t('checkout.emailConfirmation')}
+              {user ? 
+                `A confirmation email will be sent to ${user.email}` : 
+                'A confirmation email will be sent to your provided email address'
+              }
             </p>
           </>
         )}
@@ -62,6 +148,15 @@ function CheckoutSuccessPage() {
           >
             {t('checkout.backToHome')}
           </Link>
+          
+          {user && (
+            <Link
+              to="/dashboard"
+              className="text-primary hover:text-primary-light underline"
+            >
+              View Order in Dashboard
+            </Link>
+          )}
           
           <Link
             to="/contact"

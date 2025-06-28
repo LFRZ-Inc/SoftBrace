@@ -133,12 +133,12 @@ export const getUserAddresses = async (userId) => {
   try {
     console.log('Fetching addresses for user:', userId);
     
-    const { data, error } = await supabase
-      .from('addresses')
-      .select('*')
-      .eq('user_id', userId)
-      .order('is_default', { ascending: false })
-    
+  const { data, error } = await supabase
+    .from('addresses')
+    .select('*')
+    .eq('user_id', userId)
+    .order('is_default', { ascending: false })
+  
     if (error) {
       console.error('Supabase error fetching user addresses:', error)
       
@@ -193,18 +193,18 @@ export const getUserOrders = async (userId) => {
   try {
     console.log('Fetching orders for user:', userId);
     
-    const { data, error } = await supabase
-      .from('orders')
-      .select(`
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
         *,
-        order_items (
-          *,
-          products (*)
-        )
-      `)
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-    
+        products (*)
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  
     if (error) {
       console.error('Supabase error fetching user orders:', error)
       

@@ -40,7 +40,7 @@ export function StripeProvider({ children }) {
         
         return {
           price: product.stripe_price_id, // Use the actual Stripe price ID
-          quantity: item.quantity,
+        quantity: item.quantity,
         };
       });
 

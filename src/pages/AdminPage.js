@@ -7,7 +7,7 @@ import {
   getPageContent,
   updatePageContent
 } from '../lib/adminContent'
-import {
+import { 
   getAllReviews,
   approveReview,
   deleteReview,
@@ -1214,4 +1214,4 @@ const AdminPage = () => {
   }
 }
 
-export default AdminPage
+export default AdminPage 
