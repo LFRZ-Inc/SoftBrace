@@ -6,7 +6,7 @@
   "proxy": "http://localhost:4000",
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",
-    "@stripe/stripe-js": "^7.3.0",
+    "@stripe/stripe-js": "^7.4.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.50.0",
