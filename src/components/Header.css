@@ -261,6 +261,13 @@
   background: var(--color-text);
 }
 
+.sign-out-btn:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
 @media (max-width: 768px) {
   /* ... existing mobile styles ... */
   

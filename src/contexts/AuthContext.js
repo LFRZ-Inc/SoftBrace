@@ -252,6 +252,36 @@ export const AuthProvider = ({ children }) => {
       console.log('AuthContext: Starting sign out process...')
       setLoading(true)
       
+      // Clear state immediately
+      setUser(null)
+      setProfile(null)
+      
+      // Clear all localStorage items that might contain Supabase auth data
+      const keysToRemove = []
+      
+      // Scan through all localStorage keys to find Supabase auth items
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && (
+          key.includes('supabase') || 
+          key.includes('auth-token') ||
+          key.includes('sb-') ||
+          key.includes('gotrue')
+        )) {
+          keysToRemove.push(key)
+        }
+      }
+      
+      // Remove all found Supabase auth keys
+      keysToRemove.forEach(key => {
+        try {
+          localStorage.removeItem(key)
+          console.log(`Cleared localStorage key: ${key}`)
+        } catch (error) {
+          console.warn(`Could not clear localStorage key ${key}:`, error)
+        }
+      })
+      
       const { error } = await supabase.auth.signOut()
       
       if (error) {
@@ -259,10 +289,13 @@ export const AuthProvider = ({ children }) => {
         return { error }
       }
       
-      console.log('AuthContext: Sign out successful, clearing state...')
-      // Clear state immediately
-      setUser(null)
-      setProfile(null)
+      console.log('AuthContext: Sign out successful, state cleared')
+      
+      // Navigate to home page and then reload to ensure complete cleanup
+      window.location.href = '/';
+      setTimeout(() => {
+        window.location.reload()
+      }, 50)
       
       return { error: null }
     } catch (err) {

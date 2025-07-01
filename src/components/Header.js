@@ -14,6 +14,7 @@ function Header() {
   const isHomePage = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -21,19 +22,25 @@ function Header() {
 
   const handleSignOut = async () => {
     console.log('Header: Sign out button clicked')
+    setSigningOut(true);
     try {
+      // Show immediate feedback
+      setMenuOpen(false);
+      
       const result = await signOut();
       if (result.error) {
         console.error('Header: Sign out failed:', result.error)
         alert('Sign out failed. Please try again.')
+        setSigningOut(false);
       } else {
         console.log('Header: Sign out successful')
+        // Don't reset signingOut state since page will reload
       }
     } catch (error) {
       console.error('Header: Sign out exception:', error)
       alert('Sign out failed. Please try again.')
+      setSigningOut(false);
     }
-    setMenuOpen(false);
   };
 
   // Close menu when route changes
@@ -113,8 +120,9 @@ function Header() {
                           <button 
                             className="sign-out-btn"
                             onClick={handleSignOut}
+                            disabled={signingOut}
                           >
-                            Sign Out
+                            {signingOut ? 'Signing Out...' : 'Sign Out'}
                           </button>
                         </div>
                       </div>
