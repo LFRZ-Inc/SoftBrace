@@ -59,7 +59,21 @@ export const AuthProvider = ({ children }) => {
           if (session?.user) {
             console.log('AuthContext: User session found, loading profile')
             setUser(session.user)
-            await loadUserProfile(session.user.id)
+            
+            // Load profile with timeout protection
+            try {
+              const profileTimeout = setTimeout(() => {
+                console.warn('Profile loading timeout, continuing without profile')
+                setProfile(null)
+                setLoading(false)
+              }, 10000) // 10 second timeout for profile loading
+              
+              await loadUserProfile(session.user.id)
+              clearTimeout(profileTimeout)
+            } catch (profileError) {
+              console.error('Profile loading failed, continuing without profile:', profileError)
+              setProfile(null)
+            }
           } else {
             console.log('AuthContext: No user session, clearing state')
             setUser(null)
@@ -225,22 +239,44 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true)
       
-      console.log('Attempting to sign in:', email)
+      console.log('AuthContext: Attempting to sign in:', email)
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Sign in timeout - please try again'))
+        }, 25000) // 25 second timeout
       })
       
+      // Race between sign in and timeout
+      const { data, error } = await Promise.race([
+        supabase.auth.signInWithPassword({
+          email,
+          password
+        }),
+        timeoutPromise
+      ])
+      
       if (error) {
-        console.error('Sign in error:', error)
+        console.error('AuthContext: Sign in error:', error)
         return { data: null, error }
       }
       
-      console.log('Sign in successful:', data.user?.email)
+      console.log('AuthContext: Sign in successful:', data.user?.email)
+      
+      // Don't wait for profile loading here - let the auth state change handler deal with it
       return { data, error: null }
     } catch (err) {
-      console.error('Sign in exception:', err)
+      console.error('AuthContext: Sign in exception:', err)
+      
+      // Convert timeout errors to user-friendly messages
+      if (err.message?.includes('timeout')) {
+        return { 
+          data: null, 
+          error: { message: 'Connection timeout. Please check your internet connection and try again.' }
+        }
+      }
+      
       return { data: null, error: err }
     } finally {
       setLoading(false)

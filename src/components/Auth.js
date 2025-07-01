@@ -20,26 +20,51 @@ const Auth = ({ isOpen, onClose }) => {
     setError('')
     setMessage('')
 
+    // Set a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      console.warn('Authentication timeout reached')
+      setLoading(false)
+      setError('Sign in is taking longer than expected. Please try again.')
+    }, 30000) // 30 second timeout
+
     try {
+      console.log('Starting authentication process for:', email)
+      
       if (isLogin) {
+        console.log('Attempting sign in...')
         const { error } = await signIn(email, password)
+        
         if (error) {
+          console.error('Sign in error:', error)
+          clearTimeout(timeoutId)
+          
           if (error.message.includes('Invalid login credentials')) {
             setError('Invalid email or password. Please check your credentials and try again.')
           } else if (error.message.includes('Email not confirmed')) {
             setError('Please check your email and click the confirmation link before signing in.')
+          } else if (error.message.includes('timeout') || error.message.includes('network')) {
+            setError('Connection timeout. Please check your internet connection and try again.')
           } else {
-            setError(error.message)
+            setError(error.message || 'Sign in failed. Please try again.')
           }
         } else {
+          console.log('Sign in successful!')
+          clearTimeout(timeoutId)
           setMessage('Successfully signed in!')
+          
+          // Give a moment for the auth state to update
           setTimeout(() => {
             onClose()
           }, 1000)
         }
       } else {
+        console.log('Attempting sign up...')
         const { data, error } = await signUp(email, password, { full_name: fullName })
+        
         if (error) {
+          console.error('Sign up error:', error)
+          clearTimeout(timeoutId)
+          
           if (error.message.includes('User already registered')) {
             setError('An account with this email already exists. Try signing in instead.')
           } else if (error.message.includes('Password should be at least')) {
@@ -47,9 +72,12 @@ const Auth = ({ isOpen, onClose }) => {
           } else if (error.message.includes('Unable to validate email address')) {
             setError('Please enter a valid email address.')
           } else {
-            setError(error.message)
+            setError(error.message || 'Sign up failed. Please try again.')
           }
         } else if (data.user) {
+          console.log('Sign up successful!')
+          clearTimeout(timeoutId)
+          
           if (data.user.email_confirmed_at) {
             setMessage('Account created successfully! You are now signed in.')
             setTimeout(() => {
@@ -61,10 +89,14 @@ const Auth = ({ isOpen, onClose }) => {
         }
       }
     } catch (err) {
-      console.error('Auth error:', err)
-      setError('An unexpected error occurred. Please try again.')
+      console.error('Auth exception:', err)
+      clearTimeout(timeoutId)
+      setError('An unexpected error occurred. Please check your connection and try again.')
     } finally {
-      setLoading(false)
+      // Always ensure loading is cleared
+      setTimeout(() => {
+        setLoading(false)
+      }, 100) // Small delay to ensure auth state has time to update
     }
   }
 
