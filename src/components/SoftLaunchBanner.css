@@ -70,6 +70,15 @@
   animation: shipping-glow 3s ease-in-out infinite;
 }
 
+.badge-social {
+  background: linear-gradient(135deg, #E4405F 0%, #833AB4 50%, #000000 100%);
+  color: white;
+  font-weight: 600;
+  border: 1px solid white;
+  box-shadow: 0 0 10px rgba(132, 58, 180, 0.5);
+  animation: social-pulse 3s ease-in-out infinite;
+}
+
 .badge-product {
   background-color: #ff2222;
   color: white;
@@ -198,6 +207,17 @@
   50% { 
     box-shadow: 0 0 15px rgba(255, 221, 0, 0.8);
     transform: scale(1.03);
+  }
+}
+
+@keyframes social-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(132, 58, 180, 0.5);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 15px rgba(132, 58, 180, 0.8);
+    transform: scale(1.05);
   }
 }
 

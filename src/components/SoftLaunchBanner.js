@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SoftLaunchBanner.css';
 import useTranslation from '../hooks/useTranslation';
-import { shouldShowAllProducts, getDaysUntilRelease, getReleaseDate } from '../utils/releaseSchedule';
+import { shouldShowAllProducts, getReleaseDate } from '../utils/releaseSchedule';
 
 function SoftLaunchBanner() {
   const { t } = useTranslation();
@@ -39,8 +39,8 @@ function SoftLaunchBanner() {
         <div className="badge badge-soft-launch badge-full-launch">🎉 FULL LAUNCH</div>
         <div className="banner-text">All SoftBrace Products Now Available! Complete Inventory Ready to Ship</div>
         <div className="badge badge-shipping">Free Shipping $5.99+</div>
-        <div className="badge badge-product">
-          <span className="new-tag">NEW</span>31-Pack & 100-Pack Available!
+        <div className="badge badge-social">
+          📱 Follow Us: @softbracestrips on Instagram & TikTok
         </div>
       </div>
     );
@@ -56,8 +56,8 @@ function SoftLaunchBanner() {
           - Complete Inventory Available {getReleaseDate()}!
         </div>
         <div className="badge badge-shipping">Free Shipping $5.99+</div>
-        <div className="badge badge-product">
-          <span className="new-tag">NEW</span>SoftWax Available Now!
+        <div className="badge badge-social">
+          📱 Follow Us: @softbracestrips on Instagram & TikTok
         </div>
       </div>
     );
@@ -69,8 +69,8 @@ function SoftLaunchBanner() {
       <div className="badge badge-soft-launch">{t('banner.softLaunch')}</div>
       <div className="banner-text">{t('banner.message')}</div>
       <div className="badge badge-shipping">{t('banner.freeShipping')}</div>
-      <div className="badge badge-product">
-        <span className="new-tag">NEW</span>{t('banner.waxAvailable')}
+      <div className="badge badge-social">
+        📱 Follow Us: @softbracestrips on Instagram & TikTok
       </div>
     </div>
   );
