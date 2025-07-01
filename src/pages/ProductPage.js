@@ -26,126 +26,124 @@ function ProductPage() {
   // In a real application, these would come from an API
   useEffect(() => {
     setLoading(true);
-    // Simulate API fetch
-    setTimeout(() => {
-      const productData = [
-        {
-          id: 1,
-          name: 'SoftBrace 5-Pair Pack',
-          price: 4.99,
-          image: smallPackImage,
-          category: 'small',
-          description: t('product.packOptions.small.description'),
-          longDescription: t('product.packOptions.small.longDescription'),
-          features: [
-            t('product.features.feature1'),
-            t('product.features.feature2'),
-            t('product.features.feature3')
-          ],
-          quantity: '5 Pairs (10 strips)',
-          stock: 15,
-          soldOut: false
-        },
-        {
-          id: 2,
-          name: 'SoftBrace 15-Pair Pack',
-          price: 10.99,
-          image: mediumPackImage,
-          category: 'medium',
-          description: t('product.packOptions.medium.description'),
-          longDescription: t('product.packOptions.medium.longDescription'),
-          features: [
-            t('product.features.feature1'),
-            t('product.features.feature2'),
-            t('product.features.feature3')
-          ],
-          quantity: '15 Pairs (30 strips)',
-          stock: 10,
-          soldOut: false
-        },
-        {
-          id: 3,
-          name: 'SoftBrace 31-Pair Pack',
-          price: 16.99,
-          image: largePackImage,
-          category: 'large',
-          description: t('product.packOptions.large.description'),
-          longDescription: t('product.packOptions.large.longDescription'),
-          features: [
-            t('product.features.feature1'),
-            t('product.features.feature2'),
-            t('product.features.feature3')
-          ],
-          quantity: '31 Pairs (62 strips)',
-          stock: 5,
-          soldOut: false,
-          hidden: !shouldShowProduct('3'),
-          comingSoon: !shouldShowProduct('3'),
-          birthdayRelease: isReleaseDay()
-        },
-        {
-          id: 4,
-          name: t('product.packOptions.wax.title'),
-          price: 3.99,
-          image: softWaxImage, // Using the new SoftWax image
-          category: 'wax',
-          description: t('product.packOptions.wax.description'),
-          longDescription: t('product.packOptions.wax.longDescription'),
-          features: [
-            'Medical-grade orthodontic wax for braces',
-            'Easy to apply and remove',
-            'Discreet clear color to blend with braces',
-            'Compact container for on-the-go use'
-          ],
-          quantity: t('product.packOptions.wax.quantity'),
-          stock: 25,
-          soldOut: false
-        },
-        {
-          id: 5,
-          name: 'SoftBrace 100-Pair Bulk Pack',
-          price: 49.99,
-          image: largePackImage, // Reusing the large pack image
-          category: 'bulk',
-          description: 'Professional bulk pack for clinics or wholesale',
-          longDescription: 'Our professional bulk pack contains 100 pairs (200 strips) of SoftBrace strips, perfect for orthodontic clinics or wholesale orders. The ideal solution for practices that want to offer superior comfort to their patients.',
-          features: [
-            t('product.features.feature1'),
-            t('product.features.feature2'),
-            t('product.features.feature3'),
-            'Perfect for orthodontic clinics and professionals'
-          ],
-          quantity: '100 Pairs (200 strips)',
-          stock: 3,
-          soldOut: false,
-          hidden: !shouldShowProduct('5'),
-          comingSoon: !shouldShowProduct('5'),
-          birthdayRelease: isReleaseDay()
-        },
-        {
-          id: 6,
-          name: 'SoftWax + 5-Pair SoftBrace Strips Bundle',
-          price: 8.99,
-          image: softWaxImage,
-          category: 'bundle',
-          description: 'Get the best of both worlds: 1 SoftWax case and a 5-pair (10 strips) SoftBrace starter pack. Perfect for new users or as a gift!',
-          longDescription: 'Bundle: SoftWax + 5-pair SoftBrace Strips. Save and try both comfort solutions! Includes 1 wax case and 5 pairs (10 strips) of SoftBrace.',
-          features: [
-            'Includes both SoftWax and SoftBrace strips',
-            'Best starter combo for new users',
-            'Save compared to buying separately',
-            'Great as a gift or for travel'
-          ],
-          quantity: '1 wax case + 5 pairs (10 strips)',
-          stock: 20,
-          soldOut: false
-        }
-      ];
-      
-      const foundProduct = productData.find(p => p.id === parseInt(id));
-      setProduct(foundProduct);
-      setLoading(false);
-    }, 500);
+    
+    const productData = [
+      {
+        id: 1,
+        name: 'SoftBrace 5-Pair Pack',
+        price: 4.99,
+        image: smallPackImage,
+        category: 'small',
+        description: t('product.packOptions.small.description'),
+        longDescription: t('product.packOptions.small.longDescription'),
+        features: [
+          t('product.features.feature1'),
+          t('product.features.feature2'),
+          t('product.features.feature3')
+        ],
+        quantity: '5 Pairs (10 strips)',
+        stock: 15,
+        soldOut: false
+      },
+      {
+        id: 2,
+        name: 'SoftBrace 15-Pair Pack',
+        price: 10.99,
+        image: mediumPackImage,
+        category: 'medium',
+        description: t('product.packOptions.medium.description'),
+        longDescription: t('product.packOptions.medium.longDescription'),
+        features: [
+          t('product.features.feature1'),
+          t('product.features.feature2'),
+          t('product.features.feature3')
+        ],
+        quantity: '15 Pairs (30 strips)',
+        stock: 10,
+        soldOut: false
+      },
+      {
+        id: 3,
+        name: 'SoftBrace 31-Pair Pack',
+        price: 16.99,
+        image: largePackImage,
+        category: 'large',
+        description: t('product.packOptions.large.description'),
+        longDescription: t('product.packOptions.large.longDescription'),
+        features: [
+          t('product.features.feature1'),
+          t('product.features.feature2'),
+          t('product.features.feature3')
+        ],
+        quantity: '31 Pairs (62 strips)',
+        stock: 5,
+        soldOut: false,
+        hidden: !shouldShowProduct('3'),
+        comingSoon: !shouldShowProduct('3'),
+        birthdayRelease: isReleaseDay()
+      },
+      {
+        id: 4,
+        name: t('product.packOptions.wax.title'),
+        price: 3.99,
+        image: softWaxImage, // Using the new SoftWax image
+        category: 'wax',
+        description: t('product.packOptions.wax.description'),
+        longDescription: t('product.packOptions.wax.longDescription'),
+        features: [
+          'Medical-grade orthodontic wax for braces',
+          'Easy to apply and remove',
+          'Discreet clear color to blend with braces',
+          'Compact container for on-the-go use'
+        ],
+        quantity: t('product.packOptions.wax.quantity'),
+        stock: 25,
+        soldOut: false
+      },
+      {
+        id: 5,
+        name: 'SoftBrace 100-Pair Bulk Pack',
+        price: 49.99,
+        image: largePackImage, // Reusing the large pack image
+        category: 'bulk',
+        description: 'Professional bulk pack for clinics or wholesale',
+        longDescription: 'Our professional bulk pack contains 100 pairs (200 strips) of SoftBrace strips, perfect for orthodontic clinics or wholesale orders. The ideal solution for practices that want to offer superior comfort to their patients.',
+        features: [
+          t('product.features.feature1'),
+          t('product.features.feature2'),
+          t('product.features.feature3'),
+          'Perfect for orthodontic clinics and professionals'
+        ],
+        quantity: '100 Pairs (200 strips)',
+        stock: 3,
+        soldOut: false,
+        hidden: !shouldShowProduct('5'),
+        comingSoon: !shouldShowProduct('5'),
+        birthdayRelease: isReleaseDay()
+      },
+      {
+        id: 6,
+        name: 'SoftWax + 5-Pair SoftBrace Strips Bundle',
+        price: 8.99,
+        image: softWaxImage,
+        category: 'bundle',
+        description: 'Get the best of both worlds: 1 SoftWax case and a 5-pair (10 strips) SoftBrace starter pack. Perfect for new users or as a gift!',
+        longDescription: 'Bundle: SoftWax + 5-pair SoftBrace Strips. Save and try both comfort solutions! Includes 1 wax case and 5 pairs (10 strips) of SoftBrace.',
+        features: [
+          'Includes both SoftWax and SoftBrace strips',
+          'Best starter combo for new users',
+          'Save compared to buying separately',
+          'Great as a gift or for travel'
+        ],
+        quantity: '1 wax case + 5 pairs (10 strips)',
+        stock: 20,
+        soldOut: false
+      }
+    ];
+    
+    const foundProduct = productData.find(p => p.id === parseInt(id));
+    setProduct(foundProduct);
+    setLoading(false);
   }, [id, t]);
   
   const handleAddToCart = () => {
