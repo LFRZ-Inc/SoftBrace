@@ -22,6 +22,21 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 export function StripeProvider({ children }) {
   const { user, profile } = useAuth();
 
+  // Test function to check if API is reachable
+  const testApiConnection = async () => {
+    try {
+      console.log('Testing API connection...');
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'OPTIONS'
+      });
+      console.log('API test response status:', response.status);
+      return response.ok;
+    } catch (error) {
+      console.error('API test failed:', error);
+      return false;
+    }
+  };
+
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items, checkoutOptions = {}) => {
     try {
@@ -33,14 +48,35 @@ export function StripeProvider({ children }) {
       console.log('Redirecting to Stripe checkout for items:', items);
       console.log('Checkout options:', checkoutOptions);
       
+      // Test API connection first
+      const apiReachable = await testApiConnection();
+      if (!apiReachable) {
+        throw new Error('Unable to connect to checkout API. Please check your internet connection and try again.');
+      }
+      console.log('API connection test passed');
+      
       // Get products from database to get Stripe price IDs
       const products = await getProducts();
       console.log('Available products with Stripe price IDs:', products);
+      
+      // Fallback product mapping if database is not configured
+      const fallbackProducts = [
+        { id: 1, name: 'SoftBrace 5-Pair Pack', stripe_price_id: 'price_1QcYULBumkBEKdUYPt7EtE3Z' },
+        { id: 2, name: 'SoftBrace 15-Pair Pack', stripe_price_id: 'price_1QcYUmBumkBEKdUYd6N7Fmvf' },
+        { id: 3, name: 'SoftBrace 31-Pair Pack', stripe_price_id: 'price_1QcYVKBumkBEKdUYzZGrWpEo' },
+        { id: 4, name: 'SoftWax', stripe_price_id: 'price_1QcYVjBumkBEKdUYQqLkGJRZ' },
+        { id: 5, name: 'SoftBrace 100-Pair Bulk Pack', stripe_price_id: 'price_1QcYWCBumkBEKdUYnxXZyxGV' },
+        { id: 6, name: 'SoftWax + 5-Pair SoftBrace Strips Bundle', stripe_price_id: 'price_1QcYWjBumkBEKdUYFhqTSPYt' }
+      ];
+      
+      // Use database products if available, otherwise fallback
+      const productData = products && products.length > 0 ? products : fallbackProducts;
+      console.log('Using product data:', productData);
 
       // Format line items using actual Stripe price IDs instead of dynamic prices
       const line_items = items.map(item => {
         // Find the corresponding product in the database
-        const product = products.find(p => p.id === item.id || p.name === item.name);
+        const product = productData.find(p => p.id === item.id || p.name === item.name);
         
         if (!product || !product.stripe_price_id) {
           throw new Error(`Product "${item.name}" does not have a configured Stripe price ID. Please configure Stripe products first.`);
@@ -161,6 +197,7 @@ export function StripeProvider({ children }) {
 
   const value = {
     redirectToCheckout,
+    testApiConnection,
     isUserLoggedIn: !!user,
     userEmail: user?.email || profile?.email
   };
