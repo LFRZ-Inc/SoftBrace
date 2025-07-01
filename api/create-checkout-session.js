@@ -184,6 +184,8 @@ module.exports = async (req, res) => {
       mode: 'payment',
       success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/cart`,
+      // Set session expiration (24 hours from creation)
+      expires_at: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours
       // Enable automatic tax calculation
       automatic_tax: { enabled: true },
       // Collect shipping address

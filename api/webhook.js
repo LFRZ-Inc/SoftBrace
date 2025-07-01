@@ -65,6 +65,23 @@ module.exports = async (req, res) => {
   // Handle the event
   try {
     switch (event.type) {
+      case 'checkout.session.expired':
+        const expiredSession = event.data.object;
+        console.log('Processing expired checkout session:', expiredSession.id);
+        
+        // Log the expiration for monitoring
+        console.log('Session expired details:', {
+          session_id: expiredSession.id,
+          customer_email: expiredSession.customer_email,
+          amount_total: expiredSession.amount_total,
+          expires_at: new Date(expiredSession.expires_at * 1000).toISOString(),
+          metadata: expiredSession.metadata
+        });
+        
+        // Optionally: Clean up any pending cart state or send abandonment email
+        // For now, just log it for monitoring cart abandonment rates
+        break;
+
       case 'checkout.session.completed':
         const session = event.data.object;
         console.log('Processing completed checkout session:', session.id);
