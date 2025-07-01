@@ -125,8 +125,16 @@ function CheckoutPage() {
   
   const handleCheckout = async () => {
     try {
+      console.log('CheckoutPage: Starting checkout process...')
       setIsProcessing(true);
       setError('');
+      
+      // Validate we have items
+      if (!items || items.length === 0) {
+        throw new Error('No items in cart');
+      }
+      
+      console.log('CheckoutPage: Cart items:', items);
       
       // Prepare items for checkout
       const lineItems = items.map(item => ({
@@ -136,6 +144,8 @@ function CheckoutPage() {
         quantity: item.quantity
       }));
       
+      console.log('CheckoutPage: Prepared line items:', lineItems);
+      
       // Prepare checkout options with points and discount data
       const checkoutOptions = {
         pointsUsed: usePointsRedemption ? 50 : 0,
@@ -143,19 +153,27 @@ function CheckoutPage() {
         useAccountDiscount: showAccountDiscount && !usePointsRedemption
       };
       
+      console.log('CheckoutPage: Checkout options:', checkoutOptions);
+      
       // Call the redirectToCheckout function from our Stripe context
+      console.log('CheckoutPage: Calling redirectToCheckout...');
       const result = await redirectToCheckout(lineItems, checkoutOptions);
+      
+      console.log('CheckoutPage: redirectToCheckout result:', result);
       
       if (result.success) {
         // Redirect to Stripe will happen automatically
         // The cart will be cleared after successful payment via webhook
-        console.log('Checkout session created successfully:', result);
+        console.log('CheckoutPage: Checkout session created successfully, redirecting to Stripe...');
       } else {
+        console.error('CheckoutPage: Checkout failed:', result);
         setError(result.message || t('checkout.errors.paymentFailed'));
       }
     } catch (err) {
+      console.error('CheckoutPage: Checkout exception:', err);
       setError(err.message || t('checkout.errors.paymentFailed'));
     } finally {
+      console.log('CheckoutPage: Setting isProcessing to false');
       setIsProcessing(false);
     }
   };
@@ -439,6 +457,15 @@ function CheckoutPage() {
           </div>
           
           <div className="text-center mt-6">
+            {/* Stripe Pricing Disclaimer */}
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg text-sm">
+              <p className="font-medium mb-1">💡 <strong>Important:</strong></p>
+              <p>• Final pricing and shipping will be calculated in Stripe checkout</p>
+              <p>• You can select your preferred shipping option during checkout</p>
+              <p>• All discounts and taxes will be automatically applied</p>
+              <p>• Secure payment processing powered by Stripe</p>
+            </div>
+            
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               {t('checkout.stripeMessage')}
             </p>

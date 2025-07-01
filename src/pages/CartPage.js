@@ -194,11 +194,19 @@ function CartPage() {
                     </div>
                   </div>
                   
+                  {/* Pricing Disclaimer */}
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-lg text-sm">
+                    <p className="font-medium mb-1">💡 <strong>Important:</strong></p>
+                    <p>• Final pricing and shipping will be calculated in Stripe checkout</p>
+                    <p>• You can select your preferred shipping option during checkout</p>
+                    <p>• All discounts will be automatically applied</p>
+                  </div>
+                  
                   <Link
                     to="/checkout"
                     className="block w-full bg-primary hover:bg-primary-light text-white text-center py-3 px-6 rounded-lg font-bold mt-6"
                   >
-                    {isUserLoggedIn ? 'Proceed to Checkout' : 'Continue as Guest'}
+                    {t('cart.proceedToCheckout')}
                   </Link>
                   
                   {!isUserLoggedIn && (

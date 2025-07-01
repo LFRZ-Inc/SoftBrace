@@ -11,6 +11,11 @@ const stripePromise = loadStripe(
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 );
 
+// Validate Stripe configuration
+if (!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY) {
+  console.error('Missing REACT_APP_STRIPE_PUBLISHABLE_KEY environment variable');
+}
+
 // API base URL - use environment variable or default to localhost in development
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
@@ -20,6 +25,11 @@ export function StripeProvider({ children }) {
   // Function to redirect to Stripe hosted checkout
   const redirectToCheckout = async (items, checkoutOptions = {}) => {
     try {
+      // Validate Stripe configuration
+      if (!process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY) {
+        throw new Error('Stripe is not properly configured. Missing publishable key.');
+      }
+      
       console.log('Redirecting to Stripe checkout for items:', items);
       console.log('Checkout options:', checkoutOptions);
       
@@ -56,19 +66,36 @@ export function StripeProvider({ children }) {
       
       console.log('Sending checkout request with Stripe price IDs:', requestBody);
       
-      // Call our API endpoint to create a checkout session
+      // Call our API endpoint to create a checkout session with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
+        signal: controller.signal
       });
       
+      clearTimeout(timeoutId);
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Checkout API error:', errorData);
-        throw new Error(errorData.error || 'Error creating checkout session');
+        const errorText = await response.text();
+        console.error('Checkout API error response:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          console.error('Parsed error data:', errorData);
+          throw new Error(errorData.error || `HTTP ${response.status}: ${errorText}`);
+        } catch (parseError) {
+          console.error('Failed to parse error response:', parseError);
+          throw new Error(`HTTP ${response.status}: ${errorText || 'Unknown error'}`);
+        }
       }
       
       const session = await response.json();
@@ -109,6 +136,22 @@ export function StripeProvider({ children }) {
       };
     } catch (error) {
       console.error('Error redirecting to checkout:', error);
+      
+      // Handle specific error types
+      if (error.name === 'AbortError') {
+        return {
+          success: false,
+          message: 'Request timed out. Please check your internet connection and try again.'
+        };
+      }
+      
+      if (error.message && error.message.includes('Failed to fetch')) {
+        return {
+          success: false,
+          message: 'Network error. Please check your internet connection and try again.'
+        };
+      }
+      
       return {
         success: false,
         message: error.message || 'There was an error processing your checkout. Please try again.'
