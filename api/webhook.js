@@ -2,6 +2,13 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 
+// Disable body parsing for webhook signature verification
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 // Initialize Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -40,25 +47,48 @@ async function getProductIdFromPriceId(stripePriceId) {
 }
 
 module.exports = async (req, res) => {
+  // Set a timeout to prevent hanging webhooks
+  const timeout = setTimeout(() => {
+    console.error('Webhook processing timeout (30s)');
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Webhook processing timeout' });
+    }
+  }, 30000); // 30 second timeout
+
+  console.log('Webhook received - Method:', req.method);
+  console.log('Webhook headers:', Object.keys(req.headers));
+  
   if (req.method !== 'POST') {
+    console.log('Invalid method received:', req.method);
+    clearTimeout(timeout);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  console.log('Stripe signature present:', !!sig);
+  console.log('Webhook secret present:', !!webhookSecret);
+
   if (!sig || !webhookSecret) {
+    clearTimeout(timeout);
     return res.status(400).json({ error: 'Missing stripe signature or webhook secret' });
   }
 
   let event;
 
   try {
-    // Use raw body from Vercel
-    const rawBody = await buffer(req);
+    // Use improved raw body handling for Vercel
+    const rawBody = await getRawBody(req);
+    console.log('Raw body length:', rawBody.length);
+    console.log('Raw body type:', typeof rawBody);
+    
     event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    console.log('Webhook signature verified successfully. Event type:', event.type);
   } catch (err) {
     console.error(`Webhook signature verification failed: ${err.message}`);
+    console.error('Error details:', err);
+    clearTimeout(timeout);
     return res.status(400).json({ error: `Webhook Error: ${err.message}` });
   }
 
@@ -100,9 +130,11 @@ module.exports = async (req, res) => {
 
         // Skip processing for guest users (no user_id)
         if (!user_id || user_id === 'guest') {
-          console.log('Skipping order creation for guest user');
+          console.log('Skipping order creation for guest user - session ID:', session.id);
           break;
         }
+
+        console.log('Processing order for user:', user_id, 'email:', user_email);
 
         // Generate unique order number
         const orderNumber = generateOrderNumber();
@@ -322,15 +354,49 @@ module.exports = async (req, res) => {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
+    clearTimeout(timeout);
     res.status(200).json({ received: true });
   } catch (err) {
     console.error(`Error processing webhook: ${err.message}`);
     console.error('Full error:', err);
-    res.status(500).json({ error: 'Webhook processing error' });
+    clearTimeout(timeout);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Webhook processing error' });
+    }
   }
 };
 
-// Helper to read the request body
+// Improved helper to read the request body for Vercel
+async function getRawBody(req) {
+  try {
+    // Check if body is already a buffer (Vercel serverless functions)
+    if (Buffer.isBuffer(req.body)) {
+      console.log('Body is already a buffer');
+      return req.body;
+    }
+    
+    // Check if body is a string
+    if (typeof req.body === 'string') {
+      console.log('Body is a string, converting to buffer');
+      return Buffer.from(req.body, 'utf8');
+    }
+    
+    // Fallback: read from stream
+    console.log('Reading body from stream');
+    const chunks = [];
+    
+    for await (const chunk of req) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    }
+    
+    return Buffer.concat(chunks);
+  } catch (error) {
+    console.error('Error reading raw body:', error);
+    throw new Error('Failed to read request body');
+  }
+}
+
+// Keep the old buffer function as backup
 async function buffer(req) {
   const chunks = [];
   
