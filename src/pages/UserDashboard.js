@@ -14,7 +14,7 @@ import './UserDashboard.css'
 const UserDashboard = () => {
   const { user, profile, loadUserProfile } = useAuth()
   const [activeTab, setActiveTab] = useState('orders')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [orders, setOrders] = useState([])
   const [points, setPoints] = useState(0)

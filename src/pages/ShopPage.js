@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useTranslation from '../hooks/useTranslation';
 import SoftLaunchBanner from '../components/SoftLaunchBanner';
+import useTranslation from '../hooks/useTranslation';
 import { useCart } from '../contexts/CartContext';
-import { useLoading } from '../contexts/LoadingContext';
 import { shouldShowProduct, shouldShowAllProducts, getReleaseDate, getDaysUntilRelease, isReleaseDay } from '../utils/releaseSchedule';
 // Import images directly
 import smallPackImage from '../assets/5-pack.jpg';
@@ -98,31 +97,9 @@ const createProductData = (t) => [
 function ShopPage() {
   const { t } = useTranslation();
   const { addToCart } = useCart();
-  const { hideLoader } = useLoading();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [products, setProducts] = useState(() => createProductData(t));
   const [showComparisonModal, setShowComparisonModal] = useState(false);
-  
-  // Immediately force hide any loader whenever this component mounts
-  useEffect(() => {
-    // Force hide loader immediately and repeatedly to ensure it's gone
-    hideLoader();
-    
-    const forceHideInterval = setInterval(() => {
-      hideLoader();
-    }, 500);
-    
-    // Stop forcing hide after 5 seconds
-    const clearForceHideInterval = setTimeout(() => {
-      clearInterval(forceHideInterval);
-    }, 5000);
-    
-    return () => {
-      clearInterval(forceHideInterval);
-      clearTimeout(clearForceHideInterval);
-      hideLoader();
-    };
-  }, [hideLoader]);
   
   // Update products when translation changes
   useEffect(() => {

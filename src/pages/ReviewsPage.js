@@ -5,7 +5,7 @@ import './ReviewsPage.css';
 
 function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
   const [showReviewForm, setShowReviewForm] = useState(false);

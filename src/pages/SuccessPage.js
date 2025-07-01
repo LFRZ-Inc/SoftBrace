@@ -6,7 +6,7 @@ function SuccessPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [orderDetails, setOrderDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Get session ID from URL
@@ -16,11 +16,11 @@ function SuccessPage() {
     const fetchOrderDetails = async () => {
       if (!sessionId) {
         setError('No session ID provided');
-        setLoading(false);
         return;
       }
 
       try {
+        setLoading(true);
         // In a real application, you would fetch order details from your backend
         // based on the Stripe session ID
         // For demo purposes, we'll just simulate a successful order

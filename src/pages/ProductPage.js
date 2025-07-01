@@ -19,12 +19,13 @@ function ProductPage() {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   
   // For demo purposes, we're using a hard-coded product list
   // In a real application, these would come from an API
   useEffect(() => {
+    setLoading(true);
     // Simulate API fetch
     setTimeout(() => {
       const productData = [

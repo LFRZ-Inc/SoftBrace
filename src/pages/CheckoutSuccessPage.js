@@ -10,7 +10,7 @@ function CheckoutSuccessPage() {
   const location = useLocation();
   const [sessionId, setSessionId] = useState(null);
   const [orderData, setOrderData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
   useEffect(() => {
@@ -23,7 +23,6 @@ function CheckoutSuccessPage() {
       fetchOrderData(session);
     } else {
       setError('No session ID found');
-      setLoading(false);
     }
   }, [location]);
 

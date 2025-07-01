@@ -29,12 +29,13 @@ const ComponentMap = {
 
 function HomePage() {
   const [pageStructure, setPageStructure] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadPageStructure = async () => {
       try {
+        setLoading(true);
         console.log('Loading page structure...');
         const savedContent = await getPageContent('visual-editor', 'page-structure');
         console.log('Saved content:', savedContent);
