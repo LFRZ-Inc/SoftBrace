@@ -4,7 +4,7 @@ import './Product.css';
 import useTranslation from '../hooks/useTranslation';
 import { shouldShowProduct, shouldShowAllProducts, getReleaseDate, getDaysUntilRelease, isReleaseDay } from '../utils/releaseSchedule';
 // Import images
-import singleStripImage from '../assets/SoftBrace Strips.jpeg';
+import singleStripImage from '../assets/softbrace-strips.jpeg';
 import smallPackImage from '../assets/5-pack.jpg';
 import mediumPackImage from '../assets/15-pack.jpg';
 import largePackImage from '../assets/31-pack.png';

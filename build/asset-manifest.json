@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/static/css/main.30c7fc18.css",
-    "main.js": "/static/js/main.ceb693f4.js",
+    "main.js": "/static/js/main.ee11cccd.js",
     "static/js/453.e3bcdd81.chunk.js": "/static/js/453.e3bcdd81.chunk.js",
     "static/media/31-pack.png": "/static/media/31-pack.6a1e5847a3ee308e4711.png",
     "static/media/SoftWax.jpg": "/static/media/SoftWax.eee0fa99de60d9131181.jpg",
     "static/media/15-pack.jpg": "/static/media/15-pack.09aaba79451dd34aa7c6.jpg",
-    "static/media/single-strip.png": "/static/media/single-strip.51ee9e9ddcbff8f8c931.png",
+    "static/media/softbrace-strips.jpeg": "/static/media/softbrace-strips.d6628a802fd4f9e6033a.jpeg",
     "static/media/5-pack.jpg": "/static/media/5-pack.8c4173f9298fb85da96c.jpg",
     "index.html": "/index.html",
     "static/media/background-pattern.svg": "/static/media/background-pattern.5a2c9c008b74af1bfde8.svg",
     "main.30c7fc18.css.map": "/static/css/main.30c7fc18.css.map",
-    "main.ceb693f4.js.map": "/static/js/main.ceb693f4.js.map",
+    "main.ee11cccd.js.map": "/static/js/main.ee11cccd.js.map",
     "453.e3bcdd81.chunk.js.map": "/static/js/453.e3bcdd81.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.30c7fc18.css",
-    "static/js/main.ceb693f4.js"
+    "static/js/main.ee11cccd.js"
   ]
 }
