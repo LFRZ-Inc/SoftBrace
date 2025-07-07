@@ -112,33 +112,11 @@ module.exports = async (req, res) => {
     // Enhanced shipping logic with proper Laredo, TX support and metadata
     let shipping_options = [];
 
-    // ALWAYS add Laredo, TX local delivery option (free for all orders)
-    shipping_options.push({
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: {
-          amount: 0,
-          currency: 'usd',
-        },
-        display_name: 'Laredo, TX Local Delivery (FREE)',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 1 },
-          maximum: { unit: 'business_day', value: 2 },
-        },
-        metadata: {
-          shipping_type: 'local_delivery',
-          service_area: 'laredo_tx',
-          delivery_method: 'local_courier',
-          cost_type: 'free'
-        }
-      },
-    });
-
     // Check if cart contains trial pack (price_1Ri4HPFsjDil30gTjUj4N4tW)
     const hasTrialPack = line_items.some(item => item.price === 'price_1Ri4HPFsjDil30gTjUj4N4tW');
     
     if (hasTrialPack) {
-      // Trial pack only gets $1 shipping option
+      // Trial pack ONLY gets $1 shipping option - no free local delivery
       shipping_options.push({
         shipping_rate_data: {
           type: 'fixed_amount',
@@ -158,6 +136,27 @@ module.exports = async (req, res) => {
         },
       });
     } else {
+      // For all non-trial orders, add Laredo, TX local delivery option (free)
+      shipping_options.push({
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 0,
+            currency: 'usd',
+          },
+          display_name: 'Laredo, TX Local Delivery (FREE)',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 1 },
+            maximum: { unit: 'business_day', value: 2 },
+          },
+          metadata: {
+            shipping_type: 'local_delivery',
+            service_area: 'laredo_tx',
+            delivery_method: 'local_courier',
+            cost_type: 'free'
+          }
+        },
+      });
       // Add standard shipping options based on order total for non-trial products
       if (totalAmount < 599) { // Less than $5.99
         shipping_options.push({

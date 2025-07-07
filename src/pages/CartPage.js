@@ -94,24 +94,44 @@ function CartPage() {
                             <div className="flex items-center">
                               <button 
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                className="bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded-l"
+                                className={`px-3 py-1 rounded-l ${
+                                  item.id === 7 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600' 
+                                    : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
+                                }`}
+                                disabled={item.id === 7}
                               >
                                 -
                               </button>
                               <input 
                                 type="number" 
                                 value={item.quantity} 
-                                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                                className="w-12 text-center py-1 border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+                                onChange={(e) => item.id !== 7 ? updateQuantity(item.id, parseInt(e.target.value) || 1) : null}
+                                className={`w-12 text-center py-1 border-y border-gray-300 dark:border-gray-600 ${
+                                  item.id === 7 
+                                    ? 'bg-gray-100 dark:bg-gray-800 cursor-not-allowed' 
+                                    : 'dark:bg-gray-700'
+                                }`}
                                 min="1"
+                                readOnly={item.id === 7}
                               />
                               <button 
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded-r"
+                                className={`px-3 py-1 rounded-r ${
+                                  item.id === 7 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600' 
+                                    : 'bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500'
+                                }`}
+                                disabled={item.id === 7}
                               >
                                 +
                               </button>
                             </div>
+                            {item.id === 7 && (
+                              <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                                ⚠️ Trial pack: 1 per order limit
+                              </p>
+                            )}
                           </div>
                           
                           <div className="text-xl font-bold">
@@ -160,8 +180,17 @@ function CartPage() {
                 
                 {/* Shipping Policy Notice */}
                 <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 rounded-md text-sm">
-                  <p>🚚 Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!</p>
-                  <p>📍 <strong>Laredo, TX residents:</strong> Free local delivery available!</p>
+                  {items.some(item => item.id === 7) ? (
+                    <div>
+                      <p>🎁 <strong>Trial Pack Special:</strong> Only $1.00 shipping!</p>
+                      <p>📦 Trial packs ship via standard delivery (3-5 business days)</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p>🚚 Orders under $5.99 ship for $2.00. Orders $5.99+ ship free!</p>
+                      <p>📍 <strong>Laredo, TX residents:</strong> Free local delivery available!</p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="space-y-4">
