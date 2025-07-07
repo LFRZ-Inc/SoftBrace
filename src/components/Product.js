@@ -48,7 +48,7 @@ function Product() {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 <tr className="bg-green-50 dark:bg-green-900">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-bold">Trial Pack</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">4 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">2 strips</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">First-time testers</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-bold">FREE + $1 shipping</td>
                 </tr>
@@ -139,7 +139,7 @@ function Product() {
               />
             </div>
             <h3>SoftBrace Trial Pack</h3>
-            <p className="quantity">(4 strips total)</p>
+            <p className="quantity">(2 strips total)</p>
             <p className="price">FREE + $1 Shipping</p>
             <p className="description">Try SoftBrace completely FREE! Perfect for first-time users. Only pay $1 shipping.</p>
             <Link to="/product/7" className="product-button">
