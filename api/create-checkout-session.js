@@ -134,45 +134,70 @@ module.exports = async (req, res) => {
       },
     });
 
-    // Add standard shipping options based on order total
-    if (totalAmount < 599) { // Less than $5.99
+    // Check if cart contains trial pack (price_1Ri4HPFsjDil30gTjUj4N4tW)
+    const hasTrialPack = line_items.some(item => item.price === 'price_1Ri4HPFsjDil30gTjUj4N4tW');
+    
+    if (hasTrialPack) {
+      // Trial pack only gets $1 shipping option
       shipping_options.push({
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: {
-            amount: 200, // $2.00 in cents
+            amount: 100, // $1.00 in cents
             currency: 'usd',
           },
-          display_name: 'Standard Shipping ($2.00)',
+          display_name: 'Trial Pack Shipping ($1.00)',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 5 },
           },
           metadata: {
-            shipping_type: 'standard',
-            cost_type: 'paid'
+            shipping_type: 'trial_pack',
+            cost_type: 'trial_special'
           }
         },
       });
-    } else { // $5.99 or more
-      shipping_options.push({
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: {
-            amount: 0,
-            currency: 'usd',
+    } else {
+      // Add standard shipping options based on order total for non-trial products
+      if (totalAmount < 599) { // Less than $5.99
+        shipping_options.push({
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 200, // $2.00 in cents
+              currency: 'usd',
+            },
+            display_name: 'Standard Shipping ($2.00)',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 3 },
+              maximum: { unit: 'business_day', value: 5 },
+            },
+            metadata: {
+              shipping_type: 'standard',
+              cost_type: 'paid'
+            }
           },
-          display_name: 'Free Standard Shipping',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 3 },
-            maximum: { unit: 'business_day', value: 7 },
+        });
+      } else { // $5.99 or more
+        shipping_options.push({
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: 0,
+              currency: 'usd',
+            },
+            display_name: 'Free Standard Shipping',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 3 },
+              maximum: { unit: 'business_day', value: 7 },
+            },
+            metadata: {
+              shipping_type: 'standard',
+              cost_type: 'free'
+            }
           },
-          metadata: {
-            shipping_type: 'standard',
-            cost_type: 'free'
-          }
-        },
-      });
+        });
+      }
     }
 
     console.log(`Shipping options configured: ${shipping_options.length} options`);

@@ -138,6 +138,27 @@ function ProductPage() {
         quantity: '1 wax case + 5 pairs (10 strips)',
         stock: 20,
         soldOut: false
+      },
+      {
+        id: 7,
+        name: 'SoftBrace Trial Pack',
+        price: 0.00,
+        image: smallPackImage,
+        category: 'trial',
+        description: 'Try SoftBrace strips completely FREE! Perfect for first-time users to experience the comfort. Only $1 shipping.',
+        longDescription: 'Experience SoftBrace comfort risk-free! This trial pack includes 2 pairs (4 strips) of our premium comfort strips at no cost to you. Only pay $1 for shipping. Perfect for first-time users who want to try before committing to a larger pack.',
+        features: [
+          'Completely FREE trial pack',
+          'Only $1 shipping cost',
+          'Perfect for first-time users',
+          'Same premium quality as full packs',
+          'Try before you buy confidence'
+        ],
+        quantity: '2 Pairs (4 strips)',
+        stock: 50,
+        soldOut: false,
+        specialShipping: true,
+        shippingCost: 1.00
       }
     ];
     

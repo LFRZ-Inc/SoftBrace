@@ -7,7 +7,8 @@ export const PRODUCT_TYPES = {
   THIRTY_ONE_PACK: '3', // 31-Pair Pack
   SOFTWAX: '4',        // SoftWax
   BULK_PACK: '5',      // 100-Pair Bulk
-  BUNDLE: '6'          // SoftWax + 5-Pair Bundle
+  BUNDLE: '6',         // SoftWax + 5-Pair Bundle
+  TRIAL_PACK: '7'      // Trial Pack (FREE + $1 shipping)
 };
 
 export const SHIPPING_TYPES = {
@@ -19,7 +20,19 @@ export const SHIPPING_TYPES = {
 export const getShippingOptions = (productId, cartTotal = 0) => {
   const options = [];
 
-  // Simple shipping logic for all products
+  // Special handling for Trial Pack (Product ID 7)
+  if (productId === PRODUCT_TYPES.TRIAL_PACK || productId === '7') {
+    options.push({
+      type: 'trial_shipping',
+      name: 'Trial Pack Shipping',
+      price: 1.00,
+      description: '$1.00 shipping for trial pack only',
+      estimated_days: '3-5 business days'
+    });
+    return options;
+  }
+
+  // Simple shipping logic for all other products
   if (cartTotal >= 5.99) {
     options.push({
       type: SHIPPING_TYPES.FREE_SHIPPING,

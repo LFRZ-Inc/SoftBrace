@@ -46,6 +46,12 @@ function Product() {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr className="bg-green-50 dark:bg-green-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-bold">Trial Pack</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">4 strips</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">First-time testers</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-bold">FREE + $1 shipping</td>
+                </tr>
                 <tr>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">5-Pair</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 font-medium">10 strips</td>
@@ -120,6 +126,31 @@ function Product() {
         </div>
 
         <div className="product-options">
+          {/* Trial Pack - FREE */}
+          <div className="product-option relative">
+            <div className="badge-container absolute top-0 right-0 bg-green-500 text-white px-3 py-1 rounded-bl-lg z-10">
+              <span className="text-sm font-bold">FREE TRIAL</span>
+            </div>
+            <div className="product-image relative">
+              <img 
+                src={smallPackImage} 
+                alt="SoftBrace Trial Pack" 
+                className="package-image"
+              />
+            </div>
+            <h3>SoftBrace Trial Pack</h3>
+            <p className="quantity">(4 strips total)</p>
+            <p className="price">FREE + $1 Shipping</p>
+            <p className="description">Try SoftBrace completely FREE! Perfect for first-time users. Only pay $1 shipping.</p>
+            <Link to="/product/7" className="product-button">
+              View Details
+            </Link>
+            <div className="trust-badges">
+              <span className="badge">100% FREE Trial</span>
+              <span className="badge">$1 Shipping Only</span>
+            </div>
+          </div>
+
           {/* 5-Pair Pack */}
           <div className="product-option relative">
             <div className="badge-container absolute top-0 right-0 bg-primary text-white px-3 py-1 rounded-bl-lg z-10">

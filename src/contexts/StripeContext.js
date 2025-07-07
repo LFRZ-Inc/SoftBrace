@@ -61,12 +61,13 @@ export function StripeProvider({ children }) {
       
       // Fallback product mapping if database is not configured
       const fallbackProducts = [
-        { id: 1, name: 'SoftBrace 5-Pair Pack', stripe_price_id: 'price_1QcYULBumkBEKdUYPt7EtE3Z' },
-        { id: 2, name: 'SoftBrace 15-Pair Pack', stripe_price_id: 'price_1QcYUmBumkBEKdUYd6N7Fmvf' },
-        { id: 3, name: 'SoftBrace 31-Pair Pack', stripe_price_id: 'price_1QcYVKBumkBEKdUYzZGrWpEo' },
-        { id: 4, name: 'SoftWax', stripe_price_id: 'price_1QcYVjBumkBEKdUYQqLkGJRZ' },
-        { id: 5, name: 'SoftBrace 100-Pair Bulk Pack', stripe_price_id: 'price_1QcYWCBumkBEKdUYnxXZyxGV' },
-        { id: 6, name: 'SoftWax + 5-Pair SoftBrace Strips Bundle', stripe_price_id: 'price_1QcYWjBumkBEKdUYFhqTSPYt' }
+            { id: 1, name: 'SoftBrace 5-Pair Pack', stripe_price_id: 'price_1QcYULBumkBEKdUYPt7EtE3Z' },
+    { id: 2, name: 'SoftBrace 15-Pair Pack', stripe_price_id: 'price_1QcYUmBumkBEKdUYd6N7Fmvf' },
+    { id: 3, name: 'SoftBrace 31-Pair Pack', stripe_price_id: 'price_1QcYVKBumkBEKdUYzZGrWpEo' },
+    { id: 4, name: 'SoftWax', stripe_price_id: 'price_1QcYVjBumkBEKdUYQqLkGJRZ' },
+    { id: 5, name: 'SoftBrace 100-Pair Bulk Pack', stripe_price_id: 'price_1QcYWCBumkBEKdUYnxXZyxGV' },
+    { id: 6, name: 'SoftWax + 5-Pair SoftBrace Strips Bundle', stripe_price_id: 'price_1QcYWjBumkBEKdUYFhqTSPYt' },
+    { id: 7, name: 'SoftBrace Trial Pack', stripe_price_id: 'price_1Ri4HPFsjDil30gTjUj4N4tW' }
       ];
       
       // Use database products if available, otherwise fallback
