@@ -142,7 +142,11 @@ function Product() {
             <p className="quantity">(2 strips total)</p>
             <p className="price">FREE + $1 Shipping</p>
             <p className="description">Try SoftBrace completely FREE! Perfect for first-time users. Only pay $1 shipping.</p>
-            <Link to="/product/7" className="product-button">
+            <Link 
+              to="/product/7" 
+              className="product-button"
+              onClick={() => console.log('Trial pack clicked - navigating to /product/7')}
+            >
               View Details
             </Link>
             <div className="trust-badges">

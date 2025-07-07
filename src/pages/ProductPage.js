@@ -171,6 +171,12 @@ function ProductPage() {
   
   const handleAddToCart = () => {
     if (product) {
+      console.log('Adding to cart:', {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity
+      });
       addItem({
         id: product.id,
         name: product.name,
