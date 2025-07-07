@@ -72,7 +72,13 @@ export function StripeProvider({ children }) {
       
       // Use database products if available, otherwise fallback
       const productData = products && products.length > 0 ? products : fallbackProducts;
-      console.log('Using product data:', productData);
+      console.log('🗃️ DATABASE PRODUCTS:', products);
+      console.log('🔄 FALLBACK PRODUCTS:', fallbackProducts);
+      console.log('✅ USING PRODUCT DATA:', productData);
+      
+      // Check specifically for trial pack
+      const trialPackData = productData.find(p => p.id === 7);
+      console.log('🎯 TRIAL PACK DATA FOUND:', trialPackData);
 
       // Format line items using actual Stripe price IDs instead of dynamic prices
       const line_items = items.map(item => {
