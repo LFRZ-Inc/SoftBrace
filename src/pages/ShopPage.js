@@ -92,6 +92,21 @@ const createProductData = (t) => [
     badge: 'Bundle Deal',
     pricePerPair: '$0.90'
   },
+  {
+    id: 7,
+    name: 'SoftBrace Trial Pack',
+    price: 0.00,
+    image: smallPackImage,
+    category: 'trial',
+    description: 'Try SoftBrace strips completely FREE! Perfect for first-time users to experience the comfort. Only $1 shipping.',
+    quantity: '1 Pair (2 strips)',
+    shortDescription: 'Experience SoftBrace comfort risk-free! Only pay $1 for shipping.',
+    soldOut: false,
+    badge: 'FREE TRIAL',
+    pricePerPair: 'FREE',
+    specialShipping: true,
+    shippingCost: 1.00
+  },
 ];
 
 function ShopPage() {
@@ -138,6 +153,12 @@ function ShopPage() {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Trial Pack</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">2 strips</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Risk-free testing</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">FREE</td>
+              </tr>
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">5-Pair</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">10 strips</td>
