@@ -26,6 +26,7 @@ function ProductPage() {
   // In a real application, these would come from an API
   useEffect(() => {
     setLoading(true);
+    console.log('ProductPage: Loading product with ID:', id);
     
     const productData = [
       {
@@ -163,6 +164,7 @@ function ProductPage() {
     ];
     
     const foundProduct = productData.find(p => p.id === parseInt(id));
+    console.log('ProductPage: Found product:', foundProduct);
     setProduct(foundProduct);
     setLoading(false);
   }, [id, t]);
@@ -192,12 +194,16 @@ function ProductPage() {
     navigate('/cart');
   };
   
-  const increaseQuantity = () => {
+    const increaseQuantity = () => {
     if (product && quantity < product.stock) {
+      // Trial pack (ID 7) can only have quantity of 1
+      if (product.id === 7 && quantity >= 1) {
+        return;
+      }
       setQuantity(quantity + 1);
     }
   };
-  
+
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -328,11 +334,21 @@ function ProductPage() {
                     <span className="px-4 py-2">{quantity}</span>
                     <button 
                       onClick={increaseQuantity} 
-                      className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                      className={`px-4 py-2 transition-colors ${
+                        product.id === 7 && quantity >= 1 
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600' 
+                          : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
+                      }`}
+                      disabled={product.id === 7 && quantity >= 1}
                     >
                       +
                     </button>
                   </div>
+                  {product.id === 7 && (
+                    <p className="text-sm text-orange-600 dark:text-orange-400 mt-2">
+                      ⚠️ Trial pack limit: 1 per order
+                    </p>
+                  )}
                 </div>
               </div>
               

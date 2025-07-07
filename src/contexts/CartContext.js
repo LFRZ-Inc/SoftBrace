@@ -16,6 +16,23 @@ function cartReducer(state, action) {
     case 'ADD_ITEM': {
       const { id, name, price, image, quantity = 1 } = action.payload;
       
+      // Special handling for trial pack (ID 7) - limit to 1 total
+      if (id === 7) {
+        const existingTrialPack = state.items.find(item => item.id === 7);
+        if (existingTrialPack) {
+          // Trial pack already in cart, don't add more
+          console.log('Trial pack already in cart - not adding more');
+          return state;
+        }
+        // Add trial pack with quantity 1 only
+        return {
+          ...state,
+          items: [...state.items, { id, name, price, image, quantity: 1 }],
+          total: state.total + price,
+          itemCount: state.itemCount + 1
+        };
+      }
+      
       // Check if the item is already in the cart
       const existingItemIndex = state.items.findIndex(item => item.id === id);
       
