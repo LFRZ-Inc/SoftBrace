@@ -18,19 +18,22 @@ function cartReducer(state, action) {
       
       // Special handling for trial pack (ID 7) - limit to 1 total
       if (id === 7) {
+        console.log('🎯 TRIAL PACK CART ADD - Input data:', { id, name, price, image, quantity });
         const existingTrialPack = state.items.find(item => item.id === 7);
         if (existingTrialPack) {
           // Trial pack already in cart, don't add more
-          console.log('Trial pack already in cart - not adding more');
+          console.log('❌ Trial pack already in cart - not adding more');
           return state;
         }
         // Add trial pack with quantity 1 only
-        return {
+        const newCartState = {
           ...state,
           items: [...state.items, { id, name, price, image, quantity: 1 }],
           total: state.total + price,
           itemCount: state.itemCount + 1
         };
+        console.log('✅ TRIAL PACK ADDED TO CART:', newCartState.items);
+        return newCartState;
       }
       
       // Check if the item is already in the cart

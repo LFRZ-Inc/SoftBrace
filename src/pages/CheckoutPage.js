@@ -144,7 +144,15 @@ function CheckoutPage() {
         quantity: item.quantity
       }));
       
-      console.log('CheckoutPage: Prepared line items:', lineItems);
+      console.log('🚀 CHECKOUT DEBUG - Cart items raw:', items);
+      console.log('🚀 CHECKOUT DEBUG - Prepared line items for Stripe:', lineItems);
+      
+      // Special debug for trial pack
+      const trialPackItem = lineItems.find(item => item.id === 7);
+      if (trialPackItem) {
+        console.log('🎯 TRIAL PACK IN CHECKOUT:', trialPackItem);
+        console.log('🎯 Trial pack should have: ID=7, price=0, name="SoftBrace Trial Pack"');
+      }
       
       // Prepare checkout options with points and discount data
       const checkoutOptions = {

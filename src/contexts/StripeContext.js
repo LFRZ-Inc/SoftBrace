@@ -79,11 +79,22 @@ export function StripeProvider({ children }) {
         // Find the corresponding product in the database
         const product = productData.find(p => p.id === item.id || p.name === item.name);
         
+        console.log('🔍 DEBUGGING CHECKOUT - Processing item:', {
+          itemId: item.id,
+          itemName: item.name,
+          itemPrice: item.price,
+          foundProduct: product
+        });
+        
         if (!product || !product.stripe_price_id) {
           throw new Error(`Product "${item.name}" does not have a configured Stripe price ID. Please configure Stripe products first.`);
         }
         
-        console.log(`Using Stripe price ID "${product.stripe_price_id}" for product "${product.name}"`);
+        console.log(`🎯 CHECKOUT MAPPING: Item ID ${item.id} "${item.name}" → Stripe price ID "${product.stripe_price_id}"`);
+        
+        if (item.id === 7) {
+          console.log('⚠️ TRIAL PACK DETECTED: Sending to Stripe with price ID:', product.stripe_price_id);
+        }
         
         return {
           price: product.stripe_price_id, // Use the actual Stripe price ID
