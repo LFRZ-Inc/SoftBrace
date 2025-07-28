@@ -436,6 +436,24 @@ function CheckoutPage() {
                   You saved ${(calculateAccountDiscount() + calculatePointsDiscount()).toFixed(2)}!
                 </div>
               )}
+              
+              {/* St. Jude Donation Impact */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-lg border border-red-200 dark:border-red-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                    <span className="text-sm font-semibold text-red-800 dark:text-red-200">
+                      {t('charity.badge')}
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-red-700 dark:text-red-300">
+                    $0.{(items.reduce((sum, item) => sum + item.quantity, 0) * 10).toString().padStart(2, '0')}
+                  </span>
+                </div>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                  {t('charity.thankYou')}
+                </p>
+              </div>
             </div>
           </div>
           

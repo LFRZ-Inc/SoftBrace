@@ -325,6 +325,20 @@ function ProductPage() {
                 </ul>
               </div>
               
+              {/* St. Jude Donation Info */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                <div className="flex items-center mb-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                  <h3 className="font-bold text-blue-800 dark:text-blue-200">{t('charity.badge')}</h3>
+                </div>
+                <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
+                  {t('charity.message')}
+                </p>
+                <p className="text-xs text-blue-600 dark:text-blue-400">
+                  {t('charity.impactMessage')}
+                </p>
+              </div>
+              
               <div className="mb-6">
                 <label className="block text-gray-700 dark:text-gray-300 mb-2">
                   {t('product.quantity')}

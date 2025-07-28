@@ -125,6 +125,50 @@ function Product() {
           />
         </div>
 
+        {/* St. Jude Donation Banner */}
+        <div className="charity-banner" style={{
+          backgroundColor: '#f7fafc',
+          border: '2px solid #e2e8f0',
+          borderRadius: '12px',
+          padding: '20px',
+          margin: '30px 0',
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+            <div style={{ 
+              width: '12px', 
+              height: '12px', 
+              backgroundColor: '#e53e3e', 
+              borderRadius: '50%', 
+              marginRight: '8px' 
+            }}></div>
+            <h3 style={{ 
+              color: '#2d3748', 
+              fontWeight: 'bold', 
+              fontSize: '18px', 
+              margin: '0' 
+            }}>
+              {t('charity.title')}
+            </h3>
+          </div>
+          <p style={{ 
+            color: '#4a5568', 
+            fontSize: '16px', 
+            marginBottom: '8px',
+            fontWeight: '500'
+          }}>
+            {t('charity.message')}
+          </p>
+          <p style={{ 
+            color: '#718096', 
+            fontSize: '14px',
+            margin: '0'
+          }}>
+            {t('charity.subtitle')}
+          </p>
+        </div>
+
         <div className="product-options">
           {/* Trial Pack - FREE */}
           <div className="product-option relative">

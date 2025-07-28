@@ -338,6 +338,13 @@ function ShopPage() {
                     <span className="inline-block text-xs bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-200 px-2 py-1 rounded-full">Non-Toxic & One-Time Use</span>
                     <span className="inline-block text-xs bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-200 px-2 py-1 rounded-full">Safe for Braces & Gums</span>
                   </div>
+                  
+                  {/* St. Jude Donation Badge */}
+                  <div className="mt-3 pt-2">
+                    <span className="inline-block text-xs bg-red-50 dark:bg-red-900 text-red-600 dark:text-red-200 px-2 py-1 rounded-full border border-red-200 dark:border-red-700">
+                      ❤️ {t('charity.shortMessage')}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))

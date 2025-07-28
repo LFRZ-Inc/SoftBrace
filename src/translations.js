@@ -20,6 +20,18 @@ const translations = {
       learnMore: 'Shop Now'
     },
     
+    // Charitable Giving - St. Jude Support
+    charity: {
+      title: 'Supporting St. Jude Children\'s Research Hospital',
+      message: 'With every purchase, we donate $0.10 to St. Jude Children\'s Research Hospital',
+      subtitle: 'Your comfort helps kids fight cancer',
+      learnMore: 'Learn more about St. Jude',
+      badge: 'Supporting St. Jude',
+      shortMessage: '$0.10 donated to St. Jude per purchase',
+      impactMessage: 'Every SoftBrace purchase helps support life-saving research and treatment at St. Jude Children\'s Research Hospital.',
+      thankYou: 'Thank you for helping us support St. Jude!'
+    },
+    
     // Product
     product: {
       title: 'SoftBrace is here—gum comfort for every smile',
@@ -293,7 +305,8 @@ const translations = {
         softLaunch: 'Soft Launch',
         message: 'Now Open for Early Orders—Thank You for Supporting Our Launch!',
         freeShipping: 'Free shipping on orders over $5.99!',
-        waxAvailable: 'SoftWax now available!'
+        waxAvailable: 'SoftWax now available!',
+        charity: 'Every purchase donates $0.10 to St. Jude Children\'s Research Hospital'
       }
     },
 
@@ -361,6 +374,18 @@ const translations = {
       comingSoon: '¡Ya Disponible!',
       tagline: 'La marca #1 para comodidad con brackets',
       learnMore: 'Comprar Ahora'
+    },
+    
+    // Charitable Giving - St. Jude Support
+    charity: {
+      title: 'Apoyando al Hospital de Investigación de Niños de St. Jude',
+      message: 'Con cada compra, donamos $0.10 al Hospital de Investigación de Niños de St. Jude',
+      subtitle: 'Tu comodidad ayuda a los niños a luchar contra el cáncer',
+      learnMore: 'Aprende más sobre St. Jude',
+      badge: 'Apoyando a St. Jude',
+      shortMessage: '$0.10 donado al Hospital de Investigación de Niños de St. Jude por cada compra',
+      impactMessage: 'Cada compra de SoftBrace ayuda a apoyar investigaciones y tratamientos de vida salvadora en el Hospital de Investigación de Niños de St. Jude.',
+      thankYou: '¡Gracias por ayudarnos a apoyar a St. Jude!'
     },
     
     // Product
@@ -636,7 +661,8 @@ const translations = {
         softLaunch: 'Lanzamiento Suave',
         message: '¡Ahora abierto para pedidos anticipados—Gracias por apoyar nuestro lanzamiento!',
         freeShipping: '¡Envío gratis en pedidos superiores a $5.99!',
-        waxAvailable: '¡SoftWax ya disponible!'
+        waxAvailable: '¡SoftWax ya disponible!',
+        charity: 'Cada compra dona $0.10 al Hospital de Investigación de Niños de St. Jude'
       }
     },
 

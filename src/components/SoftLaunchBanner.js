@@ -39,6 +39,7 @@ function SoftLaunchBanner() {
         <div className="badge badge-soft-launch badge-full-launch">🎉 FULL LAUNCH</div>
         <div className="banner-text">All SoftBrace Products Now Available! Complete Inventory Ready to Ship</div>
         <div className="badge badge-shipping">Free Shipping $5.99+</div>
+        <div className="badge badge-charity">❤️ {t('charity.shortMessage')}</div>
         <div className="badge badge-social">
           📱 Follow Us: @softbracestrips on Instagram & TikTok
         </div>
@@ -56,6 +57,7 @@ function SoftLaunchBanner() {
           - Complete Inventory Available {getReleaseDate()}!
         </div>
         <div className="badge badge-shipping">Free Shipping $5.99+</div>
+        <div className="badge badge-charity">❤️ {t('charity.shortMessage')}</div>
         <div className="badge badge-social">
           📱 Follow Us: @softbracestrips on Instagram & TikTok
         </div>
@@ -69,6 +71,7 @@ function SoftLaunchBanner() {
       <div className="badge badge-soft-launch">{t('banner.softLaunch')}</div>
       <div className="banner-text">{t('banner.message')}</div>
       <div className="badge badge-shipping">{t('banner.freeShipping')}</div>
+      <div className="badge badge-charity">❤️ {t('charity.shortMessage')}</div>
       <div className="badge badge-social">
         📱 Follow Us: @softbracestrips on Instagram & TikTok
       </div>
