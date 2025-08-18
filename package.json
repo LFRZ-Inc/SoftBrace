@@ -9,7 +9,7 @@
     "@stripe/stripe-js": "^7.3.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/supabase-js": "^2.55.0",
     "nth-check": "^2.1.1",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
