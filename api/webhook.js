@@ -128,10 +128,12 @@ module.exports = async (req, res) => {
           final_total_cents
         } = session.metadata;
 
-        // Skip processing for guest users (no user_id)
-        if (!user_id || user_id === 'guest') {
-          console.log('Skipping order creation for guest user - session ID:', session.id);
-          break;
+        // Handle both registered and guest users
+        const isGuestUser = !user_id || user_id === 'guest';
+        if (isGuestUser) {
+          console.log('Processing order for guest user - session ID:', session.id);
+        } else {
+          console.log('Processing order for registered user:', user_id);
         }
 
         console.log('Processing order for user:', user_id, 'email:', user_email);
@@ -153,21 +155,60 @@ module.exports = async (req, res) => {
           orderType: order_type
         });
 
-        // 1. Create order record
+        // 1. Create order record (handle both guest and registered users)
+        const orderInsertData = {
+          user_id: isGuestUser ? null : user_id, // null for guest users
+          order_number: orderNumber,
+          total_amount: totalAmount,
+          subtotal: parseFloat(original_total_cents) / 100,
+          discount_amount: discount_type === '5_percent' ? totalAmount * 0.05 : 0,
+          points_used: pointsUsedInt,
+          points_earned: pointsEarnedInt,
+          order_status: 'completed',
+          stripe_session_id: session.id,
+          payment_status: 'paid',
+          created_at: new Date().toISOString()
+        };
+
+        // Add customer email for guest users
+        if (isGuestUser && session.customer_email) {
+          orderInsertData.customer_email = session.customer_email;
+        }
+
+        // Add shipping address (available for both guest and registered users)
+        if (session.shipping_details) {
+          orderInsertData.shipping_address = {
+            name: session.shipping_details.name,
+            address: {
+              line1: session.shipping_details.address.line1,
+              line2: session.shipping_details.address.line2,
+              city: session.shipping_details.address.city,
+              state: session.shipping_details.address.state,
+              postal_code: session.shipping_details.address.postal_code,
+              country: session.shipping_details.address.country
+            }
+          };
+        }
+
+        // Add customer details if available
+        if (session.customer_details) {
+          orderInsertData.billing_address = {
+            name: session.customer_details.name,
+            email: session.customer_details.email,
+            address: session.customer_details.address ? {
+              line1: session.customer_details.address.line1,
+              line2: session.customer_details.address.line2,
+              city: session.customer_details.address.city,
+              state: session.customer_details.address.state,
+              postal_code: session.customer_details.address.postal_code,
+              country: session.customer_details.address.country
+            } : null
+          };
+        }
+
         const { data: orderData, error: orderError } = await supabase
           .from('orders')
-          .insert({
-            user_id: user_id,
-            order_number: orderNumber,
-            total_amount: totalAmount,
-            subtotal: parseFloat(original_total_cents) / 100,
-            discount_amount: discount_type === '5_percent' ? totalAmount * 0.05 : 0,
-            points_used: pointsUsedInt,
-            points_earned: pointsEarnedInt,
-            order_status: 'completed',
-            stripe_session_id: session.id,
-            created_at: new Date().toISOString()
-          })
+          .insert(orderInsertData)
           .select()
           .single();
 
@@ -276,8 +317,8 @@ module.exports = async (req, res) => {
           console.log(`Order verification updated: ${verificationStatus}, Review needed: ${orderNeedsReview}`);
         }
 
-        // 4. Award points using Supabase function (only if points were earned)
-        if (pointsEarnedInt > 0) {
+        // 4. Award points using Supabase function (only for registered users with points earned)
+        if (!isGuestUser && pointsEarnedInt > 0) {
           console.log(`Awarding ${pointsEarnedInt} points to user ${user_id}`);
           
           const { error: pointsError } = await supabase.rpc('award_points_for_order', {
@@ -292,10 +333,12 @@ module.exports = async (req, res) => {
           } else {
             console.log('Points awarded successfully');
           }
+        } else if (isGuestUser) {
+          console.log('Skipping points award for guest user');
         }
 
-        // 5. Award bonus points for 100-pack purchases (50 points per 100-pack)
-        if (has100Pack && total100PackQuantity > 0) {
+        // 5. Award bonus points for 100-pack purchases (50 points per 100-pack) - only for registered users
+        if (!isGuestUser && has100Pack && total100PackQuantity > 0) {
           const bonusPoints = total100PackQuantity * 50; // 50 points per 100-pack
           console.log(`Awarding ${bonusPoints} bonus points for ${total100PackQuantity} x 100-pack(s)`);
           
@@ -322,17 +365,23 @@ module.exports = async (req, res) => {
               .update({ points_earned: totalPointsEarned })
               .eq('id', orderData.id);
           }
+        } else if (isGuestUser && has100Pack) {
+          console.log('Skipping bonus points award for guest user with 100-pack');
         }
 
-        // 6. Update user's total points earned
-        const { error: balanceError } = await supabase.rpc('update_user_points_balance', {
-          user_uuid: user_id
-        });
+        // 6. Update user's total points earned (only for registered users)
+        if (!isGuestUser) {
+          const { error: balanceError } = await supabase.rpc('update_user_points_balance', {
+            user_uuid: user_id
+          });
 
-        if (balanceError) {
-          console.error('Error updating user points balance:', balanceError);
+          if (balanceError) {
+            console.error('Error updating user points balance:', balanceError);
+          } else {
+            console.log('User points balance updated');
+          }
         } else {
-          console.log('User points balance updated');
+          console.log('Skipping user points balance update for guest user');
         }
 
         // 7. TODO: Send confirmation email (future enhancement)
